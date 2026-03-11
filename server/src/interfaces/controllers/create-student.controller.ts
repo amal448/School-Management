@@ -8,6 +8,7 @@ export class StudentController {
     
     async createStudent(req: Request, res: Response): Promise<void> {
         const dto: CreateStudentDTO = req.body
+        
         await this.addStudentUseCase.execute(dto)
         res.status(201).json({ message: "Student created" })
 

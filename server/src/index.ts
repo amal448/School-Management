@@ -1,12 +1,11 @@
-import app from './app';
+import { config } from './config/app.config';
 import mongoose from 'mongoose';
+import app from './app';
 
-const PORT = process.env.PORT || 5000;
-const MONGO_URI = 'mongodb://localhost:27017/school_db';
-
-mongoose.connect(MONGO_URI)
+mongoose.connect(config.database.uri)
   .then(() => {
-    console.log('🍃 Connected to MongoDB');
-    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-  })
-  .catch(err => console.error('Database connection error:', err));
+    app.listen(config.server.port, () => {
+      console.log(`🚀 Server running in ${config.server.env} mode on port ${config.server.port}`);
+    });
+  }).catch((error)=>console.log(error)
+  );

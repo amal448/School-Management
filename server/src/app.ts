@@ -7,6 +7,7 @@ import { BcryptPasswordService } from '@infrastructure/services/bcrypt-password-
 
 const app = express();
 app.use(express.json())
+
 // 1. Setup Infrastructure
 const studentRepo = new MongoStudentRepository();
 const passwordService = new BcryptPasswordService();
