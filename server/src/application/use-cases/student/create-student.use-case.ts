@@ -1,10 +1,10 @@
 import { Student } from "@domain/entities/student.entity";
-import { IAddStudentUseCase } from "../interfaces/create-student.user-case.interface";
+import { ICreateStudentUseCase } from "../interfaces/create-student.user-case.interface";
 import { IStudentRepository } from "@application/ports/repositories/student.repository.interface";
 import { IPasswordHasher } from "@application/ports/services/password-hasher.service.interface";
 import { UserErrorType } from "@domain/enums/user-error-type.enum"; // Added this
 
-export class AddStudentUseCase implements IAddStudentUseCase {
+export class CreateStudentUseCase implements ICreateStudentUseCase {
   constructor(
     private readonly studentRepo: IStudentRepository,
     private readonly passwordHasher: IPasswordHasher 

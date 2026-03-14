@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { IAddStudentUseCase } from "@application/use-cases/interfaces/create-student.user-case.interface"
+import { ICreateStudentUseCase } from "@application/use-cases/interfaces/create-student.user-case.interface"
 import { CreateStudentDTO } from "@domain/dtos/student.dto";
 
 export class StudentController {
 
-    constructor(private addStudentUseCase: IAddStudentUseCase) { }
+    constructor(private addStudentUseCase: ICreateStudentUseCase) { }
     
     async createStudent(req: Request, res: Response): Promise<void> {
         const dto: CreateStudentDTO = req.body

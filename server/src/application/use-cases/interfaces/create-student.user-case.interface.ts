@@ -1,3 +1,3 @@
-export interface IAddStudentUseCase {
+export interface ICreateStudentUseCase {
   execute(dto: any): Promise<void>;
 }
