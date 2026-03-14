@@ -1,6 +1,6 @@
 import { StudentPersistenceMapper } from "@application/mappers/user.mapper";
 import { IStudentRepository } from "@application/ports/repositories/student.repository.interface";
-import { Student } from "@domain/entities/student.entity";
+import { Student } from "@domain/entities/user.entity";
 import { StudentModel } from "@infrastructure/database/models/student.model";
 
 export class MongoStudentRepository implements IStudentRepository {

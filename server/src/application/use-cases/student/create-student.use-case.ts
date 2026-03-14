@@ -1,4 +1,4 @@
-import { Student } from "@domain/entities/student.entity";
+import { Student } from "@domain/entities/user.entity";
 import { ICreateStudentUseCase } from "../interfaces/create-student.user-case.interface";
 import { IStudentRepository } from "@application/ports/repositories/student.repository.interface";
 import { IPasswordHasher } from "@application/ports/services/password-hasher.service.interface";
