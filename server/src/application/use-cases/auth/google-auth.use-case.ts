@@ -1,5 +1,7 @@
 // src/application/use-cases/auth/google-auth.use-case.ts
 
+import { AdminMapper } from "src/application/mappers";
+import { IAdminRepository } from "src/application/ports/repositories/admin.repository.interface";
 import { ILogger, ITokenService } from "src/application/ports/services";
 import { AuthTokensDto } from "src/domain/dtos/auth.dto";
 import { AdminEntity } from "src/domain/entities/admin.entity";

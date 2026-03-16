@@ -7,10 +7,12 @@ import { buildTeacherModule } from './teacher';
 import { buildStudentModule } from './student';
 import { buildManagerModule } from './manager';
 import { buildAuthModule } from './auth'; // Import the new auth module
+import { buildAdminModule } from './admin';
 import { Router } from 'express';
 
 export interface AppDependencies {
   authRouter: Router;
+  adminRouter: Router;
   managerRouter: Router;
   teacherRouter: Router;
   studentRouter: Router;
@@ -29,6 +31,12 @@ export function buildDependencies(): AppDependencies {
   // It calls buildManagerModule(...). It gives that module the tools it needs and receives back two things:
   // The Router: To be used by Express.
   // The Repo: To be shared with the Auth Module.
+
+  // 2. Admin module — must be built FIRST
+  //    because configureGoogleOAuth() registers the passport strategy
+  //    and auth routes depend on that strategy already being registered
+  const admin = buildAdminModule(tokenService, logger, authMW);  // ← add this
+
   const manager = buildManagerModule(tokenService, passwordHasher, logger, authMW);
   const teacher = buildTeacherModule(tokenService, passwordHasher, logger, authMW);
   const student = buildStudentModule(tokenService, passwordHasher, logger, authMW);
@@ -46,6 +54,7 @@ export function buildDependencies(): AppDependencies {
 
   return {
     authRouter: auth.router,
+    adminRouter: admin.router,
     managerRouter: manager.router,
     teacherRouter: teacher.router,
     studentRouter: student.router,

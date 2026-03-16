@@ -6,6 +6,7 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import passport from 'passport';
 import { AppConfig } from '../../config/app.config';
 import { AppDependencies } from './di/di-container';
 
@@ -29,7 +30,8 @@ export function createExpressApp(deps: AppDependencies): Application {
   // ── Body parsing ──────────────────────────────────────
   app.use(express.json({ limit: '10kb' }));
   app.use(express.urlencoded({ extended: true }));
-
+  app.use(passport.initialize());
+  
   // ── Rate limiting ─────────────────────────────────────
   app.use(
     rateLimit({
@@ -52,7 +54,8 @@ export function createExpressApp(deps: AppDependencies): Application {
   });
 
   // ── API routes ────────────────────────────────────────
-  app.use('/api/auth',     deps.authRouter);
+  app.use('/api/auth', deps.authRouter);
+  app.use('/api/admins',   deps.adminRouter);
   app.use('/api/managers', deps.managerRouter);
   app.use('/api/teachers', deps.teacherRouter);
   app.use('/api/students', deps.studentRouter);

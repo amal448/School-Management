@@ -6,6 +6,8 @@ export interface IAdminRepository {
   findById(id: string): Promise<AdminEntity | null>;
   findByEmail(email: string): Promise<AdminEntity | null>;
   findByGoogleId(googleId: string): Promise<AdminEntity | null>;
+  findAll(): Promise<AdminEntity[]>;                              // ← add
   isEmailWhitelisted(email: string): Promise<boolean>;
+  addToWhitelist(email: string, addedBy: string): Promise<void>; // ← add
   softDelete(id: string): Promise<boolean>;
 }

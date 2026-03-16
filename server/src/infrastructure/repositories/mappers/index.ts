@@ -8,6 +8,8 @@ import { IStudentDocument } from '../../database/schemas/student.schema';
 import { ManagerEntity } from '../../../domain/entities/manager.entity';
 import { TeacherEntity } from '../../../domain/entities/teacher.entity';
 import { StudentEntity } from '../../../domain/entities/student.entity';
+import { IAdminDocument } from 'src/infrastructure/database/schemas/admin.schema';
+import { AdminEntity } from 'src/domain/entities/admin.entity';
 
 // ── Manager ────────────────────────────────────────────
 export class ManagerDocumentMapper {
@@ -120,3 +122,28 @@ export class StudentDocumentMapper {
     };
   }
 }
+// ── Admin ────────────────────────────────────────────
+export class AdminDocumentMapper {
+ static toDomain(doc: IAdminDocument): AdminEntity {
+    return AdminEntity.create({
+      id:        doc._id.toString(),
+      googleId:  doc.googleId,
+      email:     doc.email,
+      firstName: doc.firstName,
+      lastName:  doc.lastName,
+      avatar:    doc.avatar ?? undefined,
+      isActive:  doc.isActive,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+    });
+  }
+  static toPersistence(entity: AdminEntity): Partial<IAdminDocument> {
+    return {
+      email:           entity.email,
+      firstName:       entity.firstName,
+      lastName:        entity.lastName,
+      isActive:        entity.isActive,
+    };
+  }
+}
+
