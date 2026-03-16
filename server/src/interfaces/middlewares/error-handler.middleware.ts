@@ -1,7 +1,6 @@
-import { AppError } from 'src/shared/types/app-error';
 import { ILogger } from '../../application/ports/services/index';
 import { Request,Response,NextFunction } from 'express';
-
+import { AppError } from '../../shared/types/app-error';
 export const createErrorHandler =
   (logger: ILogger) =>
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
