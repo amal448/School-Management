@@ -3,6 +3,7 @@ export enum Role {
   MANAGER = 'MANAGER',
   TEACHER = 'TEACHER',
   STUDENT = 'STUDENT',
+  ADMIN = 'ADMIN',
 }
 
 // Gender enum

@@ -4,6 +4,8 @@ import { StudentEntity } from "../../domain/entities/student.entity";
 import { ManagerResponseDto, } from "../../domain/dtos/manager.dto";
 import { TeacherResponseDto } from "../../domain/dtos/teacher.dto";
 import { StudentResponseDto } from "../../domain/dtos/student.dto";
+import { AdminEntity } from "src/domain/entities/admin.entity";
+import { AdminResponseDto } from "src/domain/dtos/admin.dto";
 
 
 
@@ -74,5 +76,21 @@ export class StudentMapper {
 
   static toDtoList(entities: StudentEntity[]): StudentResponseDto[] {
     return entities.map(this.toDto);
+  }
+}
+
+export class AdminMapper {
+  static toDto(entity: AdminEntity): AdminResponseDto {
+    return {
+      id:        entity.id!,
+      email:     entity.email,
+      role:      'ADMIN',
+      firstName: entity.firstName,
+      lastName:  entity.lastName,
+      fullName:  entity.fullName,
+      avatar:    entity.avatar,
+      isActive:  entity.isActive,
+      createdAt: entity.createdAt,
+    };
   }
 }

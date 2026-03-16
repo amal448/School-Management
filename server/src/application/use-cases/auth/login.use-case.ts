@@ -46,22 +46,21 @@ export class LoginUseCase implements IUseCase<LoginDto, AuthTokensDto> {
     return { ...tokens, user };
   }
 
-  private async resolveUser(email: string, role: string) {
-    switch (role) {
-      case Role.MANAGER: {
-        const entity = await this.managerRepo.findByEmail(email);
-        return { entity, role: Role.MANAGER };
-      }
-      case Role.TEACHER: {
-        const entity = await this.teacherRepo.findByEmail(email);
-        return { entity, role: Role.TEACHER };
-      }
-      case Role.STUDENT: {
-        const entity = await this.studentRepo.findByEmail(email);
-        return { entity, role: Role.STUDENT };
-      }
-      default:
-        throw AppError.badRequest('Invalid role');
-    }
+private async resolveUser(email: string, role: string) {
+  switch (role) {
+    case Role.ADMIN:
+      // Admins log in via Google OAuth, not this endpoint
+      throw AppError.badRequest(
+        'Admin accounts use Google Sign-In. Use /api/auth/google'
+      );
+    case Role.MANAGER:
+      return { entity: await this.managerRepo.findByEmail(email), role: Role.MANAGER };
+    case Role.TEACHER:
+      return { entity: await this.teacherRepo.findByEmail(email), role: Role.TEACHER };
+    case Role.STUDENT:
+      return { entity: await this.studentRepo.findByEmail(email), role: Role.STUDENT };
+    default:
+      throw AppError.badRequest('Invalid role');
   }
+}
 }

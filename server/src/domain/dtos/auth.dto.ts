@@ -1,3 +1,4 @@
+import { AdminResponseDto } from "./admin.dto";
 import { ManagerResponseDto } from "./manager.dto";
 import { StudentResponseDto } from "./student.dto";
 import { TeacherResponseDto } from "./teacher.dto";
@@ -21,5 +22,5 @@ export interface AuthTokensDto {
   accessToken: string;
   refreshToken: string;
   expiresIn: number;
-  user: ManagerResponseDto | TeacherResponseDto | StudentResponseDto;
+  user:AdminResponseDto | ManagerResponseDto | TeacherResponseDto | StudentResponseDto;
 }

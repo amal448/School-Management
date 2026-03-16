@@ -3,11 +3,17 @@ import { Role } from '../../domain/enums/index';
 import { AppError } from '../../shared/types/app-error';
 import { BEARER_PREFIX } from '../../shared/constants/index';
 import { Request,Response,NextFunction } from 'express';
+import { AuthTokensDto } from 'src/domain/dtos/auth.dto';
+
 
 declare global {
   namespace Express {
     interface Request {
+      // Normal JWT auth populates this
       user?: TokenPayload;
+
+      // Google OAuth callback populates this (passport puts the use-case result here)
+      authResult?: AuthTokensDto;
     }
   }
 }
