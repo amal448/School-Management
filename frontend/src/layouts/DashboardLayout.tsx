@@ -1,0 +1,29 @@
+import { Outlet } from 'react-router-dom'
+import { SidebarProvider } from '@/components/ui/sidebar'
+import { type Role } from '@/constants'
+import { AppSidebar } from '@/components/dashboardcomponents/AppSidebar'
+import { DashboardNavbar } from '@/components/dashboardcomponents/DashboardNavbar'
+
+interface DashboardLayoutProps {
+  role: Role
+}
+
+const DashboardLayout = ({ role }: DashboardLayoutProps) => {
+  return (
+    <SidebarProvider>
+      <AppSidebar role={role} />
+      <main className="flex flex-col flex-1 min-h-screen">
+        <DashboardNavbar
+          role={role}
+          userName="Amal Thomas"
+          userEmail="amal@schoolms.com"
+        />
+        <div className="flex-1 p-6">
+          <Outlet />
+        </div>
+      </main>
+    </SidebarProvider>
+  )
+}
+
+export default DashboardLayout

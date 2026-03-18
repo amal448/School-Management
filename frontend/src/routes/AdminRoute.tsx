@@ -1,5 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { ROUTES } from '@/constants'
+import DashboardLayout from '@/layouts/DashboardLayout'
+import { ROLES } from '@/constants'
 
 // ── Page imports (create these files as you build) ────
 // import AdminDashboard  from '@/pages/admin/AdminDashboard'
@@ -22,43 +24,45 @@ const Placeholder = ({ title }: { title: string }) => (
 export default function AdminRoutes() {
   return (
     <Routes>
-   
-      <Route
-        index
-        element={<Navigate to={ROUTES.ADMIN.DASHBOARD} replace />}
-      />
+      <Route element={<DashboardLayout role={ROLES.ADMIN} />}>
+        <Route
+          index
+          element={<Navigate to="dashboard" replace />}
+        />
 
-      <Route path="dashboard" element={<Placeholder title="Admin Dashboard" />}
+        <Route path="dashboard" element={<Placeholder title="Admin Dashboard" />}
         // element={<AdminDashboard />}
-/>
-      <Route path="teachers" element={<Placeholder title="Teachers" />}
+        />
+        <Route path="teachers" element={<Placeholder title="Teachers" />}
         // element={<TeachersPage />}
-/>
-      <Route path="students" element={<Placeholder title="Students" />}
+        />
+        <Route path="students" element={<Placeholder title="Students" />}
         // element={<StudentsPage />}
-/>
-      <Route path="classes" element={<Placeholder title="Classes" />}
+        />
+        <Route path="classes" element={<Placeholder title="Classes" />}
         // element={<ClassesPage />}
-/>
-      <Route path="departments" element={<Placeholder title="Departments" />}
+        />
+        <Route path="departments" element={<Placeholder title="Departments" />}
         // element={<DepartmentsPage />}
-/>
-      <Route path="subjects" element={<Placeholder title="Subjects" />}
+        />
+        <Route path="subjects" element={<Placeholder title="Subjects" />}
         // element={<SubjectsPage />}
-/>
-      <Route path="exams" element={<Placeholder title="Exams" />}
+        />
+        <Route path="exams" element={<Placeholder title="Exams" />}
         // element={<ExamsPage />}
-/>
-      <Route path="analytics" element={<Placeholder title="Analytics" />}
+        />
+        <Route path="analytics" element={<Placeholder title="Analytics" />}
         // element={<AnalyticsPage />}
-/>
-      <Route path="settings" element={<Placeholder title="Settings" />}
+        />
+        <Route path="settings" element={<Placeholder title="Settings" />}
         // element={<SettingsPage />}
-/>
+        />
 
-      {/* Catch-all inside /admin → redirect to dashboard */}
-      <Route path="*" element={<Navigate to={ROUTES.ADMIN.DASHBOARD} replace />}
-      />
+        {/* Catch-all inside /admin → redirect to dashboard */}
+        <Route path="*" element={<Navigate to="dashboard" replace />}
+        />
+      </Route>
+
     </Routes>
   )
 }
