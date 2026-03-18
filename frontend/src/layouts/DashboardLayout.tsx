@@ -18,7 +18,7 @@ const DashboardLayout = ({ role }: DashboardLayoutProps) => {
           userName="Amal Thomas"
           userEmail="amal@schoolms.com"
         />
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-6 flex flex-col gap-6 min-h-0">
           <Outlet />
         </div>
       </main>
