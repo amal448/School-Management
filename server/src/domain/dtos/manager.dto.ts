@@ -14,13 +14,18 @@ export interface UpdateManagerDto {
 }
 
 export interface ManagerResponseDto {
-  id: string;
-  email: string;
-  role: 'MANAGER';
-  firstName: string;
-  lastName: string;
-  fullName: string;
-  phone?: string;
-  isActive: boolean;
-  createdAt: Date;
+  id:             string
+  email:          string
+  role:           'MANAGER'
+  firstName:      string
+  lastName:       string
+  fullName:       string
+  avatar?:        string
+  isActive:       boolean
+  isVerified:     boolean
+  isFirstTime:    boolean
+  isBlocked:      boolean
+  lastLogin?:     Date
+  createdByAdmin: string
+  createdAt:      Date
 }

@@ -1,17 +1,21 @@
 // src/infrastructure/database/schemas/admin.schema.ts
 import mongoose, { Schema, Document } from 'mongoose';
 
-export interface IAdminDocument extends Document {
-  googleId: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  avatar?: string;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
+// src/infrastructure/database/schemas/admin.schema.ts
 
+export interface IAdminDocument extends Document {
+  googleId?:     string
+  email:         string
+  passwordHash?: string    // ← add
+  firstName:     string
+  lastName:      string
+  avatar?:       string
+  isActive:      boolean
+  isVerified:    boolean   // ← add
+  lastLogin?:    Date      // ← add
+  createdAt:     Date
+  updatedAt:     Date
+}
 const AdminSchema = new Schema<IAdminDocument>(
   {
     googleId:  { type: String, required: true, unique: true, index: true },

@@ -12,15 +12,20 @@ import { AdminResponseDto } from "src/domain/dtos/admin.dto";
 export class ManagerMapper {
   static toDto(e: ManagerEntity): ManagerResponseDto {
     return {
-      id: e.id!,
-      email: e.email,
-      role: 'MANAGER',
-      firstName: e.firstName,
-      lastName: e.lastName,
-      fullName: e.fullName,
-      phone: e.phone,
-      isActive: e.isActive,
-      createdAt: e.createdAt,
+      id:             e.id!,
+      email:          e.email,
+      role:           'MANAGER',
+      firstName:      e.firstName,
+      lastName:       e.lastName,
+      fullName:       e.fullName,
+      avatar:         e.avatar,
+      isActive:       e.isActive,
+      isVerified:     e.isVerified,
+      isFirstTime:    e.isFirstTime,
+      isBlocked:      e.isBlocked,
+      lastLogin:      e.lastLogin,
+      createdByAdmin: e.createdByAdmin,
+      createdAt:      e.createdAt,
     };
   }
 }
@@ -82,15 +87,17 @@ export class StudentMapper {
 export class AdminMapper {
   static toDto(entity: AdminEntity): AdminResponseDto {
     return {
-      id:        entity.id!,
-      email:     entity.email,
-      role:      'ADMIN',
-      firstName: entity.firstName,
-      lastName:  entity.lastName,
-      fullName:  entity.fullName,
-      avatar:    entity.avatar,
-      isActive:  entity.isActive,
-      createdAt: entity.createdAt,
-    };
+      id:         entity.id!,
+      email:      entity.email,
+      role:       'ADMIN',
+      firstName:  entity.firstName,
+      lastName:   entity.lastName,
+      fullName:   entity.fullName,
+      avatar:     entity.avatar,
+      isActive:   entity.isActive,
+      isVerified: entity.isVerified,
+      lastLogin:  entity.lastLogin,
+      createdAt:  entity.createdAt,
+    }
   }
 }

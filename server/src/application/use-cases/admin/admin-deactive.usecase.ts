@@ -16,18 +16,13 @@ export class DeactivateAdminUseCase implements IUseCase<DeactivateAdminInput, vo
   ) {}
 
   async execute(input: DeactivateAdminInput): Promise<void> {
-    // Admin cannot deactivate themselves
     if (input.targetId === input.requesterId) {
-      throw AppError.badRequest('You cannot deactivate your own account');
+      throw AppError.badRequest('You cannot deactivate your own account')
     }
+    const admin = await this.adminRepo.findById(input.targetId)
+    if (!admin) throw AppError.notFound('Admin not found')
 
-    const admin = await this.adminRepo.findById(input.targetId);
-    if (!admin) throw AppError.notFound('Admin not found');
-
-    await this.adminRepo.softDelete(input.targetId);
-    this.logger.info('DeactivateAdminUseCase: deactivated', {
-      targetId: input.targetId,
-      by: input.requesterId,
-    });
+    await this.adminRepo.softDelete(input.targetId)
+    this.logger.info('DeactivateAdminUseCase: deactivated', input)
   }
 }

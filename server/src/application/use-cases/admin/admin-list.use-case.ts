@@ -8,7 +8,7 @@ export class ListAdminsUseCase implements IUseCase<void, AdminResponseDto[]> {
   constructor(private readonly adminRepo: IAdminRepository) {}
 
   async execute(): Promise<AdminResponseDto[]> {
-    const admins = await this.adminRepo.findAll();
-    return admins.map(AdminMapper.toDto);
+    const admins = await this.adminRepo.findAll()
+    return admins.map(AdminMapper.toDto)
   }
 }
