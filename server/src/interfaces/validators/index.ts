@@ -124,3 +124,50 @@ export const StudentQuerySchema = z.object({
   ...paginationSchema,
   classId: z.string().optional(),
 });
+
+// src/interfaces/validators/index.ts  (add this)
+export const VerifyOtpSchema = z.object({
+  email: z.string().email(),
+  otp:   z.string().length(6, 'OTP must be 6 digits'),
+  role:  z.enum(['TEACHER', 'STUDENT'], {
+    errorMap: () => ({ message: "Role must be TEACHER or STUDENT" }),
+  }),
+})
+
+// src/interfaces/validators/index.ts
+// Add these exports — keep all your existing exports, just add these
+
+export const ForgotPasswordSchema = z.object({
+  email: z.string().email('Invalid email'),
+  role:  z.enum(['ADMIN', 'MANAGER'], {
+    errorMap: () => ({ message: "Role must be ADMIN or MANAGER" }),
+  }),
+})
+
+export const ResetPasswordSchema = z.object({
+  token:       z.string().min(1, 'Token is required'),
+  role:        z.enum(['ADMIN', 'MANAGER'], {
+    errorMap: () => ({ message: "Role must be ADMIN or MANAGER" }),
+  }),
+  newPassword: z
+    .string()
+    .min(8)
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
+      'Password must include uppercase, lowercase, number and special character',
+    ),
+})
+
+export const FirstTimeSetupSchema = z.object({
+  token:       z.string().min(1, 'Token is required'),
+  role:        z.enum(['TEACHER', 'STUDENT'], {
+    errorMap: () => ({ message: "Role must be TEACHER or STUDENT" }),
+  }),
+  newPassword: z
+    .string()
+    .min(8)
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
+      'Password must include uppercase, lowercase, number and special character',
+    ),
+})

@@ -20,11 +20,7 @@ export interface TokenPair {
   expiresIn: number;
 }
 
-export interface ITokenService {
-  generateTokenPair(payload: TokenPayload): TokenPair;
-  verifyAccessToken(token: string): TokenPayload;
-  verifyRefreshToken(token: string): TokenPayload;
-}
+
 
 // ── Logger ─────────────────────────────────────────────
 export interface ILogger {

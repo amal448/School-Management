@@ -1,47 +1,65 @@
 // src/application/use-cases/auth/change-password.use-case.ts
-import { IUseCase } from '../interfaces/use-case.interface';
-import { IPasswordHasher, ILogger } from '../../ports/services/index';
-import { AppError } from '../../../shared/types/app-error';
-import { Role } from '../../../domain/enums/index';
-import { ChangePasswordDto } from '../../../domain/dtos/auth.dto';
-import { IManagerRepository } from '../../ports/repositories/manager.repository.interface';
-import { ITeacherRepository } from '../../ports/repositories/teacher.repository.interface';
-import { IStudentRepository } from '../../ports/repositories/student.repository.interface';
+import { IUseCase } from '../interfaces/use-case.interface'
+import { IPasswordHasher, ILogger } from 'src/application/ports/services'
+import { IManagerRepository } from 'src/application/ports/repositories/manager.repository.interface'
+import { ITeacherRepository } from 'src/application/ports/repositories/teacher.repository.interface'
+import { IStudentRepository } from 'src/application/ports/repositories/student.repository.interface'
+import { AppError } from 'src/shared/types/app-error'
+import { Role } from 'src/domain/enums'
 
-export interface ChangePasswordInput extends ChangePasswordDto {
-  userId: string;
-  role: Role;
+export interface ChangePasswordInput {
+  userId:          string
+  role:            Role
+  currentPassword: string
+  newPassword:     string
 }
 
 export class ChangePasswordUseCase implements IUseCase<ChangePasswordInput, void> {
   constructor(
-    private readonly managerRepo: IManagerRepository,
-    private readonly teacherRepo: ITeacherRepository,
-    private readonly studentRepo: IStudentRepository,
+    private readonly managerRepo:    IManagerRepository,
+    private readonly teacherRepo:    ITeacherRepository,
+    private readonly studentRepo:    IStudentRepository,
     private readonly passwordHasher: IPasswordHasher,
-    private readonly logger: ILogger,
+    private readonly logger:         ILogger,
   ) {}
 
   async execute(input: ChangePasswordInput): Promise<void> {
-    const { entity, repo } = await this.resolveUser(input.userId, input.role);
-    if (!entity) throw AppError.notFound('User not found');
+    const { entity, repo } = await this.resolveUser(input.userId, input.role)
 
-    const valid = await this.passwordHasher.compare(input.currentPassword, entity.passwordHash);
-    if (!valid) throw AppError.unauthorized('Current password is incorrect');
+    if (!entity) throw AppError.notFound('User not found')
 
-    const newHash = await this.passwordHasher.hash(input.newPassword);
-    entity.updatePassword(newHash);
-    await repo.update(entity.id!, entity as any);
+    // Guard: passwordHash might be null (OAuth-only admin)
+    if (!entity.passwordHash) {
+      throw AppError.badRequest(
+        'No password is set on this account. Use forgot password to create one.'
+      )
+    }
 
-    this.logger.info('ChangePasswordUseCase: updated', { userId: entity.id, role: input.role });
+    const valid = await this.passwordHasher.compare(
+      input.currentPassword,
+      entity.passwordHash,
+    )
+    if (!valid) throw AppError.unauthorized('Current password is incorrect')
+
+    const newHash = await this.passwordHasher.hash(input.newPassword)
+    entity.updatePassword(newHash)
+    await repo.update(entity.id!, entity as any)
+
+    this.logger.info('ChangePasswordUseCase: updated', {
+      userId: entity.id, role: input.role,
+    })
   }
 
   private async resolveUser(userId: string, role: Role) {
     switch (role) {
-      case Role.MANAGER: return { entity: await this.managerRepo.findById(userId), repo: this.managerRepo };
-      case Role.TEACHER: return { entity: await this.teacherRepo.findById(userId), repo: this.teacherRepo };
-      case Role.STUDENT: return { entity: await this.studentRepo.findById(userId), repo: this.studentRepo };
-      default: throw AppError.badRequest('Invalid role');
+      case Role.MANAGER:
+        return { entity: await this.managerRepo.findById(userId), repo: this.managerRepo }
+      case Role.TEACHER:
+        return { entity: await this.teacherRepo.findById(userId), repo: this.teacherRepo }
+      case Role.STUDENT:
+        return { entity: await this.studentRepo.findById(userId), repo: this.studentRepo }
+      default:
+        throw AppError.badRequest('Invalid role')
     }
   }
 }

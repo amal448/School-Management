@@ -13,30 +13,46 @@ import { AdminEntity } from 'src/domain/entities/admin.entity';
 
 // ── Manager ────────────────────────────────────────────
 export class ManagerDocumentMapper {
-  static toDomain(doc: IManagerDocument): ManagerEntity {
-    return ManagerEntity.create({
-      id:        doc._id.toString(),
-      email:     doc.email,
-      passwordHash: doc.passwordHash,
-      firstName: doc.firstName,
-      lastName:  doc.lastName,
-      phone:     doc.phone ?? undefined,
-      isActive:  doc.isActive,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-    });
-  }
+static toDomain(doc: IManagerDocument): ManagerEntity {
+  return ManagerEntity.create({
+    id:             doc._id.toString(),
+    email:          doc.email,
+    passwordHash:   doc.passwordHash  ?? undefined,
+    firstName:      doc.firstName,
+    lastName:       doc.lastName,
+    phone:          doc.phone         ?? undefined,
+    isActive:       doc.isActive,
+    isVerified:     doc.isVerified,
+    isFirstTime:    doc.isFirstTime,
+    isBlocked:      doc.isBlocked,
+    blockedBy:      doc.blockedBy     ?? undefined,
+    blockedAt:      doc.blockedAt     ?? undefined,
+    lastLogin:      doc.lastLogin     ?? undefined,
+    createdByAdmin: doc.createdByAdmin,
+    createdAt:      doc.createdAt,
+    updatedAt:      doc.updatedAt,
+    // googleId and avatar are gone
+  })
+}
 
-  static toPersistence(entity: ManagerEntity): Partial<IManagerDocument> {
-    return {
-      email:        entity.email,
-      passwordHash: entity.passwordHash,
-      firstName:    entity.firstName,
-      lastName:     entity.lastName,
-      phone:        entity.phone,
-      isActive:     entity.isActive,
-    };
+static toPersistence(entity: ManagerEntity): Partial<IManagerDocument> {
+  return {
+    email:          entity.email,
+    passwordHash:   entity.passwordHash,
+    firstName:      entity.firstName,
+    lastName:       entity.lastName,
+    phone:          entity.phone,
+    isActive:       entity.isActive,
+    isVerified:     entity.isVerified,
+    isFirstTime:    entity.isFirstTime,
+    isBlocked:      entity.isBlocked,
+    blockedBy:      entity.blockedBy,
+    blockedAt:      entity.blockedAt,
+    lastLogin:      entity.lastLogin,
+    createdByAdmin: entity.createdByAdmin,
+    // googleId and avatar are gone
   }
+}
 }
 
 // ── Teacher ────────────────────────────────────────────

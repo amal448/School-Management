@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { BlockManagerUseCase } from 'src/application/use-cases/admin/admin-block-manager.usecase'
 import { DeactivateAdminUseCase } from 'src/application/use-cases/admin/admin-deactive.usecase'
-import { GetAdminProfileUseCase } from 'src/application/use-cases/admin/admin-get.use-case'
+import { GetAdminProfileUseCase } from 'src/application/use-cases/admin/admin-getprofile.use-case'
 import { ListAdminsUseCase } from 'src/application/use-cases/admin/admin-list.use-case'
 import { RemoveWhitelistUseCase } from 'src/application/use-cases/admin/admin-remove-whitelist.usecase'
 import { UnblockManagerUseCase } from 'src/application/use-cases/admin/admin-unblock-manager.usecase'

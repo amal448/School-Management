@@ -20,7 +20,6 @@ export class AdminEntity {
   private readonly _id?:    string
   private _googleId?:       string
   private _email:           Email
-  private _passwordHash?:   string
   private _firstName:       string
   private _lastName:        string
   private _avatar?:         string
@@ -34,7 +33,6 @@ export class AdminEntity {
     this._id           = props.id
     this._googleId     = props.googleId
     this._email        = Email.create(props.email)
-    this._passwordHash = props.passwordHash
     this._firstName    = this.requireNonEmpty(props.firstName, 'firstName')
     this._lastName     = this.requireNonEmpty(props.lastName,  'lastName')
     this._avatar       = props.avatar
@@ -72,10 +70,7 @@ export class AdminEntity {
     this._updatedAt = new Date()
   }
 
-  updatePassword(hash: string): void {
-    this._passwordHash = hash
-    this._updatedAt    = new Date()
-  }
+
 
   deactivate(): void { this._isActive = false; this._updatedAt = new Date() }
   activate():   void { this._isActive = true;  this._updatedAt = new Date() }
@@ -84,7 +79,6 @@ export class AdminEntity {
   get id():           string | undefined  { return this._id }
   get googleId():     string | undefined  { return this._googleId }
   get email():        string              { return this._email.value }
-  get passwordHash(): string | undefined  { return this._passwordHash }
   get firstName():    string              { return this._firstName }
   get lastName():     string              { return this._lastName }
   get fullName():     string              { return `${this._firstName} ${this._lastName}` }

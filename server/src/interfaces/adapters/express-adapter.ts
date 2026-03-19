@@ -1,72 +1,98 @@
 // src/interfaces/adapters/express-adapter.ts
-// Framework wiring is fully isolated here.
-// Nothing else in the codebase imports from 'express' directly.
-
-import express, { Application, Request, Response } from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
-import passport from 'passport';
-import { AppConfig } from '../../config/app.config';
-import { AppDependencies } from './di/di-container';
+import express, { Application, Request, Response, NextFunction } from 'express'
+import cors          from 'cors'
+import helmet        from 'helmet'
+import rateLimit     from 'express-rate-limit'
+import cookieParser  from 'cookie-parser'
+import passport      from 'passport'
+import { AppConfig } from 'src/config/app.config'
+import { AppDependencies } from './di/di-container'
 
 export function createExpressApp(deps: AppDependencies): Application {
-  const app = express();
+  const app = express()
 
-  // ── Security headers ─────────────────────────────────
-  app.use(helmet());
+  // ── 1. Security headers ────────────────────────────
+  app.use(helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  }))
 
-  // ── CORS ─────────────────────────────────────────────
+  // ── 2. CORS — must come before routes ─────────────
+  // withCredentials: true on frontend requires explicit origin
+  // (cannot use * when sending cookies)
   app.use(
     cors({
-      origin: AppConfig.server.isDevelopment
-        ? '*'
-        : (process.env.ALLOWED_ORIGINS ?? '').split(','),
-      methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
-    }),
-  );
+      origin: (origin, callback) => {
+        // Allow requests with no origin (mobile apps, curl, Postman)
+        if (!origin) return callback(null, true)
 
-  // ── Body parsing ──────────────────────────────────────
-  app.use(express.json({ limit: '10kb' }));
-  app.use(express.urlencoded({ extended: true }));
-  app.use(passport.initialize());
-  
-  // ── Rate limiting ─────────────────────────────────────
+        if (AppConfig.server.allowedOrigins.includes(origin)) {
+          callback(null, true)
+        } else {
+          callback(new Error(`CORS: origin ${origin} not allowed`))
+        }
+      },
+      credentials:      true,    // ← CRITICAL: allows cookies to be sent
+      methods:          ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders:   ['Content-Type', 'Authorization', 'x-csrf-token'],
+      exposedHeaders:   ['x-csrf-token'],
+    })
+  )
+
+  // ── 3. Body parsing ────────────────────────────────
+  app.use(express.json({ limit: '10kb' }))
+  app.use(express.urlencoded({ extended: true, limit: '10kb' }))
+
+  // ── 4. Cookie parser ───────────────────────────────
+  // MUST come before any middleware that reads cookies
+  app.use(cookieParser())
+
+  // ── 5. Passport initialization ─────────────────────
+  // no session — we use JWT + Redis
+  app.use(passport.initialize())
+
+  // ── 6. Rate limiting ───────────────────────────────
   app.use(
     rateLimit({
-      windowMs: AppConfig.rateLimit.windowMs,
-      max: AppConfig.rateLimit.max,
+      windowMs:        AppConfig.rateLimit.windowMs,
+      max:             AppConfig.rateLimit.max,
       standardHeaders: true,
-      legacyHeaders: false,
-      message: { success: false, message: 'Too many requests. Please try again later.' },
-    }),
-  );
+      legacyHeaders:   false,
+      // Skip rate limiting in development
+      skip: () => AppConfig.server.isDevelopment,
+      message: {
+        success: false,
+        message: 'Too many requests. Please try again later.',
+      },
+    })
+  )
 
-  // ── Health check ──────────────────────────────────────
+  // ── 7. Health check ────────────────────────────────
   app.get('/health', (_req: Request, res: Response) => {
     res.status(200).json({
-      success: true,
-      status: 'healthy',
+      success:     true,
+      status:      'healthy',
       environment: AppConfig.server.nodeEnv,
-      timestamp: new Date().toISOString(),
-    });
-  });
+      timestamp:   new Date().toISOString(),
+    })
+  })
 
-  // ── API routes ────────────────────────────────────────
-  app.use('/api/auth', deps.authRouter);
-  app.use('/api/admins',   deps.adminRouter);
-  app.use('/api/managers', deps.managerRouter);
-  app.use('/api/teachers', deps.teacherRouter);
-  app.use('/api/students', deps.studentRouter);
+  // ── 8. API routes ──────────────────────────────────
+  app.use('/api/auth',     deps.authRouter)
+  app.use('/api/admins',   deps.adminRouter)
+  app.use('/api/managers', deps.managerRouter)
+  app.use('/api/teachers', deps.teacherRouter)
+  app.use('/api/students', deps.studentRouter)
 
-  // ── 404 fallback ──────────────────────────────────────
+  // ── 9. 404 handler ─────────────────────────────────
   app.use((_req: Request, res: Response) => {
-    res.status(404).json({ success: false, message: 'Route not found' });
-  });
+    res.status(404).json({
+      success: false,
+      message: 'Route not found',
+    })
+  })
 
-  // ── Global error handler (must be last) ───────────────
-  app.use(deps.errorHandler);
+  // ── 10. Global error handler (must be last) ────────
+  app.use(deps.errorHandler)
 
-  return app;
+  return app
 }
