@@ -1,19 +1,31 @@
-import { AppError } from "../../../shared/types/app-error";
-import { IManagerRepository } from "../../ports/repositories/manager.repository.interface";
-import { ILogger } from "../../ports/services";
-import { IUseCase } from "../interfaces/use-case.interface";
+import { IManagerRepository } from "src/application/ports/repositories/manager.repository.interface"
+import { IUseCase } from "../interfaces/use-case.interface"
+import { ILogger } from "src/application/ports/services"
+import { AppError } from "src/shared/types/app-error"
 
-// ── Delete Manager (soft) ──────────────────────────────
-export class DeleteManagerUseCase implements IUseCase<string, void> {
+// ── Delete Manager (soft) — Admin only ────────────────
+export interface DeleteManagerInput {
+  targetId:    string
+  requesterId: string
+}
+
+export class DeleteManagerUseCase
+  implements IUseCase<DeleteManagerInput, void> {
+
   constructor(
     private readonly managerRepo: IManagerRepository,
-    private readonly logger: ILogger,
+    private readonly logger:      ILogger,
   ) {}
 
-  async execute(id: string): Promise<void> {
-    const manager = await this.managerRepo.findById(id);
-    if (!manager) throw AppError.notFound('Manager not found');
-    await this.managerRepo.softDelete(id);
-    this.logger.info('DeleteManagerUseCase: soft-deleted', { id });
+  async execute(input: DeleteManagerInput): Promise<void> {
+    const manager = await this.managerRepo.findById(input.targetId)
+    if (!manager) throw AppError.notFound('Manager not found')
+
+    await this.managerRepo.softDelete(input.targetId)
+
+    this.logger.info('DeleteManagerUseCase: soft-deleted', {
+      id: input.targetId,
+      by: input.requesterId,
+    })
   }
 }

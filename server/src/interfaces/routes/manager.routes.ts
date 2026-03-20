@@ -1,29 +1,79 @@
+import { Router }            from 'express'
+import { ManagerController } from 'src/interfaces/controllers/manager.controller'
+import { createAuthMiddleware } from 'src/interfaces/middlewares/auth.middleware'
+import { validate }          from 'src/interfaces/middlewares/validate.middleware'
+import {
+  CreateManagerSchema,
+  UpdateManagerSchema,
+  ManagerQuerySchema,
+} from 'src/interfaces/validators/manager.validator'
+import { Role }              from 'src/domain/enums/index'
 
-import { Router } from 'express';
+type AuthMW = ReturnType<typeof createAuthMiddleware>
 
-import { createAuthMiddleware } from '../middlewares/auth.middleware';
-import { validate } from '../middlewares/validate.middleware';
-import { ManagerController } from '../controllers/manager.controller';
-import { Role } from 'src/domain/enums';
-import { RegisterManagerSchema, UpdateManagerSchema } from '../validators';
+export const createManagerRouter = (
+  ctrl: ManagerController,
+  { authenticate, authorize }: AuthMW,
+): Router => {
+  const router = Router()
 
-type AuthMW = ReturnType<typeof createAuthMiddleware>;
+  /**
+   * POST /api/managers
+   * Admin only — create a new manager with custom credentials
+   */
+  router.post(
+    '/',
+    authenticate,
+    authorize(Role.ADMIN),
+    validate(CreateManagerSchema),
+    ctrl.create,
+  )
 
+  /**
+   * GET /api/managers
+   * Admin only — list all managers with filters
+   */
+  router.get(
+    '/',
+    authenticate,
+    authorize(Role.ADMIN),
+    validate(ManagerQuerySchema, 'query'),
+    ctrl.list,
+  )
 
-export const createManagerRouter = (ctrl: ManagerController, { authenticate, authorize }: AuthMW): Router => {
-  const router = Router();
+  /**
+   * GET /api/managers/:id
+   * Admin or self (manager viewing own profile)
+   */
+  router.get(
+    '/:id',
+    authenticate,
+    authorize(Role.ADMIN, Role.MANAGER),
+    ctrl.getById,
+  )
 
-  /** POST /api/managers/register     — Public: first-time manager setup */
-  router.post('/register',    validate(RegisterManagerSchema),                              ctrl.register);
+  /**
+   * PATCH /api/managers/:id
+   * Admin or self — update profile
+   */
+  router.patch(
+    '/:id',
+    authenticate,
+    authorize(Role.ADMIN, Role.MANAGER),
+    validate(UpdateManagerSchema),
+    ctrl.update,
+  )
 
-  /** GET  /api/managers/:id          — Authenticated manager only */
-  router.get('/:id',          authenticate, authorize(Role.MANAGER),                       ctrl.getById);
+  /**
+   * DELETE /api/managers/:id
+   * Admin only — soft delete
+   */
+  router.delete(
+    '/:id',
+    authenticate,
+    authorize(Role.ADMIN),
+    ctrl.remove,
+  )
 
-  /** PATCH /api/managers/:id         — Authenticated manager (own profile) */
-  router.patch('/:id',        authenticate, authorize(Role.MANAGER), validate(UpdateManagerSchema), ctrl.update);
-
-  /** DELETE /api/managers/:id        — Authenticated manager */
-  router.delete('/:id',       authenticate, authorize(Role.MANAGER),                       ctrl.remove);
-
-  return router;
-};
+  return router
+}

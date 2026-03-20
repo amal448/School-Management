@@ -8,10 +8,10 @@ export const authApi = {
     window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`
   },
 
-  login: async (data: LoginInput): Promise<LoginResponse> => {
-    const res = await apiClient.post<LoginResponse>('/api/auth/login', data)
-    return res.data
-  },
+  // login: async (data: LoginInput): Promise<LoginResponse> => {
+  //   const res = await apiClient.post<LoginResponse>('/api/auth/login', data)
+  //   return res.data
+  // },
 
   getMe: async (): Promise<MeData> => {
     const res = await apiClient.get<ApiResponse<MeData>>('/api/auth/me')

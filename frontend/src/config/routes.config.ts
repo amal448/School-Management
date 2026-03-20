@@ -29,8 +29,9 @@ export const ROUTES = {
   ADMIN: {
     ROOT:        '/admin',
     DASHBOARD:   '/admin/dashboard',
-    TEACHERS:    '/admin/teachers',
-    STUDENTS:    '/admin/students',
+    TEACHERS:    '/admin/teacher',
+    // STUDENTS:    '/admin/students',
+    MANAGER:    '/admin/manager',
     CLASSES:     '/admin/classes',
     DEPARTMENTS: '/admin/departments',
     SUBJECTS:    '/admin/subjects',
@@ -78,8 +79,9 @@ export interface NavItem {
 
 export const ADMIN_NAV: NavItem[] = [
   { label: 'Dashboard',   path: ROUTES.ADMIN.DASHBOARD,   icon: LayoutDashboard },
-  { label: 'Teachers',    path: ROUTES.ADMIN.TEACHERS,    icon: Users           },
-  { label: 'Students',    path: ROUTES.ADMIN.STUDENTS,    icon: GraduationCap   },
+  { label: 'Manager',    path: ROUTES.ADMIN.MANAGER,    icon: Users   },
+  { label: 'Teacher',    path: ROUTES.ADMIN.TEACHERS,    icon: Users },
+  // { label: 'Students',    path: ROUTES.ADMIN.STUDENTS,    icon: GraduationCap   },
   { label: 'Classes',     path: ROUTES.ADMIN.CLASSES,     icon: School          },
   { label: 'Departments', path: ROUTES.ADMIN.DEPARTMENTS, icon: Building2       },
   { label: 'Subjects',    path: ROUTES.ADMIN.SUBJECTS,    icon: BookOpen        },

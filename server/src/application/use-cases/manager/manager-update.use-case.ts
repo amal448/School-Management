@@ -1,31 +1,42 @@
-import { ManagerResponseDto, UpdateManagerDto } from "../../../domain/dtos/manager.dto";
-import { AppError } from "../../../shared/types/app-error";
-import { ManagerMapper } from "../../mappers";
-import { IManagerRepository } from "../../ports/repositories/manager.repository.interface";
-import { ILogger } from "../../ports/services";
-import { IUseCase } from "../interfaces/use-case.interface";
+import { ManagerResponseDto, UpdateManagerDto } from "src/domain/dtos/manager.dto"
+import { IUseCase } from "../interfaces/use-case.interface"
+import { IManagerRepository } from "src/application/ports/repositories/manager.repository.interface"
+import { ILogger } from "src/application/ports/services"
+import { AppError } from "src/shared/types/app-error"
+import { ManagerMapper } from "src/application/mappers"
 
-// ── Update Manager ─────────────────────────────────────
-export interface UpdateManagerInput { id: string; dto: UpdateManagerDto; requesterId: string; }
+export interface UpdateManagerInput {
+  id:            string
+  dto:           UpdateManagerDto
+  requesterId:   string
+  requesterRole: string
+}
 
-export class UpdateManagerUseCase implements IUseCase<UpdateManagerInput, ManagerResponseDto> {
+export class UpdateManagerUseCase
+  implements IUseCase<UpdateManagerInput, ManagerResponseDto> {
+
   constructor(
     private readonly managerRepo: IManagerRepository,
-    private readonly logger: ILogger,
+    private readonly logger:      ILogger,
   ) {}
 
   async execute(input: UpdateManagerInput): Promise<ManagerResponseDto> {
-    // Managers can only update their own profile
-    if (input.id !== input.requesterId) throw AppError.forbidden('You can only update your own profile');
+    const isOwner   = input.id === input.requesterId
+    const isAdmin   = input.requesterRole === 'ADMIN'
 
-    const manager = await this.managerRepo.findById(input.id);
-    if (!manager) throw AppError.notFound('Manager not found');
+    // Business rule: only admin or the manager themselves can update
+    if (!isOwner && !isAdmin) {
+      throw AppError.forbidden('You do not have permission to update this profile')
+    }
 
-    manager.updateProfile(input.dto);
-    const updated = await this.managerRepo.update(input.id, manager);
-    if (!updated) throw AppError.internal('Update failed');
+    const manager = await this.managerRepo.findById(input.id)
+    if (!manager) throw AppError.notFound('Manager not found')
 
-    this.logger.info('UpdateManagerUseCase: updated', { id: input.id });
-    return ManagerMapper.toDto(updated);
+    manager.updateProfile(input.dto)
+    const updated = await this.managerRepo.update(input.id, manager)
+    if (!updated) throw AppError.internal('Update failed')
+
+    this.logger.info('UpdateManagerUseCase: updated', { id: input.id })
+    return ManagerMapper.toDto(updated)
   }
 }

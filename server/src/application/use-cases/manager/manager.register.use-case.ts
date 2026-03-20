@@ -1,37 +1,62 @@
-import { AuthTokensDto } from "../../../domain/dtos/auth.dto";
-import { RegisterManagerDto } from "../../../domain/dtos/manager.dto";
+import { CreateManagerDto, ManagerResponseDto } from "src/domain/dtos/manager.dto";
 import { ManagerEntity } from "../../../domain/entities/manager.entity";
-import { Role } from "../../../domain/enums";
 import { AppError } from "../../../shared/types/app-error";
 import { ManagerMapper } from "../../mappers";
 import { IManagerRepository } from "../../ports/repositories/manager.repository.interface";
-import { ILogger, IPasswordHasher, ITokenService } from "../../ports/services";
+import { ILogger, IPasswordHasher } from "../../ports/services";
 import { IUseCase } from "../interfaces/use-case.interface";
 
-// ── Register Manager ────────────────────────   ───────────
-export class RegisterManagerUseCase implements IUseCase<RegisterManagerDto, AuthTokensDto> {
+
+// ── Create Manager (Admin only) ────────────────────────
+// SRP: only handles manager creation logic
+// DIP: depends on IManagerRepository, not MongooseManagerRepository
+export interface CreateManagerInput {
+  dto:            CreateManagerDto
+  createdByAdmin: string              // admin's userId from JWT
+}
+
+export class CreateManagerUseCase
+  implements IUseCase<CreateManagerInput, ManagerResponseDto> {
+
   constructor(
-    private readonly managerRepo: IManagerRepository,
+    private readonly managerRepo:    IManagerRepository,
     private readonly passwordHasher: IPasswordHasher,
-    private readonly tokenService: ITokenService,
-    private readonly logger: ILogger,
+    private readonly logger:         ILogger,
   ) {}
 
-  async execute(dto: RegisterManagerDto): Promise<AuthTokensDto> {
-    const exists = await this.managerRepo.existsByEmail(dto.email);
-    if (exists) throw AppError.conflict('Email is already registered');
+  async execute(input: CreateManagerInput): Promise<ManagerResponseDto> {
+    // 1. Guard — email must be unique across managers
+    const exists = await this.managerRepo.existsByEmail(input.dto.email)
+    if (exists) {
+      throw AppError.conflict('A manager with this email already exists')
+    }
 
-    const passwordHash = await this.passwordHasher.hash(dto.password);
-    const manager = ManagerEntity.create({ ...dto, passwordHash });
-    const saved = await this.managerRepo.save(manager);
+    // 2. Hash the temporary password
+    const passwordHash = await this.passwordHasher.hash(input.dto.password)
 
-    const tokens = this.tokenService.generateTokenPair({
-      userId: saved.id!,
-      email: saved.email,
-      role: Role.MANAGER,
-    });
+    // 3. Build domain entity — business rules enforced here
+    const manager = ManagerEntity.create({
+      email:          input.dto.email,
+      passwordHash,
+      firstName:      input.dto.firstName,
+      lastName:       input.dto.lastName,
+      phone:          input.dto.phone,
+      createdByAdmin: input.createdByAdmin,
+      isFirstTime:    true,    // must change password on first login
+      isVerified:     false,   // not verified until first login
+      isActive:       true,
+      isBlocked:      false,
+    })
 
-    this.logger.info('RegisterManagerUseCase: created', { id: saved.id });
-    return { ...tokens, user: ManagerMapper.toDto(saved) };
+    // 4. Persist
+    const saved = await this.managerRepo.save(manager)
+
+    this.logger.info('CreateManagerUseCase: manager created', {
+      id:             saved.id,
+      email:          saved.email,
+      createdByAdmin: input.createdByAdmin,
+    })
+
+    return ManagerMapper.toDto(saved)
   }
 }

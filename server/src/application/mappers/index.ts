@@ -9,27 +9,33 @@ import { AdminResponseDto } from "src/domain/dtos/admin.dto";
 
 
 
+
 export class ManagerMapper {
-  static toDto(e: ManagerEntity): ManagerResponseDto {
+  static toDto(entity: ManagerEntity): ManagerResponseDto {
     return {
-      id:             e.id!,
-      email:          e.email,
+      id:             entity.id!,
+      email:          entity.email,
       role:           'MANAGER',
-      firstName:      e.firstName,
-      lastName:       e.lastName,
-      fullName:       e.fullName,
-      avatar:         e.avatar,
-      isActive:       e.isActive,
-      isVerified:     e.isVerified,
-      isFirstTime:    e.isFirstTime,
-      isBlocked:      e.isBlocked,
-      lastLogin:      e.lastLogin,
-      createdByAdmin: e.createdByAdmin,
-      createdAt:      e.createdAt,
-    };
+      firstName:      entity.firstName,
+      lastName:       entity.lastName,
+      fullName:       entity.fullName,
+      phone:          entity.phone,
+      isActive:       entity.isActive,
+      isVerified:     entity.isVerified,
+      isFirstTime:    entity.isFirstTime,
+      isBlocked:      entity.isBlocked,
+      blockedBy:      entity.blockedBy,
+      blockedAt:      entity.blockedAt,
+      lastLogin:      entity.lastLogin,
+      createdByAdmin: entity.createdByAdmin,
+      createdAt:      entity.createdAt,
+    }
+  }
+
+  static toDtoList(entities: ManagerEntity[]): ManagerResponseDto[] {
+    return entities.map(this.toDto)
   }
 }
-
 export class TeacherMapper {
   static toDto(e: TeacherEntity): TeacherResponseDto {
     return {

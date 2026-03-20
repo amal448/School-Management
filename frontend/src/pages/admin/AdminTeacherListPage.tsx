@@ -104,7 +104,7 @@ export default function TeacherListPage() {
   return (
     <PageRoot>
       <PageHeader
-        title="Teachers"
+        title="Teacher List"
         description="Manage all teaching staff."
         actions={
           <Button size="sm" className="gap-2">

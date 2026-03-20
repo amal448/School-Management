@@ -4,6 +4,7 @@ import { ROLES }                   from '@/config/routes.config'
 import AdminDashboard              from '@/pages/admin/AdminDashboard'
 import AdminTeacherListPage        from '@/pages/admin/AdminTeacherListPage'
 import AdminStudentListPage        from '@/pages/admin/AdminStudentListPage'
+import AdminManagerListPage from '@/pages/admin/AdminManagerListPage'
 
 const Placeholder = ({ title }: { title: string }) => (
   <div className="flex items-center justify-center h-64 text-muted-foreground">
@@ -17,8 +18,9 @@ export default function AdminRoutes() {
       <Route element={<DashboardLayout role={ROLES.ADMIN} />}>
         <Route index                  element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard"       element={<AdminDashboard />} />
-        <Route path="teachers"        element={<AdminTeacherListPage />} />
+        <Route path="teacher"        element={<AdminTeacherListPage />} />
         <Route path="students"        element={<AdminStudentListPage />} />
+        <Route path="manager"        element={<AdminManagerListPage />} />
         <Route path="classes"         element={<Placeholder title="Classes" />} />
         <Route path="departments"     element={<Placeholder title="Departments" />} />
         <Route path="subjects"        element={<Placeholder title="Subjects" />} />
