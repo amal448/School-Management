@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -11,83 +10,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import {
-  Bell,
   User,
   Settings,
   LogOut,
   ChevronDown,
-  CheckCheck,
-  AlertCircle,
-  Info,
-  AlertTriangle,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { type Role } from '@/constants'
+import { Role } from '@/config/routes.config'
 
-// ── Types ──────────────────────────────────────────────
-interface Notification {
-  id: string
-  title: string
-  message: string
-  time: string
-  read: boolean
-  type: 'info' | 'warning' | 'alert'
-}
 
 interface DashboardNavbarProps {
   role: Role
   userName?: string
   userEmail?: string
   avatarUrl?: string
-}
-
-// ── Mock notifications (replace with real data) ────────
-const MOCK_NOTIFICATIONS: Notification[] = [
-  {
-    id: '1',
-    title: 'New student enrolled',
-    message: 'Arjun Menon has been added to Class 10-A.',
-    time: '2 min ago',
-    read: false,
-    type: 'info',
-  },
-  {
-    id: '2',
-    title: 'Exam schedule updated',
-    message: 'Mid-term exams rescheduled to next Monday.',
-    time: '1 hr ago',
-    read: false,
-    type: 'warning',
-  },
-  {
-    id: '3',
-    title: 'Attendance alert',
-    message: '3 students below 75% attendance this month.',
-    time: '3 hr ago',
-    read: false,
-    type: 'alert',
-  },
-  {
-    id: '4',
-    title: 'Report generated',
-    message: 'Monthly analytics report is ready.',
-    time: 'Yesterday',
-    read: true,
-    type: 'info',
-  },
-]
-
-// ── Notification icon by type ──────────────────────────
-const NotifIcon = ({ type }: { type: Notification['type'] }) => {
-  if (type === 'warning') return <AlertTriangle className="size-4 text-amber-500 mt-0.5 shrink-0" />
-  if (type === 'alert')   return <AlertCircle   className="size-4 text-red-500   mt-0.5 shrink-0" />
-  return                         <Info          className="size-4 text-blue-500  mt-0.5 shrink-0" />
 }
 
 // ── Component ──────────────────────────────────────────
