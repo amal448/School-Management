@@ -12,6 +12,7 @@ import UnauthorizedPage   from '@/pages/errors/UnauthorizedPage'
 
 // Role routes
 import AdminRoutes        from '@/routes/AdminRoute'
+import VerifyOtpPage from './pages/auth/VerifyOtpPage'
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -22,7 +23,8 @@ const App = () => (
         <Route path="/" element={<Navigate to={ROUTES.AUTH.ADMIN_MANAGER_LOGIN} replace />} />
 
         {/* Public auth */}
-        <Route path={ROUTES.AUTH.ADMIN_MANAGER_LOGIN}   element={<AdminManagerLogin />} />
+         <Route path={ROUTES.AUTH.ADMIN_MANAGER_LOGIN}   element={<AdminManagerLogin />} />
+        <Route path={ROUTES.AUTH.VERIFY_OTP}            element={<VerifyOtpPage />} />
         <Route path={ROUTES.AUTH.ADMIN_GOOGLE_CALLBACK} element={<AuthCallbackPage />} />
 
         {/* Admin (protected) */}

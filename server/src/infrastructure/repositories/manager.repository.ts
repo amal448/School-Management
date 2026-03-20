@@ -1,6 +1,6 @@
-import { FilterQuery }         from 'mongoose'
+import { FilterQuery } from 'mongoose'
 import { IManagerRepository } from 'src/application/ports/repositories/manager.repository.interface'
-import { ManagerEntity }       from 'src/domain/entities/manager.entity'
+import { ManagerEntity } from 'src/domain/entities/manager.entity'
 import { ManagerModel, IManagerDocument } from 'src/infrastructure/database/schemas/manager.schema'
 import { DEFAULT_PAGE, DEFAULT_LIMIT } from 'src/shared/constants/index'
 import { ManagerDocumentMapper } from './mappers'
@@ -47,6 +47,9 @@ export class MongooseManagerRepository implements IManagerRepository {
     const doc = await ManagerModel
       .findOne({ email: email.toLowerCase() })
       .lean<IManagerDocument>()
+
+    console.log('[ManagerRepo] findByEmail:', email, '→ doc:', doc ? 'found' : 'null')
+
     return doc ? ManagerDocumentMapper.toDomain(doc as IManagerDocument) : null
   }
 
@@ -58,20 +61,20 @@ export class MongooseManagerRepository implements IManagerRepository {
   }
 
   async findAll(query: ManagerQueryDto): Promise<PaginatedResult<ManagerEntity>> {
-    const page  = query.page  ?? DEFAULT_PAGE
+    const page = query.page ?? DEFAULT_PAGE
     const limit = Math.min(query.limit ?? DEFAULT_LIMIT, 100)
-    const skip  = (page - 1) * limit
+    const skip = (page - 1) * limit
 
     const filter: FilterQuery<IManagerDocument> = {}
 
-    if (query.isActive  !== undefined) filter.isActive  = query.isActive
+    if (query.isActive !== undefined) filter.isActive = query.isActive
     if (query.isBlocked !== undefined) filter.isBlocked = query.isBlocked
 
     if (query.search) {
       filter.$or = [
         { firstName: { $regex: query.search, $options: 'i' } },
-        { lastName:  { $regex: query.search, $options: 'i' } },
-        { email:     { $regex: query.search, $options: 'i' } },
+        { lastName: { $regex: query.search, $options: 'i' } },
+        { email: { $regex: query.search, $options: 'i' } },
       ]
     }
 
@@ -81,7 +84,7 @@ export class MongooseManagerRepository implements IManagerRepository {
     ])
 
     return {
-      data:  (docs as IManagerDocument[]).map(ManagerDocumentMapper.toDomain),
+      data: (docs as IManagerDocument[]).map(ManagerDocumentMapper.toDomain),
       total,
       page,
       limit,

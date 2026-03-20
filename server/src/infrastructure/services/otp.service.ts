@@ -24,7 +24,22 @@ export class OtpService {
   }
 
   async verifyOtp(role: string, email: string, otp: string): Promise<boolean> {
-    const stored = await redisClient.get(RedisKeys.otp(role, email))
+   
+   const key    = RedisKeys.otp(role, email)
+  const stored = await redisClient.get(key)
+
+  // Temporary debug — remove after fix
+  console.log('OTP verify debug:', {
+    key,
+    stored,
+    received: otp,
+    match: stored === otp,
+  })
+   
+   
+   
+   
+    // const stored = await redisClient.get(RedisKeys.otp(role, email))
     if (!stored || stored !== otp) return false
     // Delete immediately — one-time use
     await redisClient.del(RedisKeys.otp(role, email))

@@ -45,4 +45,11 @@ export const AppConfig = {
     clientSecret: requireEnv('GOOGLE_CLIENT_SECRET'),
     callbackUrl: process.env.GOOGLE_CALLBACK_URL ?? 'http://localhost:5000/api/auth/google/callback',
   },
+  email: {
+  host:     requireEnv('SMTP_HOST'),
+  port:     parseInt(process.env.SMTP_PORT ?? '587', 10),
+  user:     requireEnv('SMTP_USER'),
+  pass:     requireEnv('SMTP_PASS'),
+  from:     process.env.SMTP_FROM ?? 'EduManage <noreply@school.com>',
+},
 } as const;

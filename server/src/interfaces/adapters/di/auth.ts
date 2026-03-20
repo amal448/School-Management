@@ -1,5 +1,5 @@
 // src/interfaces/adapters/di/auth.ts
-import { WinstonLogger, BcryptPasswordHasher, JwtTokenService } from 'src/infrastructure/services'
+import { WinstonLogger, BcryptPasswordHasher, JwtTokenService, NodemailerService } from 'src/infrastructure/services'
 import { OtpService } from 'src/infrastructure/services/otp.service'
 import { MongooseManagerRepository } from 'src/infrastructure/repositories/manager.repository'
 import { MongooseTeacherRepository } from 'src/infrastructure/repositories/teacher.repository'
@@ -32,15 +32,16 @@ export function buildAuthModule(
 ): { router: Router } {
 
   const otpService = new OtpService()
+  const emailService=new NodemailerService()
 
   // ── Use cases ────────────────────────────────────
-  const loginUseCase          = new LoginUseCase(managerRepo, teacherRepo, studentRepo, passwordHasher, tokenService, otpService, logger)
-  const verifyOtpUseCase      = new VerifyOtpUseCase(teacherRepo, studentRepo, tokenService, otpService, logger)
+  const loginUseCase          = new LoginUseCase(managerRepo, teacherRepo, studentRepo, passwordHasher, tokenService, otpService,emailService, logger)
+  const verifyOtpUseCase      = new VerifyOtpUseCase( managerRepo,teacherRepo, tokenService, otpService, logger)
   const logoutUseCase         = new LogoutUseCase(tokenService, logger)
-  const changePasswordUseCase = new ChangePasswordUseCase(adminRepo, managerRepo, teacherRepo, studentRepo, passwordHasher, logger)
+  const changePasswordUseCase = new ChangePasswordUseCase(managerRepo, teacherRepo, studentRepo, passwordHasher, logger)
   const refreshTokenUseCase   = new RefreshTokenUseCase(tokenService, logger)
-  const forgotPasswordUseCase = new ForgotPasswordUseCase(adminRepo, managerRepo, otpService, logger)
-  const resetPasswordUseCase  = new ResetPasswordUseCase(adminRepo, managerRepo, passwordHasher, otpService, logger)
+  const forgotPasswordUseCase = new ForgotPasswordUseCase( managerRepo,teacherRepo,otpService,emailService, logger)
+  const resetPasswordUseCase  = new ResetPasswordUseCase( managerRepo, passwordHasher, otpService, logger)
   const firstTimeSetupUseCase = new FirstTimeSetupUseCase(teacherRepo, studentRepo, passwordHasher, otpService, logger)
   const studentResetUseCase   = new StudentResetPasswordUseCase(studentRepo, passwordHasher, otpService, logger)
 

@@ -54,3 +54,4 @@ export class WinstonLogger implements ILogger {
 // Re-export so DI container can import everything from one place
 export { JwtTokenService } from './token.service'
 export { OtpService }      from './otp.service'
+export { NodemailerService }    from './nodemailer.service'

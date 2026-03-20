@@ -90,7 +90,7 @@ export class AuthController {
     try {
       await this.forgotPasswordUseCase.execute({
         email: req.body.email,
-        role:  req.body.role as Role.ADMIN | Role.MANAGER,
+       role:  req.body.role as Role.MANAGER | Role.TEACHER
       })
       // Always return same message (prevent email enumeration)
       res.status(200).json({
@@ -105,7 +105,7 @@ export class AuthController {
     try {
       await this.resetPasswordUseCase.execute({
         token:       req.body.token,
-        role:        req.body.role as Role.ADMIN | Role.MANAGER,
+        role:        req.body.role as Role.MANAGER | Role.TEACHER,
         newPassword: req.body.newPassword,
       })
       res.status(200).json({ success: true, message: 'Password reset successfully. Please login.' })

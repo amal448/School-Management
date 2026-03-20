@@ -9,7 +9,7 @@ import { Role } from 'src/domain/enums'
 
 export interface ResetPasswordInput {
   token: string
-  role: Role.MANAGER
+  role: Role.MANAGER | Role.TEACHER
   newPassword: string
 }
 

@@ -29,3 +29,31 @@ export interface ILogger {
   error(message: string, meta?: object): void;
   debug(message: string, meta?: object): void;
 }
+
+export interface SendOtpEmailInput {
+  to:        string
+  firstName: string
+  otp:       string
+  role:      string
+  expiresIn: number   // minutes
+}
+
+export interface SendFirstTimeSetupEmailInput {
+  to:        string
+  firstName: string
+  setupLink: string
+  role:      string
+}
+
+export interface SendResetPasswordEmailInput {
+  to:        string
+  firstName: string
+  resetLink: string
+  role:      string
+}
+
+export interface IEmailService {
+  sendOtp(input: SendOtpEmailInput):                     Promise<void>
+  sendFirstTimeSetup(input: SendFirstTimeSetupEmailInput): Promise<void>
+  sendResetPassword(input: SendResetPasswordEmailInput):   Promise<void>
+}

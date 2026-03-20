@@ -129,8 +129,8 @@ export const StudentQuerySchema = z.object({
 export const VerifyOtpSchema = z.object({
   email: z.string().email(),
   otp:   z.string().length(6, 'OTP must be 6 digits'),
-  role:  z.enum(['TEACHER', 'STUDENT'], {
-    errorMap: () => ({ message: "Role must be TEACHER or STUDENT" }),
+  role:  z.enum(['TEACHER', 'MANAGER'], {
+    errorMap: () => ({ message: "Role must be TEACHER or MANAGER" }),
   }),
 })
 
