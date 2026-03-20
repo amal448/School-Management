@@ -1,6 +1,5 @@
-import { ROLES } from '@/constants'
+import { ROLES } from "@/config/routes.config";
 
-// ── Auth error types ───────────────────────────────────
 export type AuthError =
   | 'INVALID_CREDENTIALS'
   | 'ACCOUNT_NOT_VERIFIED'
@@ -8,7 +7,7 @@ export type AuthError =
   | 'NOT_WHITELISTED'
   | 'OTP_INVALID'
   | 'OTP_EXPIRED'
-  | null
+  | 'UNKNOWN'
 
 export const ERROR_MESSAGES: Record<NonNullable<AuthError>, string> = {
   INVALID_CREDENTIALS:  'Invalid email or password. Please try again.',
@@ -17,32 +16,15 @@ export const ERROR_MESSAGES: Record<NonNullable<AuthError>, string> = {
   NOT_WHITELISTED:      'Your Google account is not authorized. Contact the administrator.',
   OTP_INVALID:          'Invalid OTP. Please try again.',
   OTP_EXPIRED:          'OTP has expired. Please login again to receive a new one.',
-}
+  UNKNOWN:              'An unknown error occurred. Please try again later.',
+};
 
-// ── Role types ─────────────────────────────────────────
-export type AdminManagerRole = typeof ROLES.ADMIN | typeof ROLES.MANAGER
-
+// 2. Define the source of truth for Admin/Manager roles
 export const ADMIN_ROLE_OPTIONS = [
   { value: ROLES.ADMIN,   label: 'Admin'   },
   { value: ROLES.MANAGER, label: 'Manager' },
-] as const
+] as const;
 
-// ── Auth user type (from backend response) ─────────────
-export interface AuthUser {
-  id:           string
-  email:        string
-  role:         AdminManagerRole
-  first_name:   string
-  last_name:    string
-  avatar?:      string
-  is_verified:  boolean
-  is_blocked:   boolean
-  is_first_time: boolean
-}
-
-export interface LoginResponse {
-  token:         string
-  user:          AuthUser
-  is_first_time: boolean
-  requires_otp:  boolean
-}
+// 3. Derive the types from the array to keep things DRY
+export type AdminManagerRole = (typeof ADMIN_ROLE_OPTIONS)[number]['value'];
+export type AdminRoleOption = AdminManagerRole;

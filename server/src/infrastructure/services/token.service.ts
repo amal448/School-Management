@@ -65,7 +65,7 @@ export class JwtTokenService {
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure:   isProduction,
-      sameSite: 'none',
+    sameSite: isProduction ? 'none' : 'lax',
       maxAge:   AppConfig.jwt.accessExpiresInSeconds * 1000,
     })
 
@@ -73,7 +73,7 @@ export class JwtTokenService {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure:   isProduction,
-      sameSite: 'none',
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge:   RedisTTL.session * 1000,
     })
 
@@ -82,7 +82,7 @@ export class JwtTokenService {
     res.cookie('csrfToken', csrfToken, {
       httpOnly: false,
       secure:   isProduction,
-      sameSite: 'none',
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge:   RedisTTL.session * 1000,
     })
 

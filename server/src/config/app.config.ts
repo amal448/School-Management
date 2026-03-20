@@ -14,9 +14,9 @@ export const AppConfig = {
     nodeEnv:       process.env.NODE_ENV ?? 'development',
     isDevelopment: (process.env.NODE_ENV ?? 'development') === 'development',
     isProduction:  process.env.NODE_ENV === 'production',
-    frontendUrl:   process.env.FRONTEND_URL ?? 'http://localhost:5173',
+    frontendUrl:   process.env.FRONTEND_URL ?? 'http://localhost:3000',
     // Allowed origins for CORS — comma separated in env
-    allowedOrigins: (process.env.ALLOWED_ORIGINS ?? 'http://localhost:5173').split(','),
+    allowedOrigins: (process.env.ALLOWED_ORIGINS ?? 'http://localhost:3000').split(','),
   },
   database: {
     mongoUri: requireEnv('MONGO_URI'),

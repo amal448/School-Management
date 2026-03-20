@@ -1,38 +1,47 @@
-// App.tsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { ROUTES } from '@/constants'
-import AdminRoutes   from './routes/AdminRoute'
-import ManagerRoutes from './routes/ManagerRoute'
-import TeacherRoutes from './routes/TeacherRoute'
-import StudentRoutes from './routes/StudentRoute'
-// import Login         from '@/pages/auth/Login'
-import AdminLogin    from '@/pages/auth/adminmangerauth/AdminLogin'
+import { QueryClientProvider }                     from '@tanstack/react-query'
+import { queryClient }                             from '@/lib/query-client'
+import ProtectedRoute                              from '@/components/auth/ProtectedRoute'
+import { ROUTES, ROLES }                           from '@/config/routes.config'
 
-export default function App() {
-  return (
+// Auth pages
+import AdminManagerLogin  from '@/pages/auth/AdminManagerLogin'
+import AuthCallbackPage   from '@/pages/auth/AuthCallbackPage'
+import NotFoundPage       from '@/pages/errors/NotFoundPage'
+import UnauthorizedPage   from '@/pages/errors/UnauthorizedPage'
+
+// Role routes
+import AdminRoutes        from '@/routes/AdminRoute'
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Routes>
 
-        {/* ── Public ── */}
-        <Route path={ROUTES.HOME}    element={<div>Home</div>}    />
-        <Route path={ROUTES.ABOUT}   element={<div>About</div>}   />
-        <Route path={ROUTES.COURSES} element={<div>Courses</div>} />
-        <Route path={ROUTES.CONTACT} element={<div>Contact</div>} />
+        {/* Default */}
+        <Route path="/" element={<Navigate to={ROUTES.AUTH.ADMIN_MANAGER_LOGIN} replace />} />
 
-        {/* ── Auth — standalone, no layout ── */}
-        {/* <Route path="/login"       element={<Login />}      /> */}
-        <Route path="/admin/login" element={<AdminLogin />} />
+        {/* Public auth */}
+        <Route path={ROUTES.AUTH.ADMIN_MANAGER_LOGIN}   element={<AdminManagerLogin />} />
+        <Route path={ROUTES.AUTH.ADMIN_GOOGLE_CALLBACK} element={<AuthCallbackPage />} />
 
-        {/* ── Role Routes ── */}
-        <Route path={ROUTES.ADMIN.ROOT   + '/*'} element={<AdminRoutes />}   />
-        <Route path={ROUTES.MANAGER.ROOT + '/*'} element={<ManagerRoutes />} />
-        <Route path={ROUTES.TEACHER.ROOT + '/*'} element={<TeacherRoutes />} />
-        <Route path={ROUTES.STUDENT.ROOT + '/*'} element={<StudentRoutes />} />
+        {/* Admin (protected) */}
+        <Route
+          path="/admin/*"
+          element={
+            <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
+              <AdminRoutes />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* ── Catch-all ── */}
-        <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
+        {/* Errors */}
+        <Route path={ROUTES.AUTH.UNAUTHORIZED} element={<UnauthorizedPage />} />
+        <Route path="*"                        element={<NotFoundPage />} />
 
       </Routes>
     </BrowserRouter>
-  )
-}
+  </QueryClientProvider>
+)
+
+export default App

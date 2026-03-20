@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router-dom'
 import { SidebarProvider } from '@/components/ui/sidebar'
-import { type Role } from '@/constants'
 import { AppSidebar } from '@/components/dashboardcomponents/AppSidebar'
 import { DashboardNavbar } from '@/components/dashboardcomponents/DashboardNavbar'
+import { Role } from '@/config/routes.config'
 
 interface DashboardLayoutProps {
   role: Role

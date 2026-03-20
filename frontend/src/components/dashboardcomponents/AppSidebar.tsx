@@ -11,9 +11,11 @@ import {
   SidebarFooter,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { NAV_BY_ROLE, Role } from "@/config/routes.config"
+import { useLogout } from "@/hooks/auth/useAdminAuth"
 import { GraduationCap, LogOut } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
-import { NAV_BY_ROLE, type Role } from "@/constants"
+
 
 interface AppSidebarProps {
   role: Role
@@ -23,11 +25,14 @@ export function AppSidebar({ role }: AppSidebarProps) {
   const location = useLocation()
   const navItems = NAV_BY_ROLE[role]
   const { isMobile, setOpenMobile } = useSidebar()
+    const logoutMutation = useLogout()
 
   const handleNavClick = () => {
     if (isMobile) setOpenMobile(false)
   }
-
+   const handleLogout = () => {
+    logoutMutation.mutate()                   // ← add this
+  }
   return (
     <Sidebar className="border-r">
 
@@ -85,21 +90,27 @@ export function AppSidebar({ role }: AppSidebarProps) {
       </SidebarContent>
 
       {/* ── Footer ── */}
-      <SidebarFooter className="border-t px-3 py-3">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              className="h-11 px-3 rounded-lg text-sm font-medium gap-3 w-full
-                text-muted-foreground hover:text-destructive hover:bg-destructive/8 transition-all duration-150"
-            >
-              <div className="size-8 rounded-md bg-muted flex items-center justify-center shrink-0">
-                <LogOut className="size-4" />
-              </div>
-              <span>Logout</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
+ <SidebarFooter className="border-t px-3 py-3">
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          onClick={handleLogout}                         // ← add onClick
+          disabled={logoutMutation.isPending}            // ← disable while logging out
+          className="h-11 px-3 rounded-lg text-sm font-medium gap-3 w-full
+            text-muted-foreground hover:text-destructive hover:bg-destructive/8
+            transition-all duration-150 cursor-pointer"
+        >
+          <div className="size-8 rounded-md bg-muted flex items-center justify-center shrink-0">
+            {logoutMutation.isPending
+              ? <div className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              : <LogOut className="size-4" />
+            }
+          </div>
+          <span>{logoutMutation.isPending ? 'Logging out...' : 'Logout'}</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  </SidebarFooter>
 
     </Sidebar>
   )

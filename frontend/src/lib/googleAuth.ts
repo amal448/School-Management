@@ -1,5 +1,6 @@
+import { AdminManagerRole, AuthError } from '@/constants/auth'
+
 import { useGoogleLogin } from '@react-oauth/google'
-import type { AuthError, AdminManagerRole } from '@/constants/auth'
 
 interface UseGoogleOAuthProps {
   selectedRole:   AdminManagerRole
