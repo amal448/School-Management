@@ -10,23 +10,24 @@ function requireEnv(key: string): string {
 
 export const AppConfig = {
   server: {
-    port:          parseInt(process.env.PORT ?? '5000', 10),
-    nodeEnv:       process.env.NODE_ENV ?? 'development',
-    isDevelopment: (process.env.NODE_ENV ?? 'development') === 'development',
-    isProduction:  process.env.NODE_ENV === 'production',
-    frontendUrl:   process.env.FRONTEND_URL ?? 'http://localhost:3000',
-    // Allowed origins for CORS — comma separated in env
-    allowedOrigins: (process.env.ALLOWED_ORIGINS ?? 'http://localhost:3000').split(','),
+    port: parseInt(process.env.PORT ?? '5000', 10),
+    nodeEnv: process.env.NODE_ENV ?? 'development',
+    isDevelopment: process.env.NODE_ENV !== 'production',
+    isProduction: process.env.NODE_ENV === 'production',
+    frontendUrl: process.env.FRONTEND_URL ?? 'http://localhost:3000',
+    allowedOrigins: (process.env.ALLOWED_ORIGINS ?? 'http://localhost:3000')
+      .split(',')
+      .map((o) => o.trim()),   // ← trim whitespace from each origin
   },
   database: {
     mongoUri: requireEnv('MONGO_URI'),
-    dbName:   process.env.DB_NAME ?? 'edumanage',
+    dbName: process.env.DB_NAME ?? 'edumanage',
   },
   jwt: {
-    accessSecret:          requireEnv('JWT_ACCESS_SECRET'),
-    refreshSecret:         requireEnv('JWT_REFRESH_SECRET'),
-    accessExpiresIn:       process.env.JWT_ACCESS_EXPIRES        ?? '15m',
-    refreshExpiresIn:      process.env.JWT_REFRESH_EXPIRES       ?? '7d',
+    accessSecret: requireEnv('JWT_ACCESS_SECRET'),
+    refreshSecret: requireEnv('JWT_REFRESH_SECRET'),
+    accessExpiresIn: process.env.JWT_ACCESS_EXPIRES ?? '15m',
+    refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES ?? '7d',
     accessExpiresInSeconds: parseInt(process.env.JWT_ACCESS_EXPIRES_SECONDS ?? '900', 10),
   },
   bcrypt: {
@@ -34,14 +35,14 @@ export const AppConfig = {
   },
   rateLimit: {
     windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS ?? '900000', 10),
-    max:      parseInt(process.env.RATE_LIMIT_MAX        ?? '100',    10),
+    max: parseInt(process.env.RATE_LIMIT_MAX ?? '100', 10),
   },
   redis: {
     url: requireEnv('UPSTASH_REDIS_URL'),
   },
   google: {
-    clientId:     requireEnv('GOOGLE_CLIENT_ID'),
+    clientId: requireEnv('GOOGLE_CLIENT_ID'),
     clientSecret: requireEnv('GOOGLE_CLIENT_SECRET'),
-    callbackUrl:  process.env.GOOGLE_CALLBACK_URL ?? 'http://localhost:5000/api/auth/google/callback',
+    callbackUrl: process.env.GOOGLE_CALLBACK_URL ?? 'http://localhost:5000/api/auth/google/callback',
   },
 } as const;

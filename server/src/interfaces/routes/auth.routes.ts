@@ -41,21 +41,22 @@ export const createAuthRouter = (
    *  cookies are set inside use case
    *  redirect frontend to dashboard
    */
-  router.get('/google/callback',
-    passport.authenticate('google', {
-      session:          false,
-      failureRedirect:  `${process.env.FRONTEND_URL}/login?error=oauth_failed`,
-    }),
-    (req: Request, res: Response) => {
-      // req.user contains GoogleAuthResult set by passport strategy
-      const result = req.user as unknown as GoogleAuthResult
-      // Cookies already set in GoogleAuthUseCase.execute()
-      // Redirect to admin dashboard
-      res.redirect(
-        `${process.env.FRONTEND_URL}/admin/dashboard?sessionId=${result.sessionId}`
-      )
-    }
-  )
+// src/interfaces/routes/auth.routes.ts
+
+router.get('/google/callback',
+  passport.authenticate('google', {
+    session:         false,
+    failureRedirect: `${process.env.FRONTEND_URL}/admin/login?error=oauth_failed`,
+  }),
+  (req: Request, res: Response) => {
+    const result = req.user as unknown as GoogleAuthResult
+
+    // ✅ Redirect to /auth/callback — NOT /admin/dashboard
+    res.redirect(
+      `${process.env.FRONTEND_URL}/auth/callback?sessionId=${result.sessionId}`
+    )
+  }
+)
 
   // ── Standard Login ─────────────────────────────────
 
