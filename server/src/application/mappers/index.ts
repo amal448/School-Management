@@ -6,6 +6,12 @@ import { TeacherResponseDto } from "../../domain/dtos/teacher.dto";
 import { StudentResponseDto } from "../../domain/dtos/student.dto";
 import { AdminEntity } from "src/domain/entities/admin.entity";
 import { AdminResponseDto } from "src/domain/dtos/admin.dto";
+import { DepartmentEntity } from "src/domain/entities/department.entity";
+import { DepartmentResponseDto } from "src/domain/dtos/department.dto";
+import { SubjectEntity } from "src/domain/entities/subject.entity";
+import { SubjectResponseDto } from "src/domain/dtos/subject.dto";
+import { ClassEntity } from "src/domain/entities/class.entity";
+import { ClassResponseDto } from "src/domain/dtos/class.dto";
 
 
 
@@ -13,22 +19,22 @@ import { AdminResponseDto } from "src/domain/dtos/admin.dto";
 export class ManagerMapper {
   static toDto(entity: ManagerEntity): ManagerResponseDto {
     return {
-      id:             entity.id!,
-      email:          entity.email,
-      role:           'MANAGER',
-      firstName:      entity.firstName,
-      lastName:       entity.lastName,
-      fullName:       entity.fullName,
-      phone:          entity.phone,
-      isActive:       entity.isActive,
-      isVerified:     entity.isVerified,
-      isFirstTime:    entity.isFirstTime,
-      isBlocked:      entity.isBlocked,
-      blockedBy:      entity.blockedBy,
-      blockedAt:      entity.blockedAt,
-      lastLogin:      entity.lastLogin,
+      id: entity.id!,
+      email: entity.email,
+      role: 'MANAGER',
+      firstName: entity.firstName,
+      lastName: entity.lastName,
+      fullName: entity.fullName,
+      phone: entity.phone,
+      isActive: entity.isActive,
+      isVerified: entity.isVerified,
+      isFirstTime: entity.isFirstTime,
+      isBlocked: entity.isBlocked,
+      blockedBy: entity.blockedBy,
+      blockedAt: entity.blockedAt,
+      lastLogin: entity.lastLogin,
       createdByAdmin: entity.createdByAdmin,
-      createdAt:      entity.createdAt,
+      createdAt: entity.createdAt,
     }
   }
 
@@ -93,17 +99,56 @@ export class StudentMapper {
 export class AdminMapper {
   static toDto(entity: AdminEntity): AdminResponseDto {
     return {
-      id:         entity.id!,
-      email:      entity.email,
-      role:       'ADMIN',
-      firstName:  entity.firstName,
-      lastName:   entity.lastName,
-      fullName:   entity.fullName,
-      avatar:     entity.avatar,
-      isActive:   entity.isActive,
+      id: entity.id!,
+      email: entity.email,
+      role: 'ADMIN',
+      firstName: entity.firstName,
+      lastName: entity.lastName,
+      fullName: entity.fullName,
+      avatar: entity.avatar,
+      isActive: entity.isActive,
       isVerified: entity.isVerified,
-      lastLogin:  entity.lastLogin,
-      createdAt:  entity.createdAt,
+      lastLogin: entity.lastLogin,
+      createdAt: entity.createdAt,
+    }
+  }
+}
+export class DepartmentMapper {
+  static toDto(entity: DepartmentEntity): DepartmentResponseDto {
+    return {
+      id: entity.id!,
+      deptName: entity.deptName,
+      deptHeadId: entity.deptHeadId,
+      description: entity.description,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+    }
+  }
+}
+
+export class SubjectMapper {
+  static toDto(entity: SubjectEntity): SubjectResponseDto {
+    return {
+      id: entity.id!,
+      subjectName: entity.subjectName,
+      deptId: entity.deptId,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+    }
+  }
+}
+
+export class ClassMapper {
+  static toDto(entity: ClassEntity): ClassResponseDto {
+    return {
+      id:                 entity.id!,
+      className:          entity.className,
+      section:            entity.section,
+      academicYear:       entity.academicYear,
+      classTeacherId:     entity.classTeacherId,
+      subjectAllocations: entity.subjectAllocations,
+      createdAt:          entity.createdAt,
+      updatedAt:          entity.updatedAt,
     }
   }
 }

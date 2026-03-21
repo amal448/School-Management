@@ -2,35 +2,39 @@
 import { WinstonLogger, BcryptPasswordHasher, JwtTokenService } from 'src/infrastructure/services'
 import { createAuthMiddleware } from 'src/interfaces/middlewares/auth.middleware'
 import { createErrorHandler } from 'src/interfaces/middlewares/error-handler.middleware'
-import { buildAdminModule }   from './admin'
+import { buildAdminModule } from './admin'
 import { buildManagerModule } from './manager'
 import { buildTeacherModule } from './teacher'
 import { buildStudentModule } from './student'
-import { buildAuthModule }    from './auth'
+import { buildAuthModule } from './auth'
 import { Router } from 'express'
+import { buildAcademicModule } from './academic'
 
 export interface AppDependencies {
-  authRouter:    Router
-  adminRouter:   Router
+  authRouter: Router
+  adminRouter: Router
   managerRouter: Router
   teacherRouter: Router
   studentRouter: Router
-  errorHandler:  ReturnType<typeof createErrorHandler>
-  logger:        WinstonLogger
+  departmentRouter:  Router    // ← add
+  subjectRouter:     Router    // ← add
+  classRouter:       Router    // ← add
+  errorHandler: ReturnType<typeof createErrorHandler>
+  logger: WinstonLogger
 }
 
 export function buildDependencies(): AppDependencies {
   // 1. Core singletons
-  const logger         = new WinstonLogger()
+  const logger = new WinstonLogger()
   const passwordHasher = new BcryptPasswordHasher()
-  const tokenService   = new JwtTokenService()
-  const authMW         = createAuthMiddleware(tokenService)
+  const tokenService = new JwtTokenService()
+  const authMW = createAuthMiddleware(tokenService)
 
   // 2. Domain modules — each returns { repo, router }
   const manager = buildManagerModule(tokenService, passwordHasher, logger, authMW)
   const teacher = buildTeacherModule(tokenService, passwordHasher, logger, authMW)
   const student = buildStudentModule(tokenService, passwordHasher, logger, authMW)
-
+  const academic = buildAcademicModule(logger, authMW)
   // 3. Admin module — must come after manager (needs managerRepo for block/unblock)
   //    Also registers passport Google strategy as a side effect
   const admin = buildAdminModule(tokenService, logger, authMW, manager.repo)
@@ -48,12 +52,15 @@ export function buildDependencies(): AppDependencies {
   )
 
   return {
-    authRouter:    auth.router,
-    adminRouter:   admin.router,
+    authRouter: auth.router,
+    adminRouter: admin.router,
     managerRouter: manager.router,
     teacherRouter: teacher.router,
     studentRouter: student.router,
-    errorHandler:  createErrorHandler(logger),
+    errorHandler: createErrorHandler(logger),
+    departmentRouter: academic.departmentRouter,
+    subjectRouter: academic.subjectRouter,
+    classRouter: academic.classRouter,
     logger,
   }
 }

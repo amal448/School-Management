@@ -1,10 +1,10 @@
 // src/interfaces/adapters/express-adapter.ts
 import express, { Application, Request, Response, NextFunction } from 'express'
-import cors          from 'cors'
-import helmet        from 'helmet'
-import rateLimit     from 'express-rate-limit'
-import cookieParser  from 'cookie-parser'
-import passport      from 'passport'
+import cors from 'cors'
+import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
+import cookieParser from 'cookie-parser'
+import passport from 'passport'
 import { AppConfig } from 'src/config/app.config'
 import { AppDependencies } from './di/di-container'
 
@@ -31,10 +31,10 @@ export function createExpressApp(deps: AppDependencies): Application {
           callback(new Error(`CORS: origin ${origin} not allowed`))
         }
       },
-      credentials:      true,    // ← CRITICAL: allows cookies to be sent
-      methods:          ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
-      allowedHeaders:   ['Content-Type', 'Authorization', 'x-csrf-token'],
-      exposedHeaders:   ['x-csrf-token'],
+      credentials: true,    // ← CRITICAL: allows cookies to be sent
+      methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
+      exposedHeaders: ['x-csrf-token'],
     })
   )
 
@@ -53,10 +53,10 @@ export function createExpressApp(deps: AppDependencies): Application {
   // ── 6. Rate limiting ───────────────────────────────
   app.use(
     rateLimit({
-      windowMs:        AppConfig.rateLimit.windowMs,
-      max:             AppConfig.rateLimit.max,
+      windowMs: AppConfig.rateLimit.windowMs,
+      max: AppConfig.rateLimit.max,
       standardHeaders: true,
-      legacyHeaders:   false,
+      legacyHeaders: false,
       // Skip rate limiting in development
       skip: () => AppConfig.server.isDevelopment,
       message: {
@@ -69,20 +69,22 @@ export function createExpressApp(deps: AppDependencies): Application {
   // ── 7. Health check ────────────────────────────────
   app.get('/health', (_req: Request, res: Response) => {
     res.status(200).json({
-      success:     true,
-      status:      'healthy',
+      success: true,
+      status: 'healthy',
       environment: AppConfig.server.nodeEnv,
-      timestamp:   new Date().toISOString(),
+      timestamp: new Date().toISOString(),
     })
   })
 
   // ── 8. API routes ──────────────────────────────────
-  app.use('/api/auth',     deps.authRouter)
-  app.use('/api/admins',   deps.adminRouter)
+  app.use('/api/auth', deps.authRouter)
+  app.use('/api/admins', deps.adminRouter)
   app.use('/api/managers', deps.managerRouter)
   app.use('/api/teachers', deps.teacherRouter)
   app.use('/api/students', deps.studentRouter)
-
+  app.use('/api/departments', deps.departmentRouter)
+  app.use('/api/subjects', deps.subjectRouter)
+  app.use('/api/classes', deps.classRouter)
   // ── 9. 404 handler ─────────────────────────────────
   app.use((_req: Request, res: Response) => {
     res.status(404).json({

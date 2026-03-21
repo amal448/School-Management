@@ -92,15 +92,15 @@ export const ADMIN_NAV: NavItem[] = [
 
 export const MANAGER_NAV: NavItem[] = [
   { label: 'Dashboard',   path: ROUTES.MANAGER.DASHBOARD,   icon: LayoutDashboard },
-  { label: 'Students',    path: ROUTES.MANAGER.STUDENTS,    icon: GraduationCap   },
+  // { label: 'Students',    path: ROUTES.MANAGER.STUDENTS,    icon: GraduationCap   },
   { label: 'Teachers',    path: ROUTES.MANAGER.TEACHERS,    icon: Users           },
   { label: 'Classes',     path: ROUTES.MANAGER.CLASSES,     icon: School          },
   { label: 'Subjects',    path: ROUTES.MANAGER.SUBJECTS,    icon: BookOpen        },
   { label: 'Departments', path: ROUTES.MANAGER.DEPARTMENTS, icon: Building2       },
   { label: 'Exams',       path: ROUTES.MANAGER.EXAMS,       icon: ClipboardList   },
-  { label: 'Analytics',   path: ROUTES.MANAGER.ANALYTICS,   icon: BarChart3       },
-  { label: 'Leaderboard', path: ROUTES.MANAGER.LEADERBOARD, icon: Trophy          },
-  { label: 'Tasks',       path: ROUTES.MANAGER.TASKS,       icon: Calendar        },
+  // { label: 'Analytics',   path: ROUTES.MANAGER.ANALYTICS,   icon: BarChart3       },
+  // { label: 'Leaderboard', path: ROUTES.MANAGER.LEADERBOARD, icon: Trophy          },
+  // { label: 'Tasks',       path: ROUTES.MANAGER.TASKS,       icon: Calendar        },
 ]
 
 export const TEACHER_NAV: NavItem[] = [

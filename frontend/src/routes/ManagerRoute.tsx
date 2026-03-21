@@ -1,4 +1,8 @@
-import { ROUTES } from '@/config/routes.config'
+import { ROLES, ROUTES } from '@/config/routes.config'
+import DashboardLayout from '@/layouts/DashboardLayout'
+import ClassListPage from '@/pages/shared/ClassListPage'
+import DepartmentListPage from '@/pages/shared/DepartmentListPage'
+import SubjectListPage from '@/pages/shared/SubjectListPage'
 import { Routes, Route, Navigate } from 'react-router-dom'
 
 const Placeholder = ({ title }: { title: string }) => (
@@ -10,64 +14,56 @@ const Placeholder = ({ title }: { title: string }) => (
 export default function ManagerRoutes() {
   return (
     <Routes>
-      <Route
-        index
-        element={<Navigate to={ROUTES.MANAGER.DASHBOARD} replace />}
-      />
-      <Route
-        path="dashboard"
-        element={<Placeholder title="Manager Dashboard" />}
+
+      <Route element={<DashboardLayout role={ROLES.MANAGER} />}>
+        <Route
+          index
+          element={<Navigate to={ROUTES.MANAGER.DASHBOARD} replace />}
+        />
+        <Route
+          path="dashboard"
+          element={<Placeholder title="Manager Dashboard" />}
         // element={<ManagerDashboard />}
-      />
-      <Route
-        path="students"
-        element={<Placeholder title="Students Management" />}
+        />
+        <Route
+          path="students"
+          element={<Placeholder title="Students Management" />}
         // element={<StudentsPage />}
-      />
-      <Route
-        path="teachers"
-        element={<Placeholder title="Teachers Management" />}
+        />
+        <Route
+          path="teachers"
+          element={<Placeholder title="Teachers Management" />}
         // element={<TeachersPage />}
-      />
-      <Route
-        path="classes"
-        element={<Placeholder title="Classes Management" />}
-        // element={<ClassesPage />}
-      />
-      <Route
-        path="subjects"
-        element={<Placeholder title="Subjects Management" />}
-        // element={<SubjectsPage />}
-      />
-      <Route
-        path="departments"
-        element={<Placeholder title="Departments" />}
-        // element={<DepartmentsPage />}
-      />
-      <Route
-        path="exams"
-        element={<Placeholder title="Exam Models & Grading" />}
+        />
+        <Route path="departments" element={<DepartmentListPage />} />
+        <Route path="subjects" element={<SubjectListPage />} />
+        <Route path="classes" element={<ClassListPage />} />
+        <Route
+          path="exams"
+          element={<Placeholder title="Exam Models & Grading" />}
         // element={<ExamsPage />}
-      />
-      <Route
-        path="analytics"
-        element={<Placeholder title="School Analytics" />}
+        />
+        <Route
+          path="analytics"
+          element={<Placeholder title="School Analytics" />}
         // element={<AnalyticsPage />}
-      />
-      <Route
-        path="leaderboard"
-        element={<Placeholder title="Student Leaderboard" />}
+        />
+        <Route
+          path="leaderboard"
+          element={<Placeholder title="Student Leaderboard" />}
         // element={<LeaderboardPage />}
-      />
-      <Route
-        path="tasks"
-        element={<Placeholder title="Task Scheduler" />}
+        />
+        <Route
+          path="tasks"
+          element={<Placeholder title="Task Scheduler" />}
         // element={<TasksPage />}
-      />
-      <Route
-        path="*"
-        element={<Navigate to={ROUTES.MANAGER.DASHBOARD} replace />}
-      />
+        />
+        <Route
+          path="*"
+          element={<Navigate to={ROUTES.MANAGER.DASHBOARD} replace />}
+        />
+      </Route>
+
     </Routes>
   )
 }

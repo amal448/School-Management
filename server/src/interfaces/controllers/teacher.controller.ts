@@ -20,12 +20,18 @@ export class TeacherController {
   ) {}
 
   // POST /api/teachers  (Manager only)
-  register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const result = await this.registerUseCase.execute(req.body);
-      res.status(201).json({ success: true, message: 'Teacher registered', data: result });
-    } catch (err) { next(err); }
-  };
+register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const result = await this.registerUseCase.execute({
+      dto:       req.body,
+      createdBy: req.user!.userId,
+    })
+    res.status(201).json({
+      success: true,
+      data:    result,         
+    })
+  } catch (err) { next(err) }
+}
 
   // GET /api/teachers  (Manager only)
   list = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

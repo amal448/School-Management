@@ -16,41 +16,41 @@ export const createTeacherRouter = (ctrl: TeacherController, { authenticate, aut
 
   /** POST /api/teachers              — Manager: create a teacher account */
   router.post('/',
-    authenticate, authorize(Role.MANAGER),
+    authenticate, authorize(Role.MANAGER,Role.ADMIN),
     validate(RegisterTeacherSchema),
     ctrl.register,
   );
 
   /** GET /api/teachers               — Manager: list with filters + pagination */
   router.get('/',
-    authenticate, authorize(Role.MANAGER),
+    authenticate, authorize(Role.MANAGER,Role.ADMIN),
     validate(TeacherQuerySchema, 'query'),
     ctrl.list,
   );
 
   /** GET /api/teachers/:id           — Manager or self */
   router.get('/:id',
-    authenticate, authorize(Role.MANAGER, Role.TEACHER),
+    authenticate, authorize(Role.MANAGER, Role.TEACHER,Role.ADMIN),
     ctrl.getById,
   );
 
   /** PATCH /api/teachers/:id         — Manager or self */
   router.patch('/:id',
-    authenticate, authorize(Role.MANAGER, Role.TEACHER),
+    authenticate, authorize(Role.MANAGER, Role.TEACHER,Role.ADMIN),
     validate(UpdateTeacherSchema),
     ctrl.update,
   );
 
   /** PATCH /api/teachers/:id/department — Manager: assign to dept */
   router.patch('/:id/department',
-    authenticate, authorize(Role.MANAGER),
+    authenticate, authorize(Role.MANAGER,Role.ADMIN),
     validate(AssignDeptSchema),
     ctrl.assignDept,
   );
 
   /** DELETE /api/teachers/:id        — Manager: soft-delete */
   router.delete('/:id',
-    authenticate, authorize(Role.MANAGER),
+    authenticate, authorize(Role.MANAGER,Role.ADMIN),
     ctrl.remove,
   );
 

@@ -13,6 +13,7 @@ import UnauthorizedPage   from '@/pages/errors/UnauthorizedPage'
 // Role routes
 import AdminRoutes        from '@/routes/AdminRoute'
 import VerifyOtpPage from './pages/auth/VerifyOtpPage'
+import ManagerRoutes from './routes/ManagerRoute'
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -33,6 +34,15 @@ const App = () => (
           element={
             <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
               <AdminRoutes />
+            </ProtectedRoute>
+          }
+        />
+        {/* Admin (protected) */}
+        <Route
+          path="/manager/*"
+          element={
+            <ProtectedRoute allowedRoles={[ROLES.MANAGER]}>
+              <ManagerRoutes />
             </ProtectedRoute>
           }
         />

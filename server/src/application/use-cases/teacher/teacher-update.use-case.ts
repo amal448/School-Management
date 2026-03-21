@@ -22,7 +22,8 @@ export class UpdateTeacherUseCase implements IUseCase<UpdateTeacherInput, Teache
   async execute(input: UpdateTeacherInput): Promise<TeacherResponseDto> {
     const isOwner   = input.id === input.requesterId;
     const isManager = input.requesterRole === Role.MANAGER;
-    if (!isOwner && !isManager) throw AppError.forbidden('Access denied');
+    const isAdmin = input.requesterRole === Role.ADMIN;
+    if (!isOwner && !isManager && !isAdmin) throw AppError.forbidden('Access denied');
 
     const teacher = await this.teacherRepo.findById(input.id);
     if (!teacher) throw AppError.notFound('Teacher not found');

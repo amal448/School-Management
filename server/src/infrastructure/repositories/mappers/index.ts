@@ -10,6 +10,12 @@ import { TeacherEntity } from '../../../domain/entities/teacher.entity';
 import { StudentEntity } from '../../../domain/entities/student.entity';
 import { IAdminDocument } from 'src/infrastructure/database/schemas/admin.schema';
 import { AdminEntity } from 'src/domain/entities/admin.entity';
+import { IDepartmentDocument } from 'src/infrastructure/database/schemas/department.schema';
+import { DepartmentEntity } from 'src/domain/entities/department.entity';
+import { ISubjectDocument } from 'src/infrastructure/database/schemas/subject.schema';
+import { SubjectEntity } from 'src/domain/entities/subject.entity';
+import { IClassDocument } from 'src/infrastructure/database/schemas/class.schema';
+import { ClassEntity } from 'src/domain/entities/class.entity';
 
 // ── Manager ────────────────────────────────────────────
 export class ManagerDocumentMapper {
@@ -55,44 +61,52 @@ export class ManagerDocumentMapper {
 }
 // ── Teacher ────────────────────────────────────────────
 export class TeacherDocumentMapper {
-  static toDomain(doc: ITeacherDocument): TeacherEntity {
-    return TeacherEntity.create({
-      id:            doc._id.toString(),
-      email:         doc.email,
-      passwordHash:  doc.passwordHash,
-      firstName:     doc.firstName,
-      lastName:      doc.lastName,
-      dob:           doc.dob ?? undefined,
-      gender:        doc.gender ?? undefined,
-      phone:         doc.phone ?? undefined,
-      address:       doc.address ?? undefined,
-      hireDate:      doc.hireDate ?? undefined,
-      qualification: doc.qualification ?? undefined,
-      designation:   doc.designation ?? undefined,
-      deptId:        doc.deptId ?? undefined,
-      isActive:      doc.isActive,
-      createdAt:     doc.createdAt,
-      updatedAt:     doc.updatedAt,
-    });
-  }
+static toDomain(doc: ITeacherDocument): TeacherEntity {
+  return TeacherEntity.create({
+    id:            doc._id.toString(),
+    email:         doc.email,
+    passwordHash:  doc.passwordHash  ?? undefined,
+    firstName:     doc.firstName,
+    lastName:      doc.lastName,
+    dob:           doc.dob           ?? undefined,
+    gender:        doc.gender        ?? undefined,
+    phone:         doc.phone         ?? undefined,
+    address:       doc.address       ?? undefined,
+    hireDate:      doc.hireDate      ?? undefined,
+    qualification: doc.qualification ?? undefined,
+    designation:   doc.designation   ?? undefined,
+    deptId:        doc.deptId        ?? undefined,
+    isActive:      doc.isActive,
+    isVerified:    doc.isVerified,
+    isFirstTime:   doc.isFirstTime,
+    lastLogin:     doc.lastLogin     ?? undefined,
+    createdBy:     doc.createdBy,                  // ← must be here
+    createdAt:     doc.createdAt,
+    updatedAt:     doc.updatedAt,
+  })
+}
 
-  static toPersistence(entity: TeacherEntity): Partial<ITeacherDocument> {
-    return {
-      email:         entity.email,
-      passwordHash:  entity.passwordHash,
-      firstName:     entity.firstName,
-      lastName:      entity.lastName,
-      dob:           entity.dob,
-      gender:        entity.gender,
-      phone:         entity.phone,
-      address:       entity.address,
-      hireDate:      entity.hireDate,
-      qualification: entity.qualification,
-      designation:   entity.designation,
-      deptId:        entity.deptId,
-      isActive:      entity.isActive,
-    };
+static toPersistence(entity: TeacherEntity): Partial<ITeacherDocument> {
+  return {
+    email:         entity.email,
+    passwordHash:  entity.passwordHash,
+    firstName:     entity.firstName,
+    lastName:      entity.lastName,
+    dob:           entity.dob,
+    gender:        entity.gender,
+    phone:         entity.phone,
+    address:       entity.address,
+    hireDate:      entity.hireDate,
+    qualification: entity.qualification,
+    designation:   entity.designation,
+    deptId:        entity.deptId,
+    isActive:      entity.isActive,
+    isVerified:    entity.isVerified,
+    isFirstTime:   entity.isFirstTime,
+    lastLogin:     entity.lastLogin,
+    createdBy:     entity.createdBy,               // ← must be here
   }
+}
 }
 
 // ── Student ────────────────────────────────────────────
@@ -161,3 +175,70 @@ export class AdminDocumentMapper {
   }
 }
 
+export class DepartmentDocumentMapper {
+  static toDomain(doc: IDepartmentDocument): DepartmentEntity {
+    return DepartmentEntity.create({
+      id:          doc._id.toString(),
+      deptName:    doc.deptName,
+      deptHeadId:  doc.deptHeadId  ?? undefined,
+      description: doc.description ?? undefined,
+      createdAt:   doc.createdAt,
+      updatedAt:   doc.updatedAt,
+    })
+  }
+
+  static toPersistence(entity: DepartmentEntity): Partial<IDepartmentDocument> {
+    return {
+      deptName:    entity.deptName,
+      deptHeadId:  entity.deptHeadId,
+      description: entity.description,
+    }
+  }
+}
+
+export class SubjectDocumentMapper {
+  static toDomain(doc: ISubjectDocument): SubjectEntity {
+    return SubjectEntity.create({
+      id:          doc._id.toString(),
+      subjectName: doc.subjectName,
+      deptId:      doc.deptId,
+      createdAt:   doc.createdAt,
+      updatedAt:   doc.updatedAt,
+    })
+  }
+
+  static toPersistence(entity: SubjectEntity): Partial<ISubjectDocument> {
+    return {
+      subjectName: entity.subjectName,
+      deptId:      entity.deptId,
+    }
+  }
+}
+
+export class ClassDocumentMapper {
+  static toDomain(doc: IClassDocument): ClassEntity {
+    return ClassEntity.create({
+      id:                 doc._id.toString(),
+      className:          doc.className,
+      section:            doc.section,
+      academicYear:       doc.academicYear,
+      classTeacherId:     doc.classTeacherId  ?? undefined,
+      subjectAllocations: doc.subjectAllocations.map((a) => ({
+        subjectId: a.subjectId,
+        teacherId: a.teacherId,
+      })),
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+    })
+  }
+
+  static toPersistence(entity: ClassEntity): Partial<IClassDocument> {
+    return {
+      className:          entity.className,
+      section:            entity.section,
+      academicYear:       entity.academicYear,
+      classTeacherId:     entity.classTeacherId,
+      subjectAllocations: entity.subjectAllocations,
+    }
+  }
+}

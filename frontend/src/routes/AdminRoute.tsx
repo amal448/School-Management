@@ -1,10 +1,18 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import DashboardLayout             from '@/layouts/DashboardLayout'
-import { ROLES }                   from '@/config/routes.config'
-import AdminDashboard              from '@/pages/admin/AdminDashboard'
-import AdminTeacherListPage        from '@/pages/admin/AdminTeacherListPage'
-import AdminStudentListPage        from '@/pages/admin/AdminStudentListPage'
+import DashboardLayout from '@/layouts/DashboardLayout'
+import { ROLES } from '@/config/routes.config'
+import AdminDashboard from '@/pages/admin/AdminDashboard'
+import AdminTeacherListPage from '@/pages/admin/AdminTeacherListPage'
+import AdminStudentListPage from '@/pages/admin/AdminStudentListPage'
 import AdminManagerListPage from '@/pages/admin/AdminManagerListPage'
+import AdminDepartmentPage from '@/pages/admin/AdminDepartmentPage'
+import AdminSubjectPage from '@/pages/admin/AdminSubjectPage'
+import TeacherProfilePage from '@/pages/shared/TeacherProfilePage'
+import ManagerProfilePage from '@/pages/admin/ManagerProfilePage'
+import AdminClassListPage from '@/pages/admin/AdminClass.List'
+import DepartmentListPage from '@/pages/shared/DepartmentListPage'
+import SubjectListPage from '@/pages/shared/SubjectListPage'
+import ClassListPage from '@/pages/shared/ClassListPage'
 
 const Placeholder = ({ title }: { title: string }) => (
   <div className="flex items-center justify-center h-64 text-muted-foreground">
@@ -16,18 +24,20 @@ export default function AdminRoutes() {
   return (
     <Routes>
       <Route element={<DashboardLayout role={ROLES.ADMIN} />}>
-        <Route index                  element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard"       element={<AdminDashboard />} />
-        <Route path="teacher"        element={<AdminTeacherListPage />} />
-        <Route path="students"        element={<AdminStudentListPage />} />
-        <Route path="manager"        element={<AdminManagerListPage />} />
-        <Route path="classes"         element={<Placeholder title="Classes" />} />
-        <Route path="departments"     element={<Placeholder title="Departments" />} />
-        <Route path="subjects"        element={<Placeholder title="Subjects" />} />
-        <Route path="exams"           element={<Placeholder title="Exams" />} />
-        <Route path="analytics"       element={<Placeholder title="Analytics" />} />
-        <Route path="settings"        element={<Placeholder title="Settings" />} />
-        <Route path="*"               element={<Navigate to="dashboard" replace />} />
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="teacher" element={<AdminTeacherListPage />} />
+        <Route path="teacher/:id" element={<TeacherProfilePage />} />
+        <Route path="students" element={<AdminStudentListPage />} />
+        <Route path="manager" element={<AdminManagerListPage />} />
+        <Route path="manager/:id" element={<ManagerProfilePage />} />
+        <Route path="departments" element={<DepartmentListPage />} />
+        <Route path="subjects" element={<SubjectListPage />} />
+        <Route path="classes" element={<ClassListPage />} />
+        <Route path="exams" element={<Placeholder title="Exams" />} />
+        <Route path="analytics" element={<Placeholder title="Analytics" />} />
+        <Route path="settings" element={<Placeholder title="Settings" />} />
+        <Route path="*" element={<Navigate to="dashboard" replace />} />
       </Route>
     </Routes>
   )

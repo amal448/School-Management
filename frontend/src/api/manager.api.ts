@@ -43,5 +43,23 @@ export const managerApi = {
     deactivate: async (managerId: string): Promise<void> => {
         await apiClient.delete(`/api/managers/${managerId}`)
     },
+    // src/api/manager.api.ts
 
+    getById: async (id: string): Promise<ManagerResponse> => {
+        const res = await apiClient.get<ApiResponse<ManagerResponse>>(
+            `/api/managers/${id}`
+        )
+        return res.data.data!
+    },
+
+    update: async (
+        id: string,
+        data: { firstName?: string; lastName?: string; phone?: string },
+    ): Promise<ManagerResponse> => {
+        const res = await apiClient.patch<ApiResponse<ManagerResponse>>(
+            `/api/managers/${id}`,
+            data,
+        )
+        return res.data.data!
+    },
 }

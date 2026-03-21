@@ -74,6 +74,8 @@ async execute(input: LoginInput): Promise<LoginResult> {
       role,
       error: (emailErr as Error).message,
     })
+    // ADD THIS LINE:
+    throw AppError.internal('Failed to send OTP email. Please try again later.')
   }
 
   this.logger.info('LoginUseCase: OTP sent', { role, email: input.email })
