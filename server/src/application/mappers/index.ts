@@ -144,7 +144,6 @@ export class ClassMapper {
       id:                 entity.id!,
       className:          entity.className,
       section:            entity.section,
-      academicYear:       entity.academicYear,
       classTeacherId:     entity.classTeacherId,
       subjectAllocations: entity.subjectAllocations,
       createdAt:          entity.createdAt,

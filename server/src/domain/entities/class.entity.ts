@@ -1,13 +1,13 @@
 export interface SubjectAllocation {
   subjectId: string
-  teacherId: string
+  teacherId?: string
 }
 
 export interface ClassProps {
   id?:                 string
   className:           string
   section:             string
-  academicYear:        string
+ 
   classTeacherId?:     string
   subjectAllocations?: SubjectAllocation[]
   createdAt?:          Date
@@ -18,7 +18,7 @@ export class ClassEntity {
   private readonly _id?:    string
   private _className:       string
   private _section:         string
-  private _academicYear:    string
+
   private _classTeacherId?: string
   private _subjectAllocations: SubjectAllocation[]
   private readonly _createdAt: Date
@@ -28,7 +28,7 @@ export class ClassEntity {
     this._id                  = props.id
     this._className           = this.requireNonEmpty(props.className,    'className')
     this._section             = this.requireNonEmpty(props.section,      'section')
-    this._academicYear        = this.requireNonEmpty(props.academicYear, 'academicYear')
+ 
     this._classTeacherId      = props.classTeacherId
     this._subjectAllocations  = props.subjectAllocations ?? []
     this._createdAt           = props.createdAt ?? new Date()
@@ -45,11 +45,10 @@ export class ClassEntity {
   }
 
   updateDetails(updates: Partial<Pick<ClassProps,
-    'className' | 'section' | 'academicYear' | 'classTeacherId'
+    'className' | 'section'  | 'classTeacherId'
   >>): void {
     if (updates.className    !== undefined) this._className    = updates.className.trim()
     if (updates.section      !== undefined) this._section      = updates.section.trim()
-    if (updates.academicYear !== undefined) this._academicYear = updates.academicYear.trim()
     if (updates.classTeacherId !== undefined) this._classTeacherId = updates.classTeacherId
     this._updatedAt = new Date()
   }
@@ -78,7 +77,6 @@ export class ClassEntity {
   get id():                 string | undefined      { return this._id }
   get className():          string                  { return this._className }
   get section():            string                  { return this._section }
-  get academicYear():       string                  { return this._academicYear }
   get classTeacherId():     string | undefined      { return this._classTeacherId }
   get subjectAllocations(): SubjectAllocation[]     { return this._subjectAllocations }
   get createdAt():          Date                    { return this._createdAt }

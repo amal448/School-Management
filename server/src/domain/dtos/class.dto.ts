@@ -6,16 +6,15 @@ export interface SubjectAllocationDto {
 export interface CreateClassDto {
   className:           string
   section:             string
-  academicYear:        string
   classTeacherId?:     string
   subjectAllocations?: SubjectAllocationDto[]
 }
 
 export interface UpdateClassDto {
-  className?:        string
-  section?:          string
-  academicYear?:     string
-  classTeacherId?:   string
+  className?:          string
+  section?:            string
+  classTeacherId?:     string
+  subjectAllocations?: SubjectAllocationDto[]   // ← add this
 }
 
 export interface AllocateSubjectDto {
@@ -27,7 +26,7 @@ export interface ClassResponseDto {
   id:                  string
   className:           string
   section:             string
-  academicYear:        string
+ 
   classTeacherId?:     string
   subjectAllocations:  SubjectAllocationDto[]
   createdAt:           Date
@@ -35,7 +34,7 @@ export interface ClassResponseDto {
 }
 
 export interface ClassQueryDto {
-  academicYear?: string
+
   search?:       string
   page?:         number
   limit?:        number

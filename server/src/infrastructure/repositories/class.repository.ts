@@ -1,7 +1,7 @@
-import { FilterQuery }       from 'mongoose'
-import { IClassRepository }  from 'src/application/ports/repositories/class.repository.interface'
-import { ClassEntity }       from 'src/domain/entities/class.entity'
-import { ClassQueryDto }     from 'src/domain/dtos/class.dto'
+import { FilterQuery } from 'mongoose'
+import { IClassRepository } from 'src/application/ports/repositories/class.repository.interface'
+import { ClassEntity } from 'src/domain/entities/class.entity'
+import { ClassQueryDto } from 'src/domain/dtos/class.dto'
 import { ClassModel, IClassDocument } from 'src/infrastructure/database/schemas/class.schema'
 import { DEFAULT_PAGE, DEFAULT_LIMIT } from 'src/shared/constants/index'
 import { ClassDocumentMapper } from './mappers'
@@ -36,39 +36,37 @@ export class MongooseClassRepository implements IClassRepository {
   }
 
   async findAll(query: ClassQueryDto): Promise<PaginatedResult<ClassEntity>> {
-    const page  = query.page  ?? DEFAULT_PAGE
+    const page = query.page ?? DEFAULT_PAGE
     const limit = Math.min(query.limit ?? DEFAULT_LIMIT, 100)
-    const skip  = (page - 1) * limit
+    const skip = (page - 1) * limit
 
     const filter: FilterQuery<IClassDocument> = {}
-    if (query.academicYear) filter.academicYear = query.academicYear
+
     if (query.search) {
       filter.$or = [
         { className: { $regex: query.search, $options: 'i' } },
-        { section:   { $regex: query.search, $options: 'i' } },
+        { section: { $regex: query.search, $options: 'i' } },
       ]
     }
 
     const [docs, total] = await Promise.all([
-      ClassModel.find(filter).skip(skip).limit(limit)
-        .lean<IClassDocument[]>(),
+      ClassModel.find(filter).sort({ className: 1, section: 1 })
+        .skip(skip).limit(limit).lean<IClassDocument[]>(),
       ClassModel.countDocuments(filter),
     ])
 
     return {
-      data:  (docs as IClassDocument[]).map(ClassDocumentMapper.toDomain),
+      data: (docs as IClassDocument[]).map(ClassDocumentMapper.toDomain),
       total, page, limit,
     }
   }
 
-  async existsByNameSectionYear(
-    className:    string,
-    section:      string,
-    academicYear: string,
+  async existsByNameSection(
+    className: string,
+    section: string,
   ): Promise<boolean> {
-    const count = await ClassModel.countDocuments({
-      className, section, academicYear,
-    })
+    const count = await ClassModel.countDocuments({ className, section })
     return count > 0
   }
+
 }

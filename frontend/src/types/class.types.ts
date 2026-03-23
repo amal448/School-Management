@@ -2,12 +2,16 @@ export interface SubjectAllocation {
   subjectId: string
   teacherId: string
 }
+export interface AddClassForm {
+  className:    string
+  section:      string
+  academicYear: string
+}
 
 export interface ClassResponse {
   id:                 string
   className:          string
   section:            string
-  academicYear:       string
   classTeacherId?:    string
   subjectAllocations: SubjectAllocation[]
   createdAt:          string
@@ -15,31 +19,23 @@ export interface ClassResponse {
 }
 
 export interface CreateClassInput {
-  className:    string
-  section:      string
-  academicYear: string
-  classTeacherId?: string
+  className:           string
+  section:             string
+  classTeacherId?:     string
+  subjectAllocations?: SubjectAllocation[]
 }
 
 export interface UpdateClassInput {
   className?:      string
   section?:        string
-  academicYear?:   string
   classTeacherId?: string
 }
 
-export interface AllocateSubjectInput {
-  subjectId: string
-  teacherId: string
-}
-
 export interface ClassQueryParams {
-  academicYear?: string
-  search?:       string
-  page?:         number
-  limit?:        number
+  search?: string
+  page?:   number
+  limit?:  number
 }
-
 export interface PaginatedClasses {
   data:       ClassResponse[]
   total:      number
