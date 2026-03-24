@@ -101,10 +101,10 @@ export class StudentEntity {
     this._updatedAt = new Date();
   }
 
-  assignToClass(classId: string): void {
-    this._classId   = classId;
-    this._updatedAt = new Date();
-  }
+  // assignToClass(classId: string): void {
+  //   this._classId   = classId;
+  //   this._updatedAt = new Date();
+  // }
 
   updatePassword(newHash: string): void {
     this._passwordHash = newHash;

@@ -75,4 +75,13 @@ export class MongooseStudentRepository implements IStudentRepository {
   async existsByEmail(email: string): Promise<boolean> {
     return (await StudentModel.countDocuments({ email: email.toLowerCase() })) > 0;
   }
+  // Add assignToClass method
+async assignToClass(id: string, classId: string): Promise<StudentEntity | null> {
+  const doc = await StudentModel.findByIdAndUpdate(
+    id,
+    { $set: { classId } },
+    { new: true },
+  )
+  return doc ? StudentDocumentMapper.toDomain(doc) : null
+}
 }

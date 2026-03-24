@@ -16,14 +16,14 @@ export const createStudentRouter = (ctrl: StudentController, { authenticate, aut
 
   /** POST /api/students              — Manager: enrol a student */
   router.post('/',
-    authenticate, authorize(Role.MANAGER),
+    authenticate, authorize(Role.ADMIN,Role.MANAGER),
     validate(RegisterStudentSchema),
     ctrl.register,
   );
 
   /** GET /api/students               — Manager or Teacher: list with filters */
   router.get('/',
-    authenticate, authorize(Role.MANAGER, Role.TEACHER),
+    authenticate, authorize(Role.ADMIN,Role.MANAGER, Role.TEACHER),
     validate(StudentQuerySchema, 'query'),
     ctrl.list,
   );
@@ -36,21 +36,14 @@ export const createStudentRouter = (ctrl: StudentController, { authenticate, aut
 
   /** PATCH /api/students/:id         — Manager or self */
   router.patch('/:id',
-    authenticate, authorize(Role.MANAGER, Role.STUDENT),
+    authenticate, authorize(Role.ADMIN,Role.MANAGER, Role.STUDENT),
     validate(UpdateStudentSchema),
     ctrl.update,
   );
 
-  /** PATCH /api/students/:id/class   — Manager: assign to class */
-  router.patch('/:id/class',
-    authenticate, authorize(Role.MANAGER),
-    validate(AssignClassSchema),
-    ctrl.assignClass,
-  );
-
   /** DELETE /api/students/:id        — Manager: soft-delete */
   router.delete('/:id',
-    authenticate, authorize(Role.MANAGER),
+    authenticate, authorize(Role.ADMIN,Role.MANAGER),
     ctrl.remove,
   );
 

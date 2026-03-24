@@ -97,7 +97,6 @@ export const RegisterStudentSchema = z.object({
   lastName:        z.string().min(1).max(60),
   dob:             z.string().optional(),
   gender:          genderEnum,
-  phone:           z.string().optional(),
   address:         z.string().optional(),
   admissionDate:   z.string().optional(),
   guardianName:    z.string().optional(),

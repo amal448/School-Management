@@ -12,4 +12,5 @@ export interface IStudentRepository {
   findAll(query: StudentQueryDto): Promise<PaginatedResult<StudentEntity>>;
   findByClass(classId: string): Promise<StudentEntity[]>;
   existsByEmail(email: string): Promise<boolean>;
+  assignToClass(id: string, classId: string):      Promise<StudentEntity | null>
 }

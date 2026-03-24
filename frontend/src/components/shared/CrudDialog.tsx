@@ -1,8 +1,5 @@
-// src/components/shared/CrudDialog.tsx
-// Generic reusable dialog wrapper used by all three modules class subject department
-
-import { ReactNode }    from 'react'
-import { Button }       from '@/components/ui/button'
+import { ReactNode }   from 'react'
+import { Button }      from '@/components/ui/button'
 import {
   Dialog, DialogClose, DialogContent,
   DialogDescription, DialogFooter,
@@ -16,26 +13,81 @@ const Spinner = () => (
 )
 
 interface Props {
-  trigger:      ReactNode
-  title:        string
-  description:  string
-  children:     ReactNode
-  isPending:    boolean
-  isSuccess:    boolean
-  isError:      boolean
-  errorMessage: string
-  submitLabel:  string
-  isDirty?:     boolean
-  onSubmit:     (e: React.FormEvent) => void
-  onOpenChange: (open: boolean) => void
+  trigger:       ReactNode
+  title:         string
+  description:   string
+  children:      ReactNode
+  isPending:     boolean
+  isSuccess:     boolean
+  isError:       boolean
+  errorMessage:  string
+  submitLabel:   string
+  isDirty?:      boolean
+  onOpenChange:  (open: boolean) => void
+
+  // Form mode — wraps children in <form>
+  onSubmit?:    (e: React.FormEvent) => void
+
+  // Confirm mode — plain button onClick, no form
+  onConfirm?:   () => void
 }
 
 export function CrudDialog({
   trigger, title, description, children,
   isPending, isSuccess, isError, errorMessage,
   submitLabel, isDirty = true,
-  onSubmit, onOpenChange,
+  onOpenChange, onSubmit, onConfirm,
 }: Props) {
+
+  const isConfirmMode = !!onConfirm   // no form — just a button
+
+  const footer = (
+    <DialogFooter className="mt-4">
+      {isSuccess ? (
+        <DialogClose asChild>
+          <Button type="button">Done</Button>
+        </DialogClose>
+      ) : (
+        <>
+          <DialogClose asChild>
+            <Button type="button" variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button
+            type={isConfirmMode ? 'button' : 'submit'}
+            onClick={isConfirmMode ? onConfirm : undefined}
+            disabled={isPending || !isDirty}
+          >
+            {isPending ? <><Spinner /> Saving...</> : submitLabel}
+          </Button>
+        </>
+      )}
+    </DialogFooter>
+  )
+
+  const body = (
+    <div className="flex flex-col gap-4 py-2">
+      {isSuccess && (
+        <Alert className="py-3 border-green-200 bg-green-50 dark:bg-green-950/20">
+          <CheckCircle className="size-4 text-green-600" />
+          <AlertDescription className="text-xs text-green-700 dark:text-green-400">
+            Saved successfully.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {isError && (
+        <Alert variant="destructive" className="py-3">
+          <AlertCircle className="size-4" />
+          <AlertDescription className="text-xs">
+            {errorMessage}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {children}
+    </div>
+  )
+
   return (
     <Dialog onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -46,50 +98,19 @@ export function CrudDialog({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={onSubmit}>
-          <div className="flex flex-col gap-4 py-2">
-
-            {isSuccess && (
-              <Alert className="py-3 border-green-200 bg-green-50 dark:bg-green-950/20">
-                <CheckCircle className="size-4 text-green-600" />
-                <AlertDescription className="text-xs text-green-700 dark:text-green-400">
-                  Saved successfully.
-                </AlertDescription>
-              </Alert>
-            )}
-
-            {isError && (
-              <Alert variant="destructive" className="py-3">
-                <AlertCircle className="size-4" />
-                <AlertDescription className="text-xs">
-                  {errorMessage}
-                </AlertDescription>
-              </Alert>
-            )}
-
-            {children}
-          </div>
-
-          <DialogFooter className="mt-4">
-            {isSuccess ? (
-              <DialogClose asChild>
-                <Button type="button">Done</Button>
-              </DialogClose>
-            ) : (
-              <>
-                <DialogClose asChild>
-                  <Button type="button" variant="outline">Cancel</Button>
-                </DialogClose>
-                <Button
-                  type="submit"
-                  disabled={isPending || !isDirty}
-                >
-                  {isPending ? <><Spinner /> Saving...</> : submitLabel}
-                </Button>
-              </>
-            )}
-          </DialogFooter>
-        </form>
+        {isConfirmMode ? (
+          // No form wrapper — just content + footer
+          <>
+            {body}
+            {footer}
+          </>
+        ) : (
+          // Form wrapper for submit-based dialogs
+          <form onSubmit={onSubmit}>
+            {body}
+            {footer}
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   )

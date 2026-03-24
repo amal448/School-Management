@@ -1,6 +1,5 @@
 import { StudentController } from 'src/interfaces/controllers/student.controller';
 import { createStudentRouter } from 'src/interfaces/routes/student.route';
-import {AssignStudentClassUseCase} from '../../../application/use-cases/student/student.assign.use-case';
 import {DeleteStudentUseCase} from '../../../application/use-cases/student/student.delete.use-case';
 import {GetStudentUseCase} from '../../../application/use-cases/student/student.get.use-case';
 import {ListStudentsUseCase} from '../../../application/use-cases/student/student.list.use-case';
@@ -19,11 +18,10 @@ export function buildStudentModule(
   const repo = new MongooseStudentRepository();
 
   const controller = new StudentController(
-    new RegisterStudentUseCase(repo, passwordHasher, tokenService, logger),
+    new RegisterStudentUseCase(repo, passwordHasher, logger),
     new GetStudentUseCase(repo),
     new ListStudentsUseCase(repo),
     new UpdateStudentUseCase(repo, logger),
-    new AssignStudentClassUseCase(repo, logger),
     new DeleteStudentUseCase(repo, logger)
   );
 

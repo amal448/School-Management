@@ -3,7 +3,7 @@ import { RegisterStudentUseCase } from "src/application/use-cases/student/studen
 import { GetStudentUseCase } from "src/application/use-cases/student/student.get.use-case";
 import { ListStudentsUseCase } from "src/application/use-cases/student/student.list.use-case";
 import { UpdateStudentUseCase } from "src/application/use-cases/student/student.update.use-case";
-import { AssignStudentClassUseCase } from "src/application/use-cases/student/student.assign.use-case";
+// import { AssignStudentClassUseCase } from "src/application/use-cases/student/student.assign.use-case";
 import { DeleteStudentUseCase } from "src/application/use-cases/student/student.delete.use-case";
 import { Role } from "src/domain/enums";
 
@@ -13,7 +13,7 @@ export class StudentController {
         private readonly getUseCase: GetStudentUseCase,
         private readonly listUseCase: ListStudentsUseCase,
         private readonly updateUseCase: UpdateStudentUseCase,
-        private readonly assignClassUseCase: AssignStudentClassUseCase,
+        // private readonly assignClassUseCase: AssignStudentClassUseCase,
         private readonly deleteUseCase: DeleteStudentUseCase,
     ) {}
 
@@ -56,17 +56,6 @@ export class StudentController {
         requesterRole: req.user!.role as Role,
       });
       res.status(200).json({ success: true, data: result });
-    } catch (err) { next(err); }
-  };
-
-  // PATCH   (Manager only)
-  assignClass = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const result = await this.assignClassUseCase.execute({
-        studentId: req.params.id,
-        classId: req.body.classId,
-      });
-      res.status(200).json({ success: true, message: 'Class assigned', data: result });
     } catch (err) { next(err); }
   };
 

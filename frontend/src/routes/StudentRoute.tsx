@@ -1,5 +1,5 @@
+import { ROUTES } from '@/config/routes.config'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { ROUTES } from '@/constants'
 
 const Placeholder = ({ title }: { title: string }) => (
   <div className="flex items-center justify-center h-64 text-gray-400">

@@ -21,7 +21,7 @@ export interface IStudentDocument extends Document {
   passwordResetBy?: string
   passwordResetAt?: Date
   lastLogin?:       Date
-  createdBy:        string
+  createdBy?:        string
   createdAt:        Date
   updatedAt:        Date
 }
@@ -46,7 +46,7 @@ const StudentSchema = new Schema<IStudentDocument>(
     passwordResetBy:  { type: String,  default: null  },
     passwordResetAt:  { type: Date,    default: null  },
     lastLogin:        { type: Date,    default: null  },
-    createdBy:        { type: String,  required: true },
+    createdBy:        { type: String,  default: null },
   },
   { timestamps: true, versionKey: false },
 )

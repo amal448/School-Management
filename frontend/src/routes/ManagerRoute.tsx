@@ -1,5 +1,6 @@
 import { ROLES, ROUTES } from '@/config/routes.config'
 import DashboardLayout from '@/layouts/DashboardLayout'
+import ClassDetailPage from '@/pages/shared/ClassDetailPage'
 import ClassListPage from '@/pages/shared/ClassListPage'
 import DepartmentListPage from '@/pages/shared/DepartmentListPage'
 import SubjectListPage from '@/pages/shared/SubjectListPage'
@@ -38,6 +39,7 @@ export default function ManagerRoutes() {
         <Route path="departments" element={<DepartmentListPage />} />
         <Route path="subjects" element={<SubjectListPage />} />
         <Route path="classes" element={<ClassListPage />} />
+        <Route path="classes/:id" element={<ClassDetailPage />} />
         <Route
           path="exams"
           element={<Placeholder title="Exam Models & Grading" />}
