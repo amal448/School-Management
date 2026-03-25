@@ -9,18 +9,11 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ERROR_MESSAGES }    from '@/constants/auth'
 import { ROUTES }            from '@/config/routes.config'
 import { useVerifyOtp } from '@/hooks/auth/useVerifyOtp'
-
-const Spinner = () => (
-  <div className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-)
+import { Spinner } from '@/components/shared/Helpercomponents'
 
 const VerifyOtpPage = () => {
-  const {
-    email, otp, error, loading,
-    handleOtpChange, handleSubmit,
-  } = useVerifyOtp()
+  const {email, otp, error, loading, handleOtpChange, handleSubmit} = useVerifyOtp()
 
-  // Guard — if no state passed, redirect back
   if (!email) {
     return (
       <div className="min-h-screen flex items-center justify-center">

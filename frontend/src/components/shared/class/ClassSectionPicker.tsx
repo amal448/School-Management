@@ -1,26 +1,12 @@
 import { Label } from '@/components/ui/label'
 import { CLASS_GROUPS, SECTIONS, getGroupLabel } from '@/constants/class.constants'
+import { ClassSectionProps } from '@/types/class.types'
 
-interface Props {
- selectedClass:   string | undefined   
-  selectedSection: string | undefined  
-  onClassChange:   (cls: string) => void
-  onSectionChange: (sec: string) => void
-  classError?:     boolean
-  sectionError?:   boolean
-}
 
-export const ClassSectionPicker = ({
-  selectedClass,
-  selectedSection,
-  onClassChange,
-  onSectionChange,
-  classError,
-  sectionError,
-}: Props) => (
+
+export const ClassSectionPicker = ({selectedClass,selectedSection,onClassChange,onSectionChange,classError,sectionError}: ClassSectionProps) => (
+  
   <div className="flex flex-col gap-3">
-
-    {/* All class groups in compact rows */}
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center justify-between">
         <Label className={classError ? 'text-destructive' : ''}>Class</Label>

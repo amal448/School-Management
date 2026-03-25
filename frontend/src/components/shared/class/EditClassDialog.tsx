@@ -8,7 +8,6 @@ import { SubjectPicker } from '@/components/shared/class/SubjectPicker'
 import { useUpdateClass } from '@/hooks/class/useClasses'
 import { useSubjects } from '@/hooks/subject/useSubjects'
 import { ClassResponse, UpdateClassInput } from '@/types/class.types'
-import { DialogTrigger } from '@/components/ui/dialog'
 
 export const EditClassDialog = ({ cls }: { cls: ClassResponse }) => {
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>(
@@ -18,18 +17,9 @@ export const EditClassDialog = ({ cls }: { cls: ClassResponse }) => {
   const mutation = useUpdateClass(cls.id)
   const { data: subjects } = useSubjects({ limit: 100 })
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    reset,
-    formState: { errors },
-  } = useForm<UpdateClassInput>({
-    defaultValues: { className: cls.className, section: cls.section },
-  })
+  const {register,handleSubmit,watch,setValue,reset,formState: { errors }} = useForm<UpdateClassInput>({defaultValues: { grade: cls.grade, section: cls.section }})
 
-  const selectedClass = watch('className')
+  const selectedClass = watch('grade')
   const selectedSection = watch('section')
 
   const toggleSubject = (id: string) => {
@@ -40,7 +30,7 @@ export const EditClassDialog = ({ cls }: { cls: ClassResponse }) => {
 
   const onSubmit = (data: UpdateClassInput) => {
     mutation.mutate({
-      className: data.className,
+      grade: data.grade,
       section: data.section,
       subjectAllocations: selectedSubjects.map((subjectId) => ({
         subjectId,
@@ -60,7 +50,7 @@ export const EditClassDialog = ({ cls }: { cls: ClassResponse }) => {
         </Button>
       }
       title="Edit class"
-      description={`Update Class ${cls.className}-${cls.section}.`}
+      description={`Update Class ${cls.grade}-${cls.section}.`}
       isPending={mutation.isPending}
       isSuccess={mutation.isSuccess}
       isError={mutation.isError}
@@ -70,21 +60,21 @@ export const EditClassDialog = ({ cls }: { cls: ClassResponse }) => {
       onSubmit={handleSubmit(onSubmit)}
       onOpenChange={(open) => {
         if (!open) {
-          reset({ className: cls.className, section: cls.section })
+          reset({ grade: cls.grade, section: cls.section })
           setSelectedSubjects(cls.subjectAllocations.map((a) => a.subjectId))
           mutation.reset()
         }
       }}
     >
-      <input type="hidden" {...register('className', { required: true })} />
+      <input type="hidden" {...register('grade', { required: true })} />
       <input type="hidden" {...register('section', { required: true })} />
 
       <ClassSectionPicker
         selectedClass={selectedClass}
         selectedSection={selectedSection}
-        onClassChange={(cls) => setValue('className', cls, { shouldDirty: true })}
+        onClassChange={(cls) => setValue('grade', cls, { shouldDirty: true })}
         onSectionChange={(sec) => setValue('section', sec, { shouldDirty: true })}
-        classError={!!errors.className}
+        classError={!!errors.grade}
         sectionError={!!errors.section}
       />
 

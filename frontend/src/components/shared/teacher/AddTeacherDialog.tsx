@@ -12,10 +12,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle, Plus, Mail, User, Lock, Phone } from 'lucide-react'
 import { useCreateTeacher } from '@/hooks/teacher/useTeachers'
 import { CreateTeacherInput } from '@/types/teacher.types'
+import { Spinner } from '../Helpercomponents'
 
-const Spinner = () => (
-  <div className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-)
 
 export function AddTeacherDialog() {
   const [open, setOpen] = useState(false)

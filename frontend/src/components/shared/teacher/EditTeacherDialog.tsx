@@ -10,16 +10,7 @@ import { Label }        from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle, Pencil, Phone, User, MapPin, Briefcase, GraduationCap } from 'lucide-react'
 import { UseMutationResult }   from '@tanstack/react-query'
-import { TeacherResponse, UpdateTeacherInput } from '@/types/teacher.types'
-
-export interface EditTeacherForm {
-  firstName?:     string
-  lastName?:      string
-  phone?:         string
-  address?:       string
-  qualification?: string
-  designation?:   string
-}
+import { EditTeacherForm, TeacherResponse, UpdateTeacherInput } from '@/types/teacher.types'
 
 interface Props {
   teacher:  TeacherResponse

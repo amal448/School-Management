@@ -30,3 +30,11 @@ export interface PaginatedSubjects {
   limit:      number
   totalPages: number
 }
+export interface SubjectProps {
+  subjects:         SubjectResponse[]
+  selectedIds:      string[]
+  onToggle:         (id: string) => void
+  error?:           boolean
+  showTeacherHint?: boolean            // for edit dialog
+  allocations?:     { subjectId: string; teacherId?: string }[]
+}

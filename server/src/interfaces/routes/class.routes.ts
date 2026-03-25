@@ -6,7 +6,7 @@ import { z }                    from 'zod'
 import { Role }                 from 'src/domain/enums'
 
 const CreateClassSchema = z.object({
-  className:    z.string().min(1).max(20),
+  grade:    z.string().min(1).max(20),
   section:      z.string().min(1).max(10),
   classTeacherId: z.string().optional(),
   subjectAllocations: z.array(z.object({
@@ -16,7 +16,7 @@ const CreateClassSchema = z.object({
 })
 
 const UpdateClassSchema = z.object({
-  className:      z.string().min(1).max(20).optional(),
+  grade:      z.string().min(1).max(20).optional(),
   section:        z.string().min(1).max(10).optional(),
   classTeacherId: z.string().optional(),
 })

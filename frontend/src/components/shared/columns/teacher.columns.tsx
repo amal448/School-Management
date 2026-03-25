@@ -10,7 +10,6 @@ import { TeacherResponse } from '@/types/teacher.types'
 import { useDeactivateTeacher } from '@/hooks/teacher/useTeachers'
 import { useNavigate } from 'react-router-dom'
 
-// ── Status badge ──────────────────────────────────────
 const StatusBadge = ({ teacher }: { teacher: TeacherResponse }) => {
   if (!teacher.isActive)    return <Badge variant="secondary">Inactive</Badge>
   if (teacher.isFirstTime)  return <Badge variant="outline">Pending Setup</Badge>
@@ -18,7 +17,6 @@ const StatusBadge = ({ teacher }: { teacher: TeacherResponse }) => {
   return <Badge variant="default">Active</Badge>
 }
 
-// ── Actions cell ──────────────────────────────────────
 const ActionsCell = ({ teacher }: { teacher: TeacherResponse }) => {
   const deactivateMutation = useDeactivateTeacher()
   const navigate=useNavigate()
@@ -48,7 +46,6 @@ const ActionsCell = ({ teacher }: { teacher: TeacherResponse }) => {
   )
 }
 
-// ── Columns ───────────────────────────────────────────
 export const teacherColumns: ColumnDef<TeacherResponse>[] = [
   {
     accessorKey: 'fullName',

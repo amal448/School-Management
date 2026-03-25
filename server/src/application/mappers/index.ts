@@ -141,13 +141,13 @@ export class SubjectMapper {
 export class ClassMapper {
   static toDto(entity: ClassEntity): ClassResponseDto {
     return {
-      id:                 entity.id!,
-      className:          entity.className,
-      section:            entity.section,
-      classTeacherId:     entity.classTeacherId,
+      id: entity.id!,
+      grade: entity.grade,
+      section: entity.section,
+      classTeacherId: entity.classTeacherId,
       subjectAllocations: entity.subjectAllocations,
-      createdAt:          entity.createdAt,
-      updatedAt:          entity.updatedAt,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
     }
   }
 }

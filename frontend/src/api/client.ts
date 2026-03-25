@@ -1,6 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
 import { getCookie } from '@/utils/cookie.utils'
-import { ROUTES }    from '@/config/routes.config'
 
 let isRefreshing = false
 let failedQueue: Array<{
@@ -8,10 +7,10 @@ let failedQueue: Array<{
   reject:  (reason?: unknown) => void
 }> = []
 
-const processQueue = (error: AxiosError | null): void => {
+const processQueue = (error: AxiosError | null, token: unknown = null): void => {
   failedQueue.forEach(({ resolve, reject }) => {
     if (error) reject(error)
-    else       resolve(null)
+    else       resolve(token)  // ✅ pass something meaningful, or just resolve
   })
   failedQueue = []
 }
@@ -21,6 +20,7 @@ const apiClient = axios.create({
   withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
 })
+const SKIP_REFRESH_URLS = ['/api/auth/me', '/api/auth/refresh', '/api/auth/login']
 
 // Attach CSRF token on mutating requests
 apiClient.interceptors.request.use(
@@ -41,7 +41,12 @@ apiClient.interceptors.response.use(
   async (error: AxiosError) => {
     const original = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
 
-    if (error.response?.status === 401 && !original._retry) {
+     // ✅ Skip refresh logic for auth-related endpoints
+    const isAuthEndpoint = SKIP_REFRESH_URLS.some(url =>
+      original.url?.includes(url)
+    )
+
+    if (error.response?.status === 401 && !original._retry && !isAuthEndpoint) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject })
@@ -59,7 +64,7 @@ apiClient.interceptors.response.use(
         return apiClient(original)
       } catch (refreshError) {
         processQueue(refreshError as AxiosError)
-        window.location.href = ROUTES.AUTH.ADMIN_MANAGER_LOGIN
+        // window.location.href = ROUTES.AUTH.ADMIN_MANAGER_LOGIN
         return Promise.reject(refreshError)
       } finally {
         isRefreshing = false

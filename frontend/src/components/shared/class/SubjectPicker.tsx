@@ -1,16 +1,7 @@
 import { Check, X }  from 'lucide-react'
 import { Badge }     from '@/components/ui/badge'
 import { Label }     from '@/components/ui/label'
-import { SubjectResponse } from '@/types/subject.types'
-
-interface Props {
-  subjects:         SubjectResponse[]
-  selectedIds:      string[]
-  onToggle:         (id: string) => void
-  error?:           boolean
-  showTeacherHint?: boolean            // for edit dialog
-  allocations?:     { subjectId: string; teacherId?: string }[]
-}
+import { SubjectProps } from '@/types/subject.types'
 
 export const SubjectPicker = ({
   subjects,
@@ -19,7 +10,7 @@ export const SubjectPicker = ({
   error,
   showTeacherHint = false,
   allocations = [],
-}: Props) => (
+}: SubjectProps) => (
   <div className="flex flex-col gap-1.5">
     <div className="flex items-center justify-between">
       <Label className={error ? 'text-destructive' : ''}>

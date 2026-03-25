@@ -43,14 +43,17 @@ export class MongooseClassRepository implements IClassRepository {
     const filter: FilterQuery<IClassDocument> = {}
 
     if (query.search) {
+      const searchNumber = parseInt(query.search);
       filter.$or = [
-        { className: { $regex: query.search, $options: 'i' } },
         { section: { $regex: query.search, $options: 'i' } },
-      ]
+      ];
+      if (!isNaN(searchNumber)) {
+        filter.$or.push({ grade: searchNumber }); // Exact match for Number field
+      }
     }
 
     const [docs, total] = await Promise.all([
-      ClassModel.find(filter).sort({ className: 1, section: 1 })
+      ClassModel.find(filter).sort({ grade: 1, section: 1 })
         .skip(skip).limit(limit).lean<IClassDocument[]>(),
       ClassModel.countDocuments(filter),
     ])
@@ -62,10 +65,10 @@ export class MongooseClassRepository implements IClassRepository {
   }
 
   async existsByNameSection(
-    className: string,
+    grade: string,
     section: string,
   ): Promise<boolean> {
-    const count = await ClassModel.countDocuments({ className, section })
+    const count = await ClassModel.countDocuments({ grade, section })
     return count > 0
   }
 

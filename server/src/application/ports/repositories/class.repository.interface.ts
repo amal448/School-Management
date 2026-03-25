@@ -9,7 +9,7 @@ export interface IClassRepository {
   findById(id: string):                                Promise<ClassEntity | null>
   findAll(query: ClassQueryDto):                       Promise<PaginatedResult<ClassEntity>>
   existsByNameSection(
-    className:    string,
+    grade:    string,
     section:      string,
   ):                                                   Promise<boolean>
 }

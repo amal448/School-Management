@@ -8,8 +8,7 @@ import { useCreateDepartment } from '@/hooks/department/useDepartments'
 import { CreateDepartmentInput } from '@/types/department.types'
 
 export function AddDepartmentDialog() {
-  const { register, handleSubmit, reset, formState: { isDirty } } =
-    useForm<CreateDepartmentInput>()
+  const { register, handleSubmit, reset, formState: { isDirty } } = useForm<CreateDepartmentInput>()
 
   const mutation = useCreateDepartment(() => reset())
 

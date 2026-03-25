@@ -38,7 +38,7 @@ export const AssignClassTeacherDialog = ({ cls }: Props) => {
         </Button>
       }
       title="Assign class teacher"
-      description={`The class teacher oversees Class ${cls.className}-${cls.section}.`}
+      description={`The class teacher oversees Class ${cls.grade}-${cls.section}.`}
       isPending={mutation.isPending}
       isSuccess={mutation.isSuccess}
       isError={mutation.isError}

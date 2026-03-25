@@ -12,12 +12,10 @@ const AuthCallbackPage = () => {
   useEffect(() => {
     const handle = async () => {
       const error = searchParams.get('error')
-
       if (error) {
         navigate(`${ROUTES.AUTH.ADMIN_MANAGER_LOGIN}?error=oauth_failed`, { replace: true })
         return
       }
-
       try {
         await fetchMe()
         const user = useAuthStore.getState().user

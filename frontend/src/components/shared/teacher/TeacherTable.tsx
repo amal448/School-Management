@@ -1,12 +1,9 @@
 import { DataTable }     from '@/components/ui/data-table'
-import { TeacherResponse } from '@/types/teacher.types'
+import {  TeacherTableProps } from '@/types/teacher.types'
 import { teacherColumns } from '../columns/teacher.columns'
 
 // ── Reusable table ─────────────────────────────────────
-interface TeacherTableProps {
-  data:      TeacherResponse[]
-  isLoading: boolean
-}
+
 
 export function TeacherTable({ data, isLoading }: TeacherTableProps) {
   if (isLoading) {

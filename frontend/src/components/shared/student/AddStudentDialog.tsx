@@ -11,9 +11,6 @@ interface Props {
   classId?: string    // optional — pre-assigns to a class if provided
 }
 
-const Spinner = () => (
-  <div className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-)
 
 export function AddStudentDialog({ classId }: Props) {
   const { register, handleSubmit, reset, formState: { isDirty, errors } } =

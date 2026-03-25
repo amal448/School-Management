@@ -1,7 +1,6 @@
 import { DataTable }     from '@/components/ui/data-table'
 import { PageRoot, PageHeader } from '@/components/ui/page'
 import { AddManagerDialog }     from '@/components/admin/AddManagerDialog'
-import { managerColumns }       from '@/components/admin/columns/manager.columns'
 import { useManagers }          from '@/hooks/admin/useManagers'
 import { classColumns } from '@/components/shared/columns/class.columns'
 

@@ -59,3 +59,15 @@ export interface PaginatedTeachers {
   limit:      number
   totalPages: number
 }
+ export interface EditTeacherForm {
+  firstName?:     string
+  lastName?:      string
+  phone?:         string
+  address?:       string
+  qualification?: string
+  designation?:   string
+}
+export interface TeacherTableProps {
+  data:      TeacherResponse[]
+  isLoading: boolean
+}

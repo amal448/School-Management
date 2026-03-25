@@ -7,35 +7,18 @@ import { ClassSectionPicker } from '@/components/shared/class/ClassSectionPicker
 import { SubjectPicker }      from '@/components/shared/class/SubjectPicker'
 import { useCreateClass }     from '@/hooks/class/useClasses'
 import { useSubjects }        from '@/hooks/subject/useSubjects'
-
-interface AddClassForm {
-  className: string
-  section:   string
-}
+import { AddClassForm } from '@/types/class.types'
 
 export function AddClassDialog() {
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([])
   const [subjectError,     setSubjectError]     = useState(false)
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm<AddClassForm>({
-    defaultValues: { className: '', section: '' },
-  })
+  const {register, handleSubmit,reset,watch,setValue,formState: { errors }} = useForm<AddClassForm>({ defaultValues: { grade: '', section: '' }, })
 
-  const selectedClass   = watch('className')
+  const selectedClass   = watch('grade')
   const selectedSection = watch('section')
 
-  const mutation           = useCreateClass(() => {
-    reset()
-    setSelectedSubjects([])
-    setSubjectError(false)
-  })
+  const mutation = useCreateClass(() => {reset(),setSelectedSubjects([]),setSubjectError(false)})
 
   const { data: subjects } = useSubjects({ limit: 100 })
 
@@ -52,7 +35,7 @@ export function AddClassDialog() {
   const onSubmit = (data: AddClassForm) => {
     if (selectedSubjects.length === 0) { setSubjectError(true); return }
     mutation.mutate({
-      className: data.className,
+      grade: data.grade,
       section:   data.section,
       subjectAllocations: selectedSubjects.map((subjectId) => ({ subjectId })),
     } as any)
@@ -80,15 +63,15 @@ export function AddClassDialog() {
       }}
     >
       {/* Hidden inputs for react-hook-form */}
-      <input type="hidden" {...register('className', { required: true })} />
+      <input type="hidden" {...register('grade', { required: true })} />
       <input type="hidden" {...register('section',   { required: true })} />
 
       <ClassSectionPicker
         selectedClass={selectedClass}
         selectedSection={selectedSection}
-        onClassChange={(cls) => setValue('className', cls, { shouldDirty: true })}
+        onClassChange={(cls) => setValue('grade', cls, { shouldDirty: true })}
         onSectionChange={(sec) => setValue('section', sec, { shouldDirty: true })}
-        classError={!!errors.className}
+        classError={!!errors.grade}
         sectionError={!!errors.section}
       />
 

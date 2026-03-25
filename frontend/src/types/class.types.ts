@@ -3,14 +3,14 @@ export interface SubjectAllocation {
   teacherId: string
 }
 export interface AddClassForm {
-  className:    string
+  grade:    string
   section:      string
   academicYear: string
 }
 
 export interface ClassResponse {
   id:                 string
-  className:          string
+  grade:          string
   section:            string
   classTeacherId?:    string
   subjectAllocations: SubjectAllocation[]
@@ -19,14 +19,14 @@ export interface ClassResponse {
 }
 
 export interface CreateClassInput {
-  className:           string
+  grade:           string
   section:             string
   classTeacherId?:     string
   subjectAllocations?: SubjectAllocation[]
 }
 
 export interface UpdateClassInput {
-  className?:      string
+  grade?:      string
   section?:        string
   classTeacherId?: string
 }
@@ -42,4 +42,21 @@ export interface PaginatedClasses {
   page:       number
   limit:      number
   totalPages: number
+}
+export interface AddClassForm {
+  grade: string
+  section:   string
+}
+export interface AssignSubjectProps {
+  classId:     string
+  subjectId:   string
+  subjectName: string
+}
+export interface ClassSectionProps {
+ selectedClass:   string | undefined   
+  selectedSection: string | undefined  
+  onClassChange:   (cls: string) => void
+  onSectionChange: (sec: string) => void
+  classError?:     boolean
+  sectionError?:   boolean
 }

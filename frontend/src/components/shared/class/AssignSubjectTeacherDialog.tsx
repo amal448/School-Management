@@ -4,20 +4,11 @@ import { Label }              from '@/components/ui/label'
 import { CrudDialog }         from '@/components/shared/CrudDialog'
 import { useAllocateSubject } from '@/hooks/class/useClasses'
 import { useTeachers }        from '@/hooks/teacher/useTeachers'
+import { AssignSubjectProps } from '@/types/class.types'
 
-interface Props {
-  classId:     string
-  subjectId:   string
-  subjectName: string
-}
-
-export const AssignSubjectTeacherDialog = ({
-  classId,
-  subjectId,
-  subjectName,
-}: Props) => {
+export const AssignSubjectTeacherDialog = ({ classId,subjectId,subjectName,}: AssignSubjectProps) => {
+  
   const [teacherId, setTeacherId] = useState('')
-
   const { data: teachers } = useTeachers()
   const mutation           = useAllocateSubject(classId)
 

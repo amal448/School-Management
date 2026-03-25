@@ -4,35 +4,35 @@ export interface SubjectAllocation {
 }
 
 export interface ClassProps {
-  id?:                 string
-  className:           string
-  section:             string
- 
-  classTeacherId?:     string
+  id?: string
+  grade: string
+  section: string
+
+  classTeacherId?: string
   subjectAllocations?: SubjectAllocation[]
-  createdAt?:          Date
-  updatedAt?:          Date
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export class ClassEntity {
-  private readonly _id?:    string
-  private _className:       string
-  private _section:         string
+  private readonly _id?: string
+  private _grade: string
+  private _section: string
 
   private _classTeacherId?: string
   private _subjectAllocations: SubjectAllocation[]
   private readonly _createdAt: Date
-  private _updatedAt:       Date
+  private _updatedAt: Date
 
   private constructor(props: ClassProps) {
-    this._id                  = props.id
-    this._className           = this.requireNonEmpty(props.className,    'className')
-    this._section             = this.requireNonEmpty(props.section,      'section')
- 
-    this._classTeacherId      = props.classTeacherId
-    this._subjectAllocations  = props.subjectAllocations ?? []
-    this._createdAt           = props.createdAt ?? new Date()
-    this._updatedAt           = props.updatedAt ?? new Date()
+    this._id = props.id
+    this._grade = this.requireNonEmpty(props.grade, 'grade')
+    this._section = this.requireNonEmpty(props.section, 'section')
+
+    this._classTeacherId = props.classTeacherId
+    this._subjectAllocations = props.subjectAllocations ?? []
+    this._createdAt = props.createdAt ?? new Date()
+    this._updatedAt = props.updatedAt ?? new Date()
   }
 
   private requireNonEmpty(value: string, field: string): string {
@@ -45,10 +45,10 @@ export class ClassEntity {
   }
 
   updateDetails(updates: Partial<Pick<ClassProps,
-    'className' | 'section'  | 'classTeacherId'
+    'grade' | 'section' | 'classTeacherId'
   >>): void {
-    if (updates.className    !== undefined) this._className    = updates.className.trim()
-    if (updates.section      !== undefined) this._section      = updates.section.trim()
+    if (updates.grade !== undefined) this._grade = updates.grade.trim()
+    if (updates.section !== undefined) this._section = updates.section.trim()
     if (updates.classTeacherId !== undefined) this._classTeacherId = updates.classTeacherId
     this._updatedAt = new Date()
   }
@@ -74,11 +74,11 @@ export class ClassEntity {
     this._updatedAt = new Date()
   }
 
-  get id():                 string | undefined      { return this._id }
-  get className():          string                  { return this._className }
-  get section():            string                  { return this._section }
-  get classTeacherId():     string | undefined      { return this._classTeacherId }
-  get subjectAllocations(): SubjectAllocation[]     { return this._subjectAllocations }
-  get createdAt():          Date                    { return this._createdAt }
-  get updatedAt():          Date                    { return this._updatedAt }
+  get id(): string | undefined { return this._id }
+  get grade(): string { return this._grade }
+  get section(): string { return this._section }
+  get classTeacherId(): string | undefined { return this._classTeacherId }
+  get subjectAllocations(): SubjectAllocation[] { return this._subjectAllocations }
+  get createdAt(): Date { return this._createdAt }
+  get updatedAt(): Date { return this._updatedAt }
 }

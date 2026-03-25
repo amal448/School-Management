@@ -6,7 +6,7 @@ export interface ISubjectAllocationDocument {
 }
 
 export interface IClassDocument extends Document {
-  className:          string
+  grade:          string
   section:            string
  
   classTeacherId?:    string
@@ -25,7 +25,7 @@ const SubjectAllocationSchema = new Schema<ISubjectAllocationDocument>(
 
 const ClassSchema = new Schema<IClassDocument>(
   {
-    className:          { type: String, required: true, trim: true },
+    grade:          { type: String, required: true, trim: true },
     section:            { type: String, required: true, trim: true },
     
     classTeacherId:     { type: String, default: null },
