@@ -2,18 +2,9 @@ import { Router }               from 'express'
 import { SubjectController }    from 'src/interfaces/controllers/subject.controller'
 import { createAuthMiddleware } from 'src/interfaces/middlewares/auth.middleware'
 import { validate }             from 'src/interfaces/middlewares/validate.middleware'
-import { z }                    from 'zod'
 import { Role }                 from 'src/domain/enums'
+import { CreateSubjectSchema, UpdateSubjectSchema } from '../validators/subject.validator'
 
-const CreateSubjectSchema = z.object({
-  subjectName: z.string().min(1).max(100),
-  deptId:      z.string().min(1, 'Department is required'),
-})
-
-const UpdateSubjectSchema = z.object({
-  subjectName: z.string().min(1).max(100).optional(),
-  deptId:      z.string().optional(),
-})
 
 type AuthMW = ReturnType<typeof createAuthMiddleware>
 

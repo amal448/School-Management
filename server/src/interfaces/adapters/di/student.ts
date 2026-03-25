@@ -10,7 +10,6 @@ import { BcryptPasswordHasher, JwtTokenService, WinstonLogger } from 'src/infras
 
 
 export function buildStudentModule(
-  tokenService: JwtTokenService,
   passwordHasher: BcryptPasswordHasher,
   logger: WinstonLogger,
   authMW: any

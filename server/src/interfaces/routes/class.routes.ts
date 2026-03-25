@@ -2,29 +2,9 @@ import { Router }               from 'express'
 import { ClassController }      from 'src/interfaces/controllers/class.controller'
 import { createAuthMiddleware } from 'src/interfaces/middlewares/auth.middleware'
 import { validate }             from 'src/interfaces/middlewares/validate.middleware'
-import { z }                    from 'zod'
 import { Role }                 from 'src/domain/enums'
-
-const CreateClassSchema = z.object({
-  grade:    z.string().min(1).max(20),
-  section:      z.string().min(1).max(10),
-  classTeacherId: z.string().optional(),
-  subjectAllocations: z.array(z.object({
-    subjectId: z.string(),
-    teacherId: z.string().optional(),
-  })).optional(),
-})
-
-const UpdateClassSchema = z.object({
-  grade:      z.string().min(1).max(20).optional(),
-  section:        z.string().min(1).max(10).optional(),
-  classTeacherId: z.string().optional(),
-})
-
-const AllocateSubjectSchema = z.object({
-  subjectId: z.string().min(1, 'Subject is required'),
-  teacherId: z.string().min(1, 'Teacher is required'),
-})
+import { CreateClassSchema, UpdateClassSchema } from '../validators/class.validator'
+import { AllocateSubjectSchema } from '../validators/subject.validator'
 
 type AuthMW = ReturnType<typeof createAuthMiddleware>
 

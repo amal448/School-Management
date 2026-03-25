@@ -14,38 +14,11 @@ type AuthMW = ReturnType<typeof createAuthMiddleware>;
 export const createStudentRouter = (ctrl: StudentController, { authenticate, authorize }: AuthMW): Router => {
   const router = Router();
 
-  /** POST /api/students              — Manager: enrol a student */
-  router.post('/',
-    authenticate, authorize(Role.ADMIN,Role.MANAGER),
-    validate(RegisterStudentSchema),
-    ctrl.register,
-  );
-
-  /** GET /api/students               — Manager or Teacher: list with filters */
-  router.get('/',
-    authenticate, authorize(Role.ADMIN,Role.MANAGER, Role.TEACHER),
-    validate(StudentQuerySchema, 'query'),
-    ctrl.list,
-  );
-
-  /** GET /api/students/:id           — Manager, Teacher, or self */
-  router.get('/:id',
-    authenticate, authorize(Role.MANAGER, Role.TEACHER, Role.STUDENT),
-    ctrl.getById,
-  );
-
-  /** PATCH /api/students/:id         — Manager or self */
-  router.patch('/:id',
-    authenticate, authorize(Role.ADMIN,Role.MANAGER, Role.STUDENT),
-    validate(UpdateStudentSchema),
-    ctrl.update,
-  );
-
-  /** DELETE /api/students/:id        — Manager: soft-delete */
-  router.delete('/:id',
-    authenticate, authorize(Role.ADMIN,Role.MANAGER),
-    ctrl.remove,
-  );
+  router.post('/', authenticate, authorize(Role.ADMIN,Role.MANAGER),   validate(RegisterStudentSchema),   ctrl.register,);
+  router.get('/',authenticate, authorize(Role.ADMIN,Role.MANAGER, Role.TEACHER), validate(StudentQuerySchema, 'query'), ctrl.list,);
+  router.get('/:id', authenticate, authorize(Role.MANAGER, Role.TEACHER, Role.STUDENT), ctrl.getById,);
+  router.patch('/:id', authenticate, authorize(Role.ADMIN,Role.MANAGER, Role.STUDENT), validate(UpdateStudentSchema), ctrl.update,);
+  router.delete('/:id', authenticate, authorize(Role.ADMIN,Role.MANAGER), ctrl.remove,);
 
   return router;
 };

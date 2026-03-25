@@ -8,7 +8,6 @@ export interface BlockManagerInput {
   managerId:   string
   requesterId: string
 }
-
 export class BlockManagerUseCase implements IUseCase<BlockManagerInput, void> {
   constructor(
     private readonly managerRepo: IManagerRepository,

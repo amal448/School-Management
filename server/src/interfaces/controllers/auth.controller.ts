@@ -24,9 +24,6 @@ export class AuthController {
     private readonly studentResetPasswordUseCase: StudentResetPasswordUseCase,
   ) {}
 
-  // POST /api/auth/login
-  // Manager → cookies set immediately
-  // Teacher/Student → OTP sent, no cookies yet
   login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const result = await this.loginUseCase.execute({
@@ -40,7 +37,6 @@ export class AuthController {
     } catch (err) { next(err) }
   }
 
-  // POST /api/auth/verify-otp
   // Teacher/Student only — after this, cookies are set
   verifyOtp = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -54,7 +50,6 @@ export class AuthController {
     } catch (err) { next(err) }
   }
 
-  // POST /api/auth/refresh
   // Reads refreshToken cookie, issues new accessToken cookie silently
   refresh = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -63,7 +58,7 @@ export class AuthController {
     } catch (err) { next(err) }
   }
 
-  // POST /api/auth/logout  — requires authenticate + verifyCsrf
+  //  requires authenticate + verifyCsrf
   logout = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       await this.logoutUseCase.execute(req.user!.userId, res)

@@ -11,7 +11,6 @@ import { UpdateManagerUseCase } from 'src/application/use-cases/manager/manager-
 import { DeleteManagerUseCase } from 'src/application/use-cases/manager/manager.delete.use-case'
 
 export function buildManagerModule(
-  tokenService:   JwtTokenService,
   passwordHasher: BcryptPasswordHasher,
   logger:         WinstonLogger,
   authMW:         any,

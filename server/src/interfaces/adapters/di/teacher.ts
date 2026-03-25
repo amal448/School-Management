@@ -12,7 +12,6 @@ import { TeacherController } from 'src/interfaces/controllers/teacher.controller
 import { BcryptPasswordHasher, JwtTokenService, WinstonLogger } from 'src/infrastructure/services';
 
 export function buildTeacherModule(
-  tokenService: JwtTokenService,
   passwordHasher: BcryptPasswordHasher,
   logger: WinstonLogger,
   authMW: any
@@ -20,7 +19,7 @@ export function buildTeacherModule(
   const repo = new MongooseTeacherRepository();
 
   const useCases = {
-    register: new RegisterTeacherUseCase(repo, passwordHasher, tokenService, logger),
+    register: new RegisterTeacherUseCase(repo, passwordHasher, logger),
     get: new GetTeacherUseCase(repo),
     list: new ListTeachersUseCase(repo),
     update: new UpdateTeacherUseCase(repo, logger),

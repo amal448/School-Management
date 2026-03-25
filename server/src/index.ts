@@ -7,12 +7,11 @@ import { createExpressApp } from './interfaces/adapters/express-adapter'
 
 async function bootstrap(): Promise<void> {
 
-  // ── 1. Connect MongoDB ───────────────────────────
+  //  Connect MongoDB ───────────────────────────
   const db = MongooseClient.getInstance()
   await db.connect()
 
-  // ── 2. Connect Redis ─────────────────────────────
-  // Verify Redis is reachable before starting
+  // ──  Connect Redis ─────────────────────────────
   try {
     await redisClient.ping()
     console.info('[Redis] Connection verified')
@@ -21,14 +20,10 @@ async function bootstrap(): Promise<void> {
     process.exit(1)
   }
 
-  // ── 3. Wire all dependencies (Composition Root) ───
-  // This also registers the Google OAuth passport strategy
+  // ──  Wire all dependencies (Composition Root) ───
   const deps = buildDependencies()
-
-  // ── 4. Build Express app ─────────────────────────
   const app = createExpressApp(deps)
 
-  // ── 5. Start listening ───────────────────────────
   const server = app.listen(AppConfig.server.port, () => {
     deps.logger.info('EduManage API running', {
       port:        AppConfig.server.port,
@@ -54,7 +49,6 @@ async function bootstrap(): Promise<void> {
       process.exit(0)
     })
 
-    // Force quit after 10s if something hangs
     setTimeout(() => {
       deps.logger.error('Forced shutdown — took too long')
       process.exit(1)

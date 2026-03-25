@@ -2,20 +2,9 @@ import { Router }                from 'express'
 import { DepartmentController }  from 'src/interfaces/controllers/department.controller'
 import { createAuthMiddleware }  from 'src/interfaces/middlewares/auth.middleware'
 import { validate }              from 'src/interfaces/middlewares/validate.middleware'
-import { z }                     from 'zod'
 import { Role }                  from 'src/domain/enums'
+import { CreateDepartmentSchema, UpdateDepartmentSchema } from '../validators/department.validator'
 
-const CreateDepartmentSchema = z.object({
-  deptName:    z.string().min(1).max(100),
-  deptHeadId:  z.string().optional(),
-  description: z.string().optional(),
-})
-
-const UpdateDepartmentSchema = z.object({
-  deptName:    z.string().min(1).max(100).optional(),
-  deptHeadId:  z.string().optional(),
-  description: z.string().optional(),
-})
 
 type AuthMW = ReturnType<typeof createAuthMiddleware>
 

@@ -16,13 +16,9 @@ export function createExpressApp(deps: AppDependencies): Application {
     crossOriginResourcePolicy: { policy: 'cross-origin' },
   }))
 
-  // ── 2. CORS — must come before routes ─────────────
-  // withCredentials: true on frontend requires explicit origin
-  // (cannot use * when sending cookies)
   app.use(
     cors({
       origin: (origin, callback) => {
-        // Allow requests with no origin (mobile apps, curl, Postman)
         if (!origin) return callback(null, true)
 
         if (AppConfig.server.allowedOrigins.includes(origin)) {
@@ -38,15 +34,11 @@ export function createExpressApp(deps: AppDependencies): Application {
     })
   )
 
-  // ── 3. Body parsing ────────────────────────────────
   app.use(express.json({ limit: '10kb' }))
   app.use(express.urlencoded({ extended: true, limit: '10kb' }))
 
-  // ── 4. Cookie parser ───────────────────────────────
-  // MUST come before any middleware that reads cookies
   app.use(cookieParser())
 
-  // ── 5. Passport initialization ─────────────────────
   // no session — we use JWT + Redis
   app.use(passport.initialize())
 
@@ -85,6 +77,7 @@ export function createExpressApp(deps: AppDependencies): Application {
   app.use('/api/departments', deps.departmentRouter)
   app.use('/api/subjects', deps.subjectRouter)
   app.use('/api/classes', deps.classRouter)
+  
   // ── 9. 404 handler ─────────────────────────────────
   app.use((_req: Request, res: Response) => {
     res.status(404).json({
