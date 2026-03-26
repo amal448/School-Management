@@ -12,6 +12,18 @@ import { SubjectEntity } from "src/domain/entities/subject.entity";
 import { SubjectResponseDto } from "src/domain/dtos/subject.dto";
 import { ClassEntity } from "src/domain/entities/class.entity";
 import { ClassResponseDto } from "src/domain/dtos/class.dto";
+import { ExamEntity }            from 'src/domain/entities/exam.entity'
+import { ExamTimetableEntity }   from 'src/domain/entities/exam-timetable.entity'
+import { ExamScheduleEntity }    from 'src/domain/entities/exam-schedule.entity'
+import { MarksEntity }           from 'src/domain/entities/marks.entity'
+import {
+  ExamResponseDto,
+  TimetableEntryResponseDto,
+  ExamScheduleResponseDto,
+  MarksResponseDto,
+} from 'src/domain/dtos/exam.dto'
+
+
 
 export class ManagerMapper {
   static toDto(entity: ManagerEntity): ManagerResponseDto {
@@ -145,6 +157,68 @@ export class ClassMapper {
       subjectAllocations: entity.subjectAllocations,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
+    }
+  }
+}
+
+
+export class ExamMapper {
+  static toDto(entity: ExamEntity): ExamResponseDto {
+    return {
+      id:                entity.id!,
+      examName:          entity.examName,
+      examType:          entity.examType,
+      academicYear:      entity.academicYear,
+      startDate:         entity.startDate,
+      endDate:           entity.endDate,
+      applicableClasses: entity.applicableClasses,
+      status:            entity.status,
+      createdBy:         entity.createdBy,
+      createdAt:         entity.createdAt,
+      updatedAt:         entity.updatedAt,
+    }
+  }
+
+  static timetableToDto(entity: ExamTimetableEntity): TimetableEntryResponseDto {
+    return {
+      id:           entity.id!,
+      examId:       entity.examId,
+      subjectId:    entity.subjectId,
+      examDate:     entity.examDate,
+      startTime:    entity.startTime,
+      endTime:      entity.endTime,
+      totalMarks:   entity.totalMarks,
+      passingMarks: entity.passingMarks,
+    }
+  }
+
+  static scheduleToDto(entity: ExamScheduleEntity): ExamScheduleResponseDto {
+    return {
+      id:          entity.id!,
+      examId:      entity.examId,
+      timetableId: entity.timetableId,
+      classId:     entity.classId,
+      subjectId:   entity.subjectId,
+      teacherId:   entity.teacherId,
+      marksStatus: entity.marksStatus,
+      submittedAt: entity.submittedAt,
+    }
+  }
+
+  static marksToDto(entity: MarksEntity): MarksResponseDto {
+    return {
+      id:          entity.id!,
+      examId:      entity.examId,
+      scheduleId:  entity.scheduleId,
+      studentId:   entity.studentId,
+      subjectId:   entity.subjectId,
+      classId:     entity.classId,
+      marksScored: entity.marksScored,
+      totalMarks:  entity.totalMarks,
+      grade:       entity.grade,
+      isAbsent:    entity.isAbsent,
+      gradedBy:    entity.gradedBy,
+      gradedAt:    entity.gradedAt,
     }
   }
 }

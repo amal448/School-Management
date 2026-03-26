@@ -16,6 +16,15 @@ import { ISubjectDocument } from 'src/infrastructure/database/schemas/subject.sc
 import { SubjectEntity } from 'src/domain/entities/subject.entity';
 import { IClassDocument } from 'src/infrastructure/database/schemas/class.schema';
 import { ClassEntity } from 'src/domain/entities/class.entity';
+import { IExamDocument } from 'src/infrastructure/database/schemas/exam.schema';
+import { ExamEntity } from 'src/domain/entities/exam.entity';
+import { ExamStatus, ExamType, MarksStatus } from 'src/domain/enums';
+import { IExamTimetableDocument } from 'src/infrastructure/database/schemas/exam-timetable.schema';
+import { ExamTimetableEntity } from 'src/domain/entities/exam-timetable.entity';
+import { IExamScheduleDocument } from 'src/infrastructure/database/schemas/exam-schedule.schema';
+import { ExamScheduleEntity } from 'src/domain/entities/exam-schedule.entity';
+import { IMarksDocument } from 'src/infrastructure/database/schemas/marks.schema';
+import { MarksEntity } from 'src/domain/entities/marks.entity';
 
 // ── Manager ────────────────────────────────────────────
 export class ManagerDocumentMapper {
@@ -237,6 +246,129 @@ export class ClassDocumentMapper {
       section: entity.section,
       classTeacherId: entity.classTeacherId,
       subjectAllocations: entity.subjectAllocations,
+    }
+  }
+}
+
+export class ExamDocumentMapper {
+  static toDomain(doc: IExamDocument): ExamEntity {
+    return ExamEntity.create({
+      id:                doc._id.toString(),
+      examName:          doc.examName,
+      examType:          doc.examType as ExamType,
+      academicYear:      doc.academicYear,
+      startDate:         doc.startDate,
+      endDate:           doc.endDate,
+      applicableClasses: doc.applicableClasses,
+      status:            doc.status as ExamStatus,
+      createdBy:         doc.createdBy,
+      createdAt:         doc.createdAt,
+      updatedAt:         doc.updatedAt,
+    })
+  }
+
+  static toPersistence(entity: ExamEntity): Partial<IExamDocument> {
+    return {
+      examName:          entity.examName,
+      examType:          entity.examType,
+      academicYear:      entity.academicYear,
+      startDate:         entity.startDate,
+      endDate:           entity.endDate,
+      applicableClasses: entity.applicableClasses,
+      status:            entity.status,
+      createdBy:         entity.createdBy,
+    }
+  }
+}
+
+export class ExamTimetableDocumentMapper {
+  static toDomain(doc: IExamTimetableDocument): ExamTimetableEntity {
+    return ExamTimetableEntity.create({
+      id:           doc._id.toString(),
+      examId:       doc.examId,
+      subjectId:    doc.subjectId,
+      examDate:     doc.examDate,
+      startTime:    doc.startTime,
+      endTime:      doc.endTime,
+      totalMarks:   doc.totalMarks,
+      passingMarks: doc.passingMarks,
+      createdAt:    doc.createdAt,
+      updatedAt:    doc.updatedAt,
+    })
+  }
+
+  static toPersistence(entity: ExamTimetableEntity): Partial<IExamTimetableDocument> {
+    return {
+      examId:       entity.examId,
+      subjectId:    entity.subjectId,
+      examDate:     entity.examDate,
+      startTime:    entity.startTime,
+      endTime:      entity.endTime,
+      totalMarks:   entity.totalMarks,
+      passingMarks: entity.passingMarks,
+    }
+  }
+}
+
+export class ExamScheduleDocumentMapper {
+  static toDomain(doc: IExamScheduleDocument): ExamScheduleEntity {
+    return ExamScheduleEntity.create({
+      id:          doc._id.toString(),
+      examId:      doc.examId,
+      timetableId: doc.timetableId,
+      classId:     doc.classId,
+      subjectId:   doc.subjectId,
+      teacherId:   doc.teacherId,
+      marksStatus: doc.marksStatus as MarksStatus,
+      submittedAt: doc.submittedAt ?? undefined,
+      createdAt:   doc.createdAt,
+      updatedAt:   doc.updatedAt,
+    })
+  }
+
+  static toPersistence(entity: ExamScheduleEntity): Partial<IExamScheduleDocument> {
+    return {
+      examId:      entity.examId,
+      timetableId: entity.timetableId,
+      classId:     entity.classId,
+      subjectId:   entity.subjectId,
+      teacherId:   entity.teacherId,
+      marksStatus: entity.marksStatus,
+      submittedAt: entity.submittedAt,
+    }
+  }
+}
+
+export class MarksDocumentMapper {
+  static toDomain(doc: IMarksDocument): MarksEntity {
+    return MarksEntity.create({
+      id:          doc._id.toString(),
+      examId:      doc.examId,
+      scheduleId:  doc.scheduleId,
+      studentId:   doc.studentId,
+      subjectId:   doc.subjectId,
+      classId:     doc.classId,
+      marksScored: doc.marksScored,
+      totalMarks:  doc.totalMarks,
+      isAbsent:    doc.isAbsent,
+      gradedBy:    doc.gradedBy,
+      gradedAt:    doc.gradedAt,
+    })
+  }
+
+  static toPersistence(entity: MarksEntity): Partial<IMarksDocument> {
+    return {
+      examId:      entity.examId,
+      scheduleId:  entity.scheduleId,
+      studentId:   entity.studentId,
+      subjectId:   entity.subjectId,
+      classId:     entity.classId,
+      marksScored: entity.marksScored,
+      totalMarks:  entity.totalMarks,
+      grade:       entity.grade,
+      isAbsent:    entity.isAbsent,
+      gradedBy:    entity.gradedBy,
+      gradedAt:    entity.gradedAt,
     }
   }
 }

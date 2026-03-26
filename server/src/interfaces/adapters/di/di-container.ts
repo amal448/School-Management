@@ -9,6 +9,7 @@ import { buildStudentModule } from './student'
 import { buildAuthModule } from './auth'
 import { Router } from 'express'
 import { buildAcademicModule } from './academic'
+import { buildExamModule } from './exam'
 
 export interface AppDependencies {
   authRouter: Router
@@ -16,9 +17,10 @@ export interface AppDependencies {
   managerRouter: Router
   teacherRouter: Router
   studentRouter: Router
-  departmentRouter:  Router    // ← add
-  subjectRouter:     Router    // ← add
-  classRouter:       Router    // ← add
+  departmentRouter:  Router    
+  subjectRouter:     Router    
+  classRouter:       Router    
+  examRouter:        Router 
   errorHandler: ReturnType<typeof createErrorHandler>
   logger: WinstonLogger
 }
@@ -35,11 +37,8 @@ export function buildDependencies(): AppDependencies {
   const teacher = buildTeacherModule(passwordHasher, logger, authMW)
   const student = buildStudentModule(passwordHasher, logger, authMW)
   const academic = buildAcademicModule(logger, authMW)
-  // 3. Admin module — must come after manager (needs managerRepo for block/unblock)
-  //    Also registers passport Google strategy as a side effect
   const admin = buildAdminModule(tokenService, logger, authMW, manager.repo)
-
-  // 4. Auth module — needs all repos + all services
+  const exam = buildExamModule(logger, authMW)
   const auth = buildAuthModule(
     admin.repo,
     manager.repo,
@@ -61,6 +60,7 @@ export function buildDependencies(): AppDependencies {
     departmentRouter: academic.departmentRouter,
     subjectRouter: academic.subjectRouter,
     classRouter: academic.classRouter,
+    examRouter: exam.router,
     logger,
   }
 }

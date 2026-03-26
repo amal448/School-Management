@@ -77,6 +77,7 @@ export function createExpressApp(deps: AppDependencies): Application {
   app.use('/api/departments', deps.departmentRouter)
   app.use('/api/subjects', deps.subjectRouter)
   app.use('/api/classes', deps.classRouter)
+  app.use('/api/exams', deps.examRouter)
   
   // ── 9. 404 handler ─────────────────────────────────
   app.use((_req: Request, res: Response) => {
@@ -88,6 +89,5 @@ export function createExpressApp(deps: AppDependencies): Application {
 
   // ── 10. Global error handler (must be last) ────────
   app.use(deps.errorHandler)
-
   return app
 }
