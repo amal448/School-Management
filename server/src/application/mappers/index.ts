@@ -13,9 +13,6 @@ import { SubjectResponseDto } from "src/domain/dtos/subject.dto";
 import { ClassEntity } from "src/domain/entities/class.entity";
 import { ClassResponseDto } from "src/domain/dtos/class.dto";
 
-
-
-
 export class ManagerMapper {
   static toDto(entity: ManagerEntity): ManagerResponseDto {
     return {
