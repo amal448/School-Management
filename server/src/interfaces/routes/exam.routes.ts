@@ -1,16 +1,14 @@
 import { Router } from 'express'
-import { ExamController } from 'src/interfaces/controllers/exam.controller'
 import { createAuthMiddleware } from 'src/interfaces/middlewares/auth.middleware'
 import { validate } from 'src/interfaces/middlewares/validate.middleware'
 import { Role, ExamType } from 'src/domain/enums'
 import { CreateExamSchema, EnterMarksSchema, TimetableEntrySchema } from '../validators/exam.validators'
+import { ExamController } from '../controllers/exam.controller'
 
 type AuthMW = ReturnType<typeof createAuthMiddleware>
 
-export const createExamRouter = (
-    ctrl: ExamController,
-    authMW: AuthMW,
-): Router => {
+export const createExamRouter = (ctrl: ExamController, authMW: AuthMW,): Router => {
+    
     const router = Router()
     const { authenticate, authorize } = authMW
 

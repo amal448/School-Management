@@ -8,12 +8,9 @@ import { Role } from 'src/domain/enums'
 
 type AuthMW = ReturnType<typeof createAuthMiddleware>
 
-export const createAdminRouter = (
-  ctrl: AdminController,
-  { authenticate, authorize }: AuthMW,
-): Router => {
+export const createAdminRouter = (ctrl: AdminController,{ authenticate, authorize }: AuthMW,): Router => {
+  
   const router = Router()
-
   router.use(authenticate, authorize(Role.ADMIN))
   router.get('/me', ctrl.getProfile)
   router.get('/', ctrl.list)

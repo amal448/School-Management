@@ -11,12 +11,9 @@ import { Role } from 'src/domain/enums/index'
 
 type AuthMW = ReturnType<typeof createAuthMiddleware>
 
-export const createManagerRouter = (
-  ctrl: ManagerController,
-  { authenticate, authorize }: AuthMW,
-): Router => {
+export const createManagerRouter = (ctrl: ManagerController, { authenticate, authorize }: AuthMW): Router => {
+  
   const router = Router()
-
   router.post('/', authenticate, authorize(Role.ADMIN), validate(CreateManagerSchema), ctrl.create)
   router.get('/', authenticate, authorize(Role.ADMIN), validate(ManagerQuerySchema, 'query'), ctrl.list)
   router.get('/:id', authenticate, authorize(Role.ADMIN, Role.MANAGER), ctrl.getById,)

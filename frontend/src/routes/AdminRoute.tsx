@@ -14,6 +14,8 @@ import DepartmentListPage from '@/pages/shared/DepartmentListPage'
 import SubjectListPage from '@/pages/shared/SubjectListPage'
 import ClassListPage from '@/pages/shared/ClassListPage'
 import ClassDetailPage from '@/pages/shared/ClassDetailPage'
+import ExamListPage from '@/pages/shared/ExamListPage'
+import ExamDetailPage from '@/pages/shared/ExamDetailPage'
 
 const Placeholder = ({ title }: { title: string }) => (
   <div className="flex items-center justify-center h-64 text-muted-foreground">
@@ -36,7 +38,8 @@ export default function AdminRoutes() {
         <Route path="subjects" element={<SubjectListPage />} />
         <Route path="classes" element={<ClassListPage />} />
         <Route path="classes/:id" element={<ClassDetailPage />} />
-        <Route path="exams" element={<Placeholder title="Exams" />} />
+        <Route path="exams" element={<ExamListPage />} />
+        <Route path="exams/:id" element={<ExamDetailPage />} />
         <Route path="analytics" element={<Placeholder title="Analytics" />} />
         <Route path="settings" element={<Placeholder title="Settings" />} />
         <Route path="*" element={<Navigate to="dashboard" replace />} />

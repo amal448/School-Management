@@ -249,7 +249,7 @@ export class ClassDocumentMapper {
     }
   }
 }
-
+  
 export class ExamDocumentMapper {
   static toDomain(doc: IExamDocument): ExamEntity {
     return ExamEntity.create({

@@ -12,8 +12,8 @@ export class CreateClassUseCase
   implements IUseCase<CreateClassDto, ClassResponseDto> {
 
   constructor(
-    private readonly classRepo: IClassRepository,   // ← was missing
-    private readonly logger: ILogger,             // ← was missing
+    private readonly classRepo: IClassRepository,   
+    private readonly logger: ILogger,            
   ) { }
 
   async execute(input: CreateClassDto): Promise<ClassResponseDto> {

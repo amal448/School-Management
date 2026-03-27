@@ -17,16 +17,12 @@ import { GoogleAuthResult } from 'src/application/use-cases/auth/google-auth.use
 
 type AuthMW = ReturnType<typeof createAuthMiddleware>
 
-export const createAuthRouter = (
-  ctrl: AuthController,
-  { authenticate, authorize, verifyCsrf }: AuthMW,
-): Router => {
+export const createAuthRouter = (ctrl: AuthController, { authenticate, authorize, verifyCsrf }: AuthMW,): Router => {
   const router = Router()
 
   // ── Google OAuth (Admin only) ──────────────────────
 
   router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false, }))
-
   router.get('/google/callback', passport.authenticate('google', { session: false, failureRedirect: `${process.env.FRONTEND_URL}/admin/login?error=oauth_failed` }),
     (req: Request, res: Response) => {
       const result = req.user as unknown as GoogleAuthResult

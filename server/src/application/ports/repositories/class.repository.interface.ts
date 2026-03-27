@@ -8,8 +8,6 @@ export interface IClassRepository {
   delete(id: string): Promise<boolean>
   findById(id: string): Promise<ClassEntity | null>
   findAll(query: ClassQueryDto): Promise<PaginatedResult<ClassEntity>>
-  existsByNameSection(
-    grade: string,
-    section: string,
-  ): Promise<boolean>
+  existsByNameSection(grade: string, section: string): Promise<boolean>
+  assignSubjectTeacher(classId: string, subjectId: string, teacherId: string): Promise<ClassEntity | null>
 }

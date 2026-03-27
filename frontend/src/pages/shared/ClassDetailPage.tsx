@@ -83,10 +83,10 @@ export default function ClassDetailPage() {
 
           <div>
             <h1 className="text-lg font-medium">
-              Class {cls.className} — {cls.section}
+              Class {cls.grade} — {cls.section}
             </h1>
             <p className="text-xs text-muted-foreground mt-0.5">
-              {getGroupLabel(cls.className)} school ·{' '}
+              {getGroupLabel(cls.grade)} school ·{' '}
               {cls.subjectAllocations.length} subjects
             </p>
           </div>

@@ -8,7 +8,6 @@ export interface ISubjectAllocationDocument {
 export interface IClassDocument extends Document {
   grade:          string
   section:            string
- 
   classTeacherId?:    string
   subjectAllocations: ISubjectAllocationDocument[]
   createdAt:          Date
@@ -36,7 +35,7 @@ const ClassSchema = new Schema<IClassDocument>(
 
 // Unique: same class name + section + year
 ClassSchema.index(
-  { className: 1, section: 1, academicYear: 1 },
+  { grade: 1, section: 1},
   { unique: true },
 )
 

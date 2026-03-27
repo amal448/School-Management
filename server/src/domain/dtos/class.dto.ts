@@ -11,7 +11,7 @@ export interface CreateClassDto {
 }
 
 export interface UpdateClassDto {
-  grade?: number
+  grade?: string
   section?: string
   classTeacherId?: string
   subjectAllocations?: SubjectAllocationDto[]   // ← add this

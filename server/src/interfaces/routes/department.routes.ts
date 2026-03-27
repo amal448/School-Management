@@ -16,13 +16,12 @@ export const createDepartmentRouter = (
   const { authenticate, authorize } = authMW
 
   // Admin + Manager both can manage departments
-  const guard = [authenticate, authorize(Role.ADMIN, Role.MANAGER)]
 
-  router.post  ('/',    ...guard, validate(CreateDepartmentSchema), ctrl.create)
-  router.get   ('/',    ...guard, ctrl.list)
-  router.get   ('/:id', ...guard, ctrl.getById)
-  router.patch ('/:id', ...guard, validate(UpdateDepartmentSchema), ctrl.update)
-  router.delete('/:id', ...guard, ctrl.delete)
+  router.post  ('/',   [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(CreateDepartmentSchema), ctrl.create)
+  router.get   ('/',   [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.list)
+  router.get   ('/:id',[authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.getById)
+  router.patch ('/:id',[authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(UpdateDepartmentSchema), ctrl.update)
+  router.delete('/:id',[authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.delete)
 
   return router
 }

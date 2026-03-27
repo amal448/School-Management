@@ -3,6 +3,8 @@ import DashboardLayout from '@/layouts/DashboardLayout'
 import ClassDetailPage from '@/pages/shared/ClassDetailPage'
 import ClassListPage from '@/pages/shared/ClassListPage'
 import DepartmentListPage from '@/pages/shared/DepartmentListPage'
+import ExamDetailPage from '@/pages/shared/ExamDetailPage'
+import ExamListPage from '@/pages/shared/ExamListPage'
 import SubjectListPage from '@/pages/shared/SubjectListPage'
 import { Routes, Route, Navigate } from 'react-router-dom'
 
@@ -25,7 +27,8 @@ export default function ManagerRoutes() {
         <Route path="subjects" element={<SubjectListPage />} />
         <Route path="classes" element={<ClassListPage />} />
         <Route path="classes/:id" element={<ClassDetailPage />} />
-        <Route path="exams" element={<Placeholder title="Exam Models & Grading" />}/>
+       <Route path="exams" element={<ExamListPage />} />
+               <Route path="exams/:id" element={<ExamDetailPage />} />
         <Route path="analytics" element={<Placeholder title="School Analytics" />}/>
         <Route path="leaderboard" element={<Placeholder title="Student Leaderboard" />}/>
         <Route path="tasks" element={<Placeholder title="Task Scheduler" />}/>

@@ -8,19 +8,16 @@ import { CreateSubjectSchema, UpdateSubjectSchema } from '../validators/subject.
 
 type AuthMW = ReturnType<typeof createAuthMiddleware>
 
-export const createSubjectRouter = (
-  ctrl:   SubjectController,
-  authMW: AuthMW,
-): Router => {
+export const createSubjectRouter = (ctrl:   SubjectController,authMW: AuthMW): Router => {
+  
   const router = Router()
   const { authenticate, authorize } = authMW
-  const guard = [authenticate, authorize(Role.ADMIN, Role.MANAGER)]
 
-  router.post  ('/',    ...guard, validate(CreateSubjectSchema), ctrl.create)
-  router.get   ('/',    ...guard, ctrl.list)
-  router.get   ('/:id', ...guard, ctrl.getById)
-  router.patch ('/:id', ...guard, validate(UpdateSubjectSchema), ctrl.update)
-  router.delete('/:id', ...guard, ctrl.delete)
+  router.post  ('/',    [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(CreateSubjectSchema), ctrl.create)
+  router.get   ('/',    [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.list)
+  router.get   ('/:id', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.getById)
+  router.patch ('/:id', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(UpdateSubjectSchema), ctrl.update)
+  router.delete('/:id', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.delete)
 
   return router
 }

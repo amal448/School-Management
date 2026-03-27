@@ -1,7 +1,7 @@
-import { WinstonLogger }              from 'src/infrastructure/services'
+import { WinstonLogger } from 'src/infrastructure/services'
 import { MongooseDepartmentRepository } from 'src/infrastructure/repositories/department.repository'
-import { MongooseSubjectRepository }  from 'src/infrastructure/repositories/subject.repository'
-import { MongooseClassRepository }    from 'src/infrastructure/repositories/class.repository'
+import { MongooseSubjectRepository } from 'src/infrastructure/repositories/subject.repository'
+import { MongooseClassRepository } from 'src/infrastructure/repositories/class.repository'
 
 
 import { DepartmentController } from 'src/interfaces/controllers/department.controller'
@@ -29,19 +29,20 @@ import { SubjectController } from 'src/interfaces/controllers/subject.controller
 import { ClassController } from 'src/interfaces/controllers/class.controller'
 import { createSubjectRouter } from 'src/interfaces/routes/subject.routes'
 import { createClassRouter } from 'src/interfaces/routes/class.routes'
+import { AssignSubjectTeacherUseCase } from 'src/application/use-cases/class/assign-subject-teacher.use-case'
 
 export function buildAcademicModule(
   logger: WinstonLogger,
   authMW: any,
 ): {
   departmentRouter: Router
-  subjectRouter:    Router
-  classRouter:      Router
+  subjectRouter: Router
+  classRouter: Router
 } {
   // ── Repos ──────────────────────────────────────────
-  const deptRepo    = new MongooseDepartmentRepository()
+  const deptRepo = new MongooseDepartmentRepository()
   const subjectRepo = new MongooseSubjectRepository()
-  const classRepo   = new MongooseClassRepository()
+  const classRepo = new MongooseClassRepository()
 
   // ── Department use cases ───────────────────────────
   const deptController = new DepartmentController(
@@ -69,12 +70,13 @@ export function buildAcademicModule(
     new UpdateClassUseCase(classRepo, logger),
     new AllocateSubjectUseCase(classRepo, logger),
     new RemoveSubjectAllocationUseCase(classRepo, logger),
+    new AssignSubjectTeacherUseCase(classRepo, logger),
     new DeleteClassUseCase(classRepo, logger),
   )
 
   return {
     departmentRouter: createDepartmentRouter(deptController, authMW),
-    subjectRouter:    createSubjectRouter(subjectController, authMW),
-    classRouter:      createClassRouter(classController, authMW),
+    subjectRouter: createSubjectRouter(subjectController, authMW),
+    classRouter: createClassRouter(classController, authMW),
   }
 }

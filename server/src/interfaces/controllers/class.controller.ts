@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { AllocateSubjectUseCase } from 'src/application/use-cases/class/allocate-subject.usecase'
+import { AssignSubjectTeacherUseCase } from 'src/application/use-cases/class/assign-subject-teacher.use-case'
 import { CreateClassUseCase } from 'src/application/use-cases/class/create-class.usecase'
 import { DeleteClassUseCase } from 'src/application/use-cases/class/delete-class.usecase'
 import { GetClassUseCase } from 'src/application/use-cases/class/get-class.usecase'
@@ -9,14 +10,15 @@ import { UpdateClassUseCase } from 'src/application/use-cases/class/update-class
 
 export class ClassController {
   constructor(
-    private readonly createUseCase:          CreateClassUseCase,
-    private readonly getUseCase:             GetClassUseCase,
-    private readonly listUseCase:            ListClassesUseCase,
-    private readonly updateUseCase:          UpdateClassUseCase,
+    private readonly createUseCase: CreateClassUseCase,
+    private readonly getUseCase: GetClassUseCase,
+    private readonly listUseCase: ListClassesUseCase,
+    private readonly updateUseCase: UpdateClassUseCase,
     private readonly allocateSubjectUseCase: AllocateSubjectUseCase,
-    private readonly removeSubjectUseCase:   RemoveSubjectAllocationUseCase,
-    private readonly deleteUseCase:          DeleteClassUseCase,
-  ) {}
+    private readonly removeSubjectUseCase: RemoveSubjectAllocationUseCase,
+    private readonly assignSubjectTeacherUseCase:AssignSubjectTeacherUseCase,
+    private readonly deleteUseCase: DeleteClassUseCase,
+  ) { }
 
   create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -42,7 +44,7 @@ export class ClassController {
   update = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const result = await this.updateUseCase.execute({
-        id:  req.params.id,
+        id: req.params.id,
         dto: req.body,
       })
       res.status(200).json({ success: true, data: result })
@@ -53,7 +55,7 @@ export class ClassController {
     try {
       const result = await this.allocateSubjectUseCase.execute({
         classId: req.params.id,
-        dto:     req.body,
+        dto: req.body,
       })
       res.status(200).json({ success: true, data: result })
     } catch (err) { next(err) }
@@ -62,7 +64,7 @@ export class ClassController {
   removeSubjectAllocation = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const result = await this.removeSubjectUseCase.execute({
-        classId:   req.params.id,
+        classId: req.params.id,
         subjectId: req.params.subjectId,
       })
       res.status(200).json({ success: true, data: result })
@@ -74,5 +76,19 @@ export class ClassController {
       await this.deleteUseCase.execute(req.params.id)
       res.status(200).json({ success: true, message: 'Class deleted' })
     } catch (err) { next(err) }
+  }
+
+  assignSubjectTeacher = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const result=await this.assignSubjectTeacherUseCase.execute({
+        classId:req.params.id,
+        subjectId:req.params.subjectId,
+        teacherId:req.body.teacherId
+      })
+      res.status(200).json({success:true,data:result})
+    }
+    catch (err) {
+      next(err)
+    }
   }
 }

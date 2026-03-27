@@ -14,3 +14,7 @@ export const UpdateSubjectSchema = z.object({
   subjectName: z.string().min(1).max(100).optional(),
   deptId:      z.string().optional(),
 })
+
+export const AssignSubjectTeacherSchema = z.object({
+  teacherId: z.string().min(1, 'Teacher is required'),
+})

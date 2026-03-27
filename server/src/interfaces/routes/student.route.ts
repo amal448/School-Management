@@ -12,8 +12,8 @@ type AuthMW = ReturnType<typeof createAuthMiddleware>;
 
 // ── Student Router ─────────────────────────────────────
 export const createStudentRouter = (ctrl: StudentController, { authenticate, authorize }: AuthMW): Router => {
+  
   const router = Router();
-
   router.post('/', authenticate, authorize(Role.ADMIN,Role.MANAGER),   validate(RegisterStudentSchema),   ctrl.register,);
   router.get('/',authenticate, authorize(Role.ADMIN,Role.MANAGER, Role.TEACHER), validate(StudentQuerySchema, 'query'), ctrl.list,);
   router.get('/:id', authenticate, authorize(Role.MANAGER, Role.TEACHER, Role.STUDENT), ctrl.getById,);

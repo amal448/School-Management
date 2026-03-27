@@ -1,9 +1,7 @@
 
 import { Router } from 'express';
-
 import { createAuthMiddleware } from '../middlewares/auth.middleware';
 import { validate } from '../middlewares/validate.middleware';
-import { ManagerController } from '../controllers/manager.controller';
 import { Role } from 'src/domain/enums';
 import { TeacherController } from '../controllers/teacher.controller';
 import { AssignDeptSchema, RegisterTeacherSchema, TeacherQuerySchema, UpdateTeacherSchema } from '../validators';
@@ -12,6 +10,7 @@ type AuthMW = ReturnType<typeof createAuthMiddleware>;
 
 
 export const createTeacherRouter = (ctrl: TeacherController, { authenticate, authorize }: AuthMW): Router => {
+  
   const router = Router();
   router.post('/',authenticate, authorize(Role.MANAGER,Role.ADMIN),validate(RegisterTeacherSchema),ctrl.register,);
   router.get('/',authenticate, authorize(Role.MANAGER,Role.ADMIN),validate(TeacherQuerySchema, 'query'),ctrl.list,);

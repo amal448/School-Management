@@ -38,7 +38,13 @@ export class ExamController {
   list = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const result = await this.examRepo.findAll(req.query as any)
-      res.status(200).json({ success: true, data: result })
+      res.status(200).json({ success: true, data: {
+        data:       result.data.map(ExamMapper.toDto),   // ← map through ExamMapper
+        total:      result.total,
+        page:       result.page,
+        limit:      result.limit,
+        totalPages: Math.ceil(result.total / (result.limit ?? 10)),
+      }, })
     } catch (err) { next(err) }
   }
 

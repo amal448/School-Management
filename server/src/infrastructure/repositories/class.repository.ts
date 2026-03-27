@@ -72,4 +72,17 @@ export class MongooseClassRepository implements IClassRepository {
     return count > 0
   }
 
+  async assignSubjectTeacher(classId: string, subjectId: string, teacherId: string): Promise<ClassEntity | null> {
+    const doc = await ClassModel.findByIdAndUpdate({
+      _id: classId,
+      'subjectAllocations.subjectId': subjectId
+    },
+      {
+        $set: {
+          'subjectAllocations.$.teacherId': teacherId,
+          updatedAt: new Date()
+        }
+      },{new:true })
+      return doc ? ClassDocumentMapper.toDomain(doc):null
+  }
 }
