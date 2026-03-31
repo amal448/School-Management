@@ -27,10 +27,10 @@ const ExamTimetableSchema = new Schema<IExamTimetableDocument>(
 
 // One subject can appear once per exam
 ExamTimetableSchema.index(
-  { examId: 1, subjectId: 1 },
+  { examId: 1 },
   { unique: true },
 )
-
+ExamTimetableSchema.index({ examId: 1, examDate: 1 })
 export const ExamTimetableModel = mongoose.model<IExamTimetableDocument>(
   'ExamTimetable', ExamTimetableSchema
 )

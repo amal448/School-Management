@@ -75,3 +75,13 @@ export const useRemoveSubjectAllocation = (classId: string) => {
     },
   })
 }
+
+export const useAssignSubjectTeacher = (classId: string) => {
+  return useMutation({
+    mutationFn: ({ subjectId, teacherId }: { subjectId: string; teacherId: string }) =>
+      classApi.assignSubjectTeacher(classId, subjectId, teacherId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...CLASSES_KEY, classId] })
+    },
+  })
+}

@@ -62,4 +62,14 @@ export const classApi = {
     )
     return res.data.data!
   },
+  assignSubjectTeacher:async(
+    classId:string,
+    subjectId:string,
+    teacherId:string
+  ):Promise<ClassResponse>=>{
+    const res=await apiClient.patch<ApiResponse<ClassResponse>>(
+      `/api/classes/${classId}/subjects/${subjectId}/teacher`, {teacherId}
+    )
+    return res.data.data!
+  }
 }

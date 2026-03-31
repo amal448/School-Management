@@ -34,7 +34,7 @@ const Skeleton = () => (
 export default function ClassDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { data: studentsData ,isLoading:studentsLoading } = useStudentsByClass(id ?? '')
+  const { data: studentsData, isLoading: studentsLoading } = useStudentsByClass(id ?? '')
 
   // Update studentCount
   const studentCount = studentsData?.length ?? 0
@@ -95,9 +95,9 @@ export default function ClassDetailPage() {
         {/* Actions */}
         <div className="flex gap-2 flex-wrap">
           <EditClassDialog cls={cls} />
-      
+
           <AddStudentDialog
-            classId={cls.id} 
+            classId={cls.id}
           />
           <AssignClassTeacherDialog cls={cls} />
         </div>
@@ -189,6 +189,7 @@ export default function ClassDetailPage() {
                           classId={cls.id}
                           subjectId={allocation.subjectId}
                           subjectName={subject?.subjectName ?? 'this subject'}
+                          currentTeacherId={allocation.teacherId}
                         />
                       </td>
                     </tr>
