@@ -1,117 +1,129 @@
-import { examApi } from "@/api/exam.api"
-import { queryClient } from "@/lib/query-client"
-import { CreateExamInput, CreateTimetableEntryInput, EnterMarksInput, ExamQueryParams } from "@/types/exam.types"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { examApi }               from '@/api/exam.api'
+import { queryClient }           from '@/lib/query-client'
+import {
+  CreateExamInput,
+  AddCommonSubjectInput,
+  AddSectionLanguageInput,
+  EnterMarksInput,
+  ExamQueryParams,
+} from '@/types/exam.types'
 
 export const EXAMS_KEY = ['exams'] as const
 
-export const useExams = (params?: ExamQueryParams) => {
-    return useQuery({
-        queryKey: [...EXAMS_KEY, params],
-        queryFn: () => examApi.getAll(params),
-        staleTime: 1000 * 30
-    })
-}
+// ── Queries ───────────────────────────────────────────
 
-export const useExam = (id: string) => {
-    return useQuery({
-        queryKey: [...EXAMS_KEY, id],
-        queryFn: () => examApi.getById(id),
-        enabled: !!id
-    })
-}
+export const useExams = (params?: ExamQueryParams) =>
+  useQuery({
+    queryKey:  [...EXAMS_KEY, params],
+    queryFn:   () => examApi.getAll(params),
+    staleTime: 1000 * 30,
+  })
 
-export const useCreateExam = (onSuccess?: () => void) => {
-    return useMutation({
-        mutationFn: (data: CreateExamInput) => examApi.create(data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: EXAMS_KEY })
-            onSuccess?.()
-        }
-    })
-}
+export const useExam = (id: string) =>
+  useQuery({
+    queryKey: [...EXAMS_KEY, id],
+    queryFn:  () => examApi.getById(id),
+    enabled:  !!id,
+  })
 
-export const useExamTimetable = (examId: string) => {
-    return useQuery({
-        queryKey: [...EXAMS_KEY, examId, 'timetable'],
-        queryFn: () => examApi.getTimetable(examId),
-        enabled: !!examId
-    })
-}
-//per subject
-export const useAddTimetableEntry = (examId: string) => {
-    return useMutation({
-        mutationFn: (data: CreateTimetableEntryInput) =>
-            examApi.addTimetableEntry(examId, data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: [...EXAMS_KEY, examId, 'timetable']
-            })
-        }
-    })
-}
+export const useExamSchedules = (examId: string) =>
+  useQuery({
+    queryKey: [...EXAMS_KEY, examId, 'schedules'],
+    queryFn:  () => examApi.getSchedules(examId),
+    enabled:  !!examId,
+  })
 
-export const useDeleteTimetableEntry = (examId: string) => {
-    return useMutation({
-        mutationFn: (entryId: string) =>
-            examApi.deleteTimetableEntry(examId, entryId),
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: [...EXAMS_KEY, examId, 'timetable'],
-            })
-        },
-    })
-}
+export const useMyPendingMarks = () =>
+  useQuery({
+    queryKey:  [...EXAMS_KEY, 'pending'],
+    queryFn:   () => examApi.getMyPendingMarks(),
+    staleTime: 1000 * 30,
+  })
 
-export const usePublishExam = (examId: string) => {
-    return useMutation({
-        mutationFn: () => examApi.publish(examId),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: EXAMS_KEY })
-            queryClient.invalidateQueries({ queryKey: [...EXAMS_KEY, examId] })
-        }
-    })
-}
+export const useMarksBySchedule = (scheduleId: string) =>
+  useQuery({
+    queryKey: [...EXAMS_KEY, 'marks', scheduleId],
+    queryFn:  () => examApi.getMarksBySchedule(scheduleId),
+    enabled:  !!scheduleId,
+  })
 
-export const useDeclareExam = (examId: string) => {
-  return useMutation({
+export const useClassResults = (examId: string, classId: string) =>
+  useQuery({
+    queryKey: [...EXAMS_KEY, examId, 'results', classId],
+    queryFn:  () => examApi.getClassResults(examId, classId),
+    enabled:  !!examId && !!classId,
+  })
+
+// ── Mutations ─────────────────────────────────────────
+
+export const useCreateExam = (onSuccess?: () => void) =>
+  useMutation({
+    mutationFn: (data: CreateExamInput) => examApi.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: EXAMS_KEY })
+      onSuccess?.()
+    },
+  })
+
+export const useAddCommonSubject = (examId: string) =>
+  useMutation({
+    mutationFn: (data: AddCommonSubjectInput) =>
+      examApi.addCommonSubject(examId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...EXAMS_KEY, examId] })
+    },
+  })
+
+export const useRemoveCommonSubject = (examId: string) =>
+  useMutation({
+    mutationFn: ({ grade, subjectId }: { grade: string; subjectId: string }) =>
+      examApi.removeCommonSubject(examId, grade, subjectId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...EXAMS_KEY, examId] })
+    },
+  })
+
+export const useAddSectionLanguage = (examId: string) =>
+  useMutation({
+    mutationFn: (data: AddSectionLanguageInput) =>
+      examApi.addSectionLanguage(examId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...EXAMS_KEY, examId] })
+    },
+  })
+
+export const useRemoveSectionLanguage = (examId: string) =>
+  useMutation({
+    mutationFn: ({ grade, classId }: { grade: string; classId: string }) =>
+      examApi.removeSectionLanguage(examId, grade, classId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...EXAMS_KEY, examId] })
+    },
+  })
+
+export const usePublishExam = (examId: string) =>
+  useMutation({
+    mutationFn: () => examApi.publish(examId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: EXAMS_KEY })
+      queryClient.invalidateQueries({ queryKey: [...EXAMS_KEY, examId] })
+    },
+  })
+
+export const useDeclareExam = (examId: string) =>
+  useMutation({
     mutationFn: () => examApi.declare(examId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: EXAMS_KEY })
       queryClient.invalidateQueries({ queryKey: [...EXAMS_KEY, examId] })
     },
   })
-}
 
-export const useExamSchedules = (examId: string) => {
-  return useQuery({
-    queryKey: [...EXAMS_KEY, examId, 'schedules'],
-    queryFn:  () => examApi.getSchedules(examId),
-    enabled:  !!examId,
-  })
-}
-
-export const useEnterMarks = () => {
-  return useMutation({
+export const useEnterMarks = () =>
+  useMutation({
     mutationFn: (data: EnterMarksInput) => examApi.enterMarks(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: EXAMS_KEY })
     },
   })
-}
-
-export const useMyPendingMarks = () => {
-  return useQuery({
-    queryKey: [...EXAMS_KEY, 'pending-marks'],
-    queryFn:  () => examApi.getMyPendingMarks(),
-    staleTime: 1000 * 30,
-  })
-}
-
-export const useClassResults = (examId: string, classId: string) => {
-  return useQuery({
-    queryKey: [...EXAMS_KEY, examId, 'results', classId],
-    queryFn:  () => examApi.getClassResults(examId, classId),
-    enabled:  !!examId && !!classId,
-  })
-}

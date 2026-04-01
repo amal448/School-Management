@@ -1,12 +1,16 @@
 import mongoose, { Schema, Document } from 'mongoose'
-import { MarksStatus } from 'src/domain/enums'
+import { MarksStatus }  from 'src/domain/enums'
 
 export interface IExamScheduleDocument extends Document {
   examId:       string
-  timetableId:  string
   classId:      string
   subjectId:    string
   teacherId:    string
+  examDate:     Date
+  startTime:    string
+  endTime:      string
+  totalMarks:   number
+  passingMarks: number
   marksStatus:  MarksStatus
   submittedAt?: Date
   createdAt:    Date
@@ -15,18 +19,22 @@ export interface IExamScheduleDocument extends Document {
 
 const ExamScheduleSchema = new Schema<IExamScheduleDocument>(
   {
-    examId:      { type: String, required: true, index: true },
-    timetableId: { type: String, required: true },
-    classId:     { type: String, required: true, index: true },
-    subjectId:   { type: String, required: true },
-    teacherId:   { type: String, required: true, index: true },
-    marksStatus: {
+    examId:       { type: String, required: true, index: true },
+    classId:      { type: String, required: true, index: true },
+    subjectId:    { type: String, required: true },
+    teacherId:    { type: String, required: true, index: true },
+    examDate:     { type: Date,   required: true },
+    startTime:    { type: String, required: true },
+    endTime:      { type: String, required: true },
+    totalMarks:   { type: Number, required: true },
+    passingMarks: { type: Number, required: true },
+    marksStatus:  {
       type:    String,
       enum:    Object.values(MarksStatus),
       default: MarksStatus.PENDING,
       index:   true,
     },
-    submittedAt: { type: Date, default: null },
+    submittedAt:  { type: Date, default: null },
   },
   { timestamps: true, versionKey: false },
 )

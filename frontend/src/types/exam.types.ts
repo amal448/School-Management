@@ -1,22 +1,6 @@
 import { ExamType, ExamStatus, MarksStatus } from '@/types/enums'
 
-export interface ExamResponse {
-  id:                string
-  examName:          string
-  examType:          ExamType
-  academicYear:      string
-  startDate:         string
-  endDate:           string
-  applicableClasses: string[]
-  status:            ExamStatus
-  createdBy:         string
-  createdAt:         string
-  updatedAt:         string
-}
-
-export interface TimetableEntryResponse {
-  id:           string
-  examId:       string
+export interface SubjectSchedule {
   subjectId:    string
   examDate:     string
   startTime:    string
@@ -25,21 +9,43 @@ export interface TimetableEntryResponse {
   passingMarks: number
 }
 
-export interface ExamScheduleResponse {
-  id:          string
-  examId:      string
-  timetableId: string
-  classId:     string
-  subjectId:   string
-  teacherId:   string
-  marksStatus: MarksStatus
-  submittedAt?: string
+export interface SectionLanguage extends SubjectSchedule {
+  classId: string
 }
 
-export interface StudentMarkEntry {
-  studentId:   string
-  marksScored: number
-  isAbsent:    boolean
+export interface GradeConfig {
+  grade:            string
+  commonSubjects:   SubjectSchedule[]
+  sectionLanguages: SectionLanguage[]
+}
+
+export interface ExamResponse {
+  id:           string
+  examName:     string
+  examType:     ExamType
+  academicYear: string
+  startDate:    string
+  endDate:      string
+  status:       ExamStatus
+  gradeConfigs: GradeConfig[]
+  createdBy:    string
+  createdAt:    string
+  updatedAt:    string
+}
+
+export interface ExamScheduleResponse {
+  id:           string
+  examId:       string
+  classId:      string
+  subjectId:    string
+  teacherId:    string
+  examDate:     string
+  startTime:    string
+  endTime:      string
+  totalMarks:   number
+  passingMarks: number
+  marksStatus:  MarksStatus
+  submittedAt?: string
 }
 
 export interface MarksResponse {
@@ -58,21 +64,39 @@ export interface MarksResponse {
 }
 
 export interface CreateExamInput {
-  examName:          string
-  examType:          ExamType
-  academicYear:      string
-  startDate:         string
-  endDate:           string
-  applicableClasses: string[]
+  examName:     string
+  examType:     ExamType
+  academicYear: string
+  startDate:    string
+  endDate:      string
+  grades:       string[]
 }
 
-export interface CreateTimetableEntryInput {
+export interface AddCommonSubjectInput {
+  grade:        string
+  subjectId:    string
+  examDate:     string 
+  startTime:    string
+  endTime:      string
+  totalMarks:   number
+  passingMarks: number
+}
+
+export interface AddSectionLanguageInput {
+  grade:        string
+  classId:      string
   subjectId:    string
   examDate:     string
   startTime:    string
   endTime:      string
   totalMarks:   number
   passingMarks: number
+}
+
+export interface StudentMarkEntry {
+  studentId:   string
+  marksScored: number
+  isAbsent:    boolean
 }
 
 export interface EnterMarksInput {
@@ -83,7 +107,6 @@ export interface EnterMarksInput {
 export interface ExamQueryParams {
   status?:       ExamStatus
   academicYear?: string
-  classId?:      string
   page?:         number
   limit?:        number
 }

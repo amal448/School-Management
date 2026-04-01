@@ -16,6 +16,12 @@ export class MongooseClassRepository implements IClassRepository {
     return ClassDocumentMapper.toDomain(doc)
   }
 
+  async findByGrade(grade: string): Promise<ClassEntity[]> {
+    const docs = await ClassModel
+      .find({ grade })
+      .lean<IClassDocument[]>()
+    return (docs as IClassDocument[]).map(ClassDocumentMapper.toDomain)
+  }
   async update(id: string, cls: ClassEntity): Promise<ClassEntity | null> {
     const doc = await ClassModel.findByIdAndUpdate(
       id,
@@ -72,21 +78,21 @@ export class MongooseClassRepository implements IClassRepository {
     return count > 0
   }
 
-async assignSubjectTeacher(classId: string, subjectId: string, teacherId: string): Promise<ClassEntity | null> {
-  const doc = await ClassModel.findOneAndUpdate(
-    {
-      _id: classId,
-      'subjectAllocations.subjectId': subjectId
-    },
-    {
-      $set: {
-        'subjectAllocations.$.teacherId': teacherId,
-        updatedAt: new Date()
-      }
-    },
-    { new: true }
-  )
+  async assignSubjectTeacher(classId: string, subjectId: string, teacherId: string): Promise<ClassEntity | null> {
+    const doc = await ClassModel.findOneAndUpdate(
+      {
+        _id: classId,
+        'subjectAllocations.subjectId': subjectId
+      },
+      {
+        $set: {
+          'subjectAllocations.$.teacherId': teacherId,
+          updatedAt: new Date()
+        }
+      },
+      { new: true }
+    )
 
-  return doc ? ClassDocumentMapper.toDomain(doc) : null
-}
+    return doc ? ClassDocumentMapper.toDomain(doc) : null
+  }
 }

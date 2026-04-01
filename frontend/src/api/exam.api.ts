@@ -1,6 +1,16 @@
-import { ExamResponse,TimetableEntryResponse,ExamScheduleResponse, MarksResponse,CreateExamInput,CreateTimetableEntryInput,EnterMarksInput,ExamQueryParams,PaginatedExams, } from '@/types/exam.types'
-import apiClient from './client'
-import { ApiResponse } from '@/types/api.types'
+import apiClient                from './client'
+import { ApiResponse }          from '@/types/api.types'
+import {
+  ExamResponse,
+  ExamScheduleResponse,
+  MarksResponse,
+  CreateExamInput,
+  AddCommonSubjectInput,
+  AddSectionLanguageInput,
+  EnterMarksInput,
+  ExamQueryParams,
+  PaginatedExams,
+} from '@/types/exam.types'
 
 export const examApi = {
 
@@ -25,39 +35,71 @@ export const examApi = {
     return res.data.data!
   },
 
-  update: async (id: string, data: Partial<CreateExamInput>): Promise<ExamResponse> => {
+  update: async (
+    id:   string,
+    data: Partial<Pick<CreateExamInput, 'examName' | 'startDate' | 'endDate'>>,
+  ): Promise<ExamResponse> => {
     const res = await apiClient.patch<ApiResponse<ExamResponse>>(
       `/api/exams/${id}`, data
     )
     return res.data.data!
   },
 
-  // Timetable
-  getTimetable: async (examId: string): Promise<TimetableEntryResponse[]> => {
-    const res = await apiClient.get<ApiResponse<TimetableEntryResponse[]>>(
-      `/api/exams/${examId}/timetable`
-    )
-    return res.data.data!
-  },
-
-  addTimetableEntry: async (
+  // ── Common subjects ───────────────────────────────
+  addCommonSubject: async (
     examId: string,
-    data:   CreateTimetableEntryInput,
-  ): Promise<TimetableEntryResponse> => {
-    const res = await apiClient.post<ApiResponse<TimetableEntryResponse>>(
-      `/api/exams/${examId}/timetable`, data
+    data:   AddCommonSubjectInput,
+  ): Promise<ExamResponse> => {
+    const res = await apiClient.post<ApiResponse<ExamResponse>>(
+      `/api/exams/${examId}/grades/subjects`, data
     )
     return res.data.data!
   },
 
-  deleteTimetableEntry: async (
-    examId:  string,
-    entryId: string,
-  ): Promise<void> => {
-    await apiClient.delete(`/api/exams/${examId}/timetable/${entryId}`)
+  updateCommonSubject: async (
+    examId: string,
+    data:   AddCommonSubjectInput,
+  ): Promise<ExamResponse> => {
+    const res = await apiClient.patch<ApiResponse<ExamResponse>>(
+      `/api/exams/${examId}/grades/subjects`, data
+    )
+    return res.data.data!
   },
 
-  // Lifecycle
+  removeCommonSubject: async (
+    examId:    string,
+    grade:     string,
+    subjectId: string,
+  ): Promise<ExamResponse> => {
+    const res = await apiClient.delete<ApiResponse<ExamResponse>>(
+      `/api/exams/${examId}/grades/${grade}/subjects/${subjectId}`
+    )
+    return res.data.data!
+  },
+
+  // ── Section languages ─────────────────────────────
+  addSectionLanguage: async (
+    examId: string,
+    data:   AddSectionLanguageInput,
+  ): Promise<ExamResponse> => {
+    const res = await apiClient.post<ApiResponse<ExamResponse>>(
+      `/api/exams/${examId}/grades/languages`, data
+    )
+    return res.data.data!
+  },
+
+  removeSectionLanguage: async (
+    examId:  string,
+    grade:   string,
+    classId: string,
+  ): Promise<ExamResponse> => {
+    const res = await apiClient.delete<ApiResponse<ExamResponse>>(
+      `/api/exams/${examId}/grades/${grade}/languages/${classId}`
+    )
+    return res.data.data!
+  },
+
+  // ── Lifecycle ─────────────────────────────────────
   publish: async (examId: string): Promise<ExamResponse> => {
     const res = await apiClient.post<ApiResponse<ExamResponse>>(
       `/api/exams/${examId}/publish`
@@ -72,7 +114,7 @@ export const examApi = {
     return res.data.data!
   },
 
-  // Schedules
+  // ── Schedules ─────────────────────────────────────
   getSchedules: async (examId: string): Promise<ExamScheduleResponse[]> => {
     const res = await apiClient.get<ApiResponse<ExamScheduleResponse[]>>(
       `/api/exams/${examId}/schedules`
@@ -80,7 +122,7 @@ export const examApi = {
     return res.data.data!
   },
 
-  // Marks
+  // ── Marks ─────────────────────────────────────────
   enterMarks: async (data: EnterMarksInput): Promise<void> => {
     await apiClient.post('/api/exams/marks', data)
   },

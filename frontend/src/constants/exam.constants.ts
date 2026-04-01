@@ -16,12 +16,12 @@ export const EXAM_STATUS_LABELS: Record<ExamStatus, string> = {
   [ExamStatus.DECLARED]:      'Declared',
 }
 
-export const EXAM_STATUS_VARIANT: Record<ExamStatus, string> = {
-  [ExamStatus.DRAFT]:         'secondary',
-  [ExamStatus.SCHEDULED]:     'outline',
-  [ExamStatus.ONGOING]:       'default',
-  [ExamStatus.MARKS_PENDING]: 'warning',
-  [ExamStatus.DECLARED]:      'success',
+export const EXAM_STATUS_COLORS: Record<ExamStatus, string> = {
+  [ExamStatus.DRAFT]:         'bg-muted text-muted-foreground',
+  [ExamStatus.SCHEDULED]:     'bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400',
+  [ExamStatus.ONGOING]:       'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
+  [ExamStatus.MARKS_PENDING]: 'bg-orange-50 text-orange-700 dark:bg-orange-950/30 dark:text-orange-400',
+  [ExamStatus.DECLARED]:      'bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400',
 }
 
 export const MARKS_STATUS_LABELS: Record<MarksStatus, string> = {
@@ -30,17 +30,26 @@ export const MARKS_STATUS_LABELS: Record<MarksStatus, string> = {
   [MarksStatus.LOCKED]:    'Locked',
 }
 
+export const MARKS_STATUS_COLORS: Record<MarksStatus, string> = {
+  [MarksStatus.PENDING]:   'text-muted-foreground',
+  [MarksStatus.SUBMITTED]: 'text-green-600',
+  [MarksStatus.LOCKED]:    'text-blue-600',
+}
+
 export const CURRENT_ACADEMIC_YEAR = (() => {
   const now   = new Date()
   const year  = now.getFullYear()
-  const month = now.getMonth() + 1   // June is month 6 — new academic year
+  const month = now.getMonth() + 1
   return month >= 6
     ? `${year}-${year + 1}`
     : `${year - 1}-${year}`
 })()
 
-export const ACADEMIC_YEAR_OPTIONS = [
-  `${new Date().getFullYear() - 1}-${new Date().getFullYear()}`,
-  `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`,
-  `${new Date().getFullYear() + 1}-${new Date().getFullYear() + 2}`,
-]
+export const ACADEMIC_YEAR_OPTIONS = (() => {
+  const y = new Date().getFullYear()
+  return [
+    `${y - 1}-${y}`,
+    `${y}-${y + 1}`,
+    `${y + 1}-${y + 2}`,
+  ]
+})()

@@ -1,7 +1,7 @@
-import { FilterQuery }         from 'mongoose'
-import { IExamRepository }     from 'src/application/ports/repositories/exam.repository.interface'
-import { ExamEntity }          from 'src/domain/entities/exam.entity'
-import { ExamQueryDto }        from 'src/domain/dtos/exam.dto'
+import { FilterQuery } from 'mongoose'
+import { IExamRepository } from 'src/application/ports/repositories/exam.repository.interface'
+import { ExamEntity } from 'src/domain/entities/exam.entity'
+import { ExamQueryDto } from 'src/domain/dtos/exam.dto'
 import { ExamModel, IExamDocument } from 'src/infrastructure/database/schemas/exam.schema'
 import { DEFAULT_PAGE, DEFAULT_LIMIT } from 'src/shared/constants/index'
 import { ExamDocumentMapper } from './mappers'
@@ -31,15 +31,17 @@ export class MongooseExamRepository implements IExamRepository {
   }
 
   async findAll(query: ExamQueryDto): Promise<PaginatedResult<ExamEntity>> {
-    const page  = query.page  ?? DEFAULT_PAGE
+    const page = query.page ?? DEFAULT_PAGE
     const limit = Math.min(query.limit ?? DEFAULT_LIMIT, 100)
-    const skip  = (page - 1) * limit
+    const skip = (page - 1) * limit
 
     const filter: FilterQuery<IExamDocument> = {}
 
-    if (query.status)       filter.status       = query.status
-    if (query.academicYear) filter.academicYear  = query.academicYear
-    if (query.classId)      filter.applicableClasses = query.classId
+    if (query.status) filter.status = query.status
+    if (query.academicYear) filter.academicYear = query.academicYear
+    // ← REMOVED: filter.applicableClasses — field no longer exists
+    // If filtering by grade is needed in future:
+    // if (query.grade) filter['gradeConfigs.grade'] = query.grade
 
     const [docs, total] = await Promise.all([
       ExamModel.find(filter)
@@ -51,7 +53,7 @@ export class MongooseExamRepository implements IExamRepository {
     ])
 
     return {
-      data:  (docs as IExamDocument[]).map(ExamDocumentMapper.toDomain),
+      data: (docs as IExamDocument[]).map(ExamDocumentMapper.toDomain),
       total, page, limit,
     }
   }

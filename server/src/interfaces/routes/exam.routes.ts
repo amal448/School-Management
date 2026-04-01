@@ -2,43 +2,58 @@ import { Router } from 'express'
 import { createAuthMiddleware } from 'src/interfaces/middlewares/auth.middleware'
 import { validate } from 'src/interfaces/middlewares/validate.middleware'
 import { Role, ExamType } from 'src/domain/enums'
-import { CreateExamSchema, EnterMarksSchema, TimetableEntrySchema } from '../validators/exam.validators'
+import { AddCommonSubjectSchema, AddSectionLanguageSchema, CreateExamSchema, EnterMarksSchema, UpdateCommonSubjectSchema } from '../validators/exam.validators'
 import { ExamController } from '../controllers/exam.controller'
 
 type AuthMW = ReturnType<typeof createAuthMiddleware>
 
 export const createExamRouter = (ctrl: ExamController, authMW: AuthMW,): Router => {
-    
+
     const router = Router()
     const { authenticate, authorize } = authMW
 
-    // ── Exam CRUD (Admin/Manager) ───────────────────────
-    router.post('/', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(CreateExamSchema), ctrl.create)
+    // ── Exam CRUD ─────────────────────────────────────────
+    router.post('/',  [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(CreateExamSchema), ctrl.create)
     router.get('/', [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], ctrl.list)
     router.get('/:id', [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], ctrl.getById)
-    router.patch('/:id', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.update)
+    router.patch('/:id',  [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.update)
 
-    // ── Timetable (Admin/Manager) ───────────────────────
-    router.post('/:id/timetable', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(TimetableEntrySchema), ctrl.addTimetableEntry)
-    router.get('/:id/timetable', [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], ctrl.getTimetable)
-    router.delete('/:id/timetable/:entryId', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.deleteTimetableEntry)
+    // ── Common subjects (per grade) ───────────────────────
+    router.post('/:id/grades/subjects',
+         [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(AddCommonSubjectSchema), ctrl.addCommonSubject)
 
-    // ── Lifecycle (Admin/Manager) ───────────────────────
-    router.post('/:id/publish', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.publish)
-    router.post('/:id/declare', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.declare)
+    router.patch('/:id/grades/subjects',
+         [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(UpdateCommonSubjectSchema), ctrl.updateCommonSubject)
 
-    // ── Schedules (read for all staff) ─────────────────
+    router.delete('/:id/grades/:grade/subjects/:subjectId',
+         [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.removeCommonSubject)
+
+    // ── Section languages ─────────────────────────────────
+    router.post('/:id/grades/languages',
+         [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(AddSectionLanguageSchema), ctrl.addSectionLanguage)
+
+    router.delete('/:id/grades/:grade/languages/:classId',
+         [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.removeSectionLanguage)
+
+    // ── Publish + Declare ─────────────────────────────────
+    router.post('/:id/publish',  [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.publish)
+    router.post('/:id/declare',  [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.declare)
+
+    // ── Schedules ─────────────────────────────────────────
     router.get('/:id/schedules', [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], ctrl.getSchedules)
 
-    // ── Marks (Teacher enters, all staff reads) ─────────
-    router.post('/marks', [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], validate(EnterMarksSchema), ctrl.enterMarks)
-    router.get('/schedules/:scheduleId/marks', [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], ctrl.getMarksBySchedule)
+    // ── Marks ─────────────────────────────────────────────
+    router.post('/marks',
+        [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], validate(EnterMarksSchema), ctrl.enterMarks)
 
-    // ── Teacher's pending marks list ────────────────────
-    router.get('/pending-marks/me', authenticate, authorize(Role.TEACHER), ctrl.myPendingMarks)
+    router.get('/schedules/:scheduleId/marks',
+        [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], ctrl.getMarksBySchedule)
 
-    // ── Student results (declared only) ────────────────
-    router.get('/:id/results/:classId', [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], ctrl.getClassResults)
+    router.get('/pending-marks/me',
+        authenticate, authorize(Role.TEACHER), ctrl.myPendingMarks)
+
+    router.get('/:id/results/:classId',
+        [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], ctrl.getClassResults)
 
     return router
 }

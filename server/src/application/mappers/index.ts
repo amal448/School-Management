@@ -1,49 +1,47 @@
-import { ManagerEntity } from "../../domain/entities/manager.entity";
-import { TeacherEntity } from "../../domain/entities/teacher.entity";
-import { StudentEntity } from "../../domain/entities/student.entity";
-import { ManagerResponseDto, } from "../../domain/dtos/manager.dto";
-import { TeacherResponseDto } from "../../domain/dtos/teacher.dto";
-import { StudentResponseDto } from "../../domain/dtos/student.dto";
-import { AdminEntity } from "src/domain/entities/admin.entity";
-import { AdminResponseDto } from "src/domain/dtos/admin.dto";
-import { DepartmentEntity } from "src/domain/entities/department.entity";
-import { DepartmentResponseDto } from "src/domain/dtos/department.dto";
-import { SubjectEntity } from "src/domain/entities/subject.entity";
-import { SubjectResponseDto } from "src/domain/dtos/subject.dto";
-import { ClassEntity } from "src/domain/entities/class.entity";
-import { ClassResponseDto } from "src/domain/dtos/class.dto";
-import { ExamEntity }            from 'src/domain/entities/exam.entity'
-import { ExamTimetableEntity }   from 'src/domain/entities/exam-timetable.entity'
-import { ExamScheduleEntity }    from 'src/domain/entities/exam-schedule.entity'
-import { MarksEntity }           from 'src/domain/entities/marks.entity'
+import { ManagerEntity }     from 'src/domain/entities/manager.entity'
+import { TeacherEntity }     from 'src/domain/entities/teacher.entity'
+import { StudentEntity }     from 'src/domain/entities/student.entity'
+import { AdminEntity }       from 'src/domain/entities/admin.entity'
+import { DepartmentEntity }  from 'src/domain/entities/department.entity'
+import { SubjectEntity }     from 'src/domain/entities/subject.entity'
+import { ClassEntity }       from 'src/domain/entities/class.entity'
+import { ExamEntity }        from 'src/domain/entities/exam.entity'
+import { ExamScheduleEntity } from 'src/domain/entities/exam-schedule.entity'
+import { MarksEntity }       from 'src/domain/entities/marks.entity'
+
+import { ManagerResponseDto }    from 'src/domain/dtos/manager.dto'
+import { TeacherResponseDto }    from 'src/domain/dtos/teacher.dto'
+import { StudentResponseDto }    from 'src/domain/dtos/student.dto'
+import { AdminResponseDto }      from 'src/domain/dtos/admin.dto'
+import { DepartmentResponseDto } from 'src/domain/dtos/department.dto'
+import { SubjectResponseDto }    from 'src/domain/dtos/subject.dto'
+import { ClassResponseDto }      from 'src/domain/dtos/class.dto'
 import {
   ExamResponseDto,
-  TimetableEntryResponseDto,
   ExamScheduleResponseDto,
   MarksResponseDto,
 } from 'src/domain/dtos/exam.dto'
 
-
-
+// ── Manager ───────────────────────────────────────────
 export class ManagerMapper {
   static toDto(entity: ManagerEntity): ManagerResponseDto {
     return {
-      id: entity.id!,
-      email: entity.email,
-      role: 'MANAGER',
-      firstName: entity.firstName,
-      lastName: entity.lastName,
-      fullName: entity.fullName,
-      phone: entity.phone,
-      isActive: entity.isActive,
-      isVerified: entity.isVerified,
-      isFirstTime: entity.isFirstTime,
-      isBlocked: entity.isBlocked,
-      blockedBy: entity.blockedBy,
-      blockedAt: entity.blockedAt,
-      lastLogin: entity.lastLogin,
+      id:             entity.id!,
+      email:          entity.email,
+      role:           'MANAGER',
+      firstName:      entity.firstName,
+      lastName:       entity.lastName,
+      fullName:       entity.fullName,
+      phone:          entity.phone,
+      isActive:       entity.isActive,
+      isVerified:     entity.isVerified,
+      isFirstTime:    entity.isFirstTime,
+      isBlocked:      entity.isBlocked,
+      blockedBy:      entity.blockedBy,
+      blockedAt:      entity.blockedAt,
+      lastLogin:      entity.lastLogin,
       createdByAdmin: entity.createdByAdmin,
-      createdAt: entity.createdAt,
+      createdAt:      entity.createdAt,
     }
   }
 
@@ -51,155 +49,162 @@ export class ManagerMapper {
     return entities.map(this.toDto)
   }
 }
+
+// ── Teacher ───────────────────────────────────────────
 export class TeacherMapper {
   static toDto(e: TeacherEntity): TeacherResponseDto {
     return {
-      id: e.id!,
-      email: e.email,
-      role: 'TEACHER',
-      firstName: e.firstName,
-      lastName: e.lastName,
-      fullName: e.fullName,
-      dob: e.dob,
-      gender: e.gender,
-      phone: e.phone,
-      address: e.address,
-      hireDate: e.hireDate,
+      id:            e.id!,
+      email:         e.email,
+      role:          'TEACHER',
+      firstName:     e.firstName,
+      lastName:      e.lastName,
+      fullName:      e.fullName,
+      dob:           e.dob,
+      gender:        e.gender,
+      phone:         e.phone,
+      address:       e.address,
+      hireDate:      e.hireDate,
       qualification: e.qualification,
-      designation: e.designation,
-      deptId: e.deptId,
-      isActive: e.isActive,
-      createdAt: e.createdAt,
-    };
+      designation:   e.designation,
+      deptId:        e.deptId,
+      isActive:      e.isActive,
+      createdAt:     e.createdAt,
+    }
   }
 
   static toDtoList(entities: TeacherEntity[]): TeacherResponseDto[] {
-    return entities.map(this.toDto);
+    return entities.map(this.toDto)
   }
 }
 
+// ── Student ───────────────────────────────────────────
 export class StudentMapper {
   static toDto(e: StudentEntity): StudentResponseDto {
     return {
-      id: e.id!,
-      email: e.email,
-      role: 'STUDENT',
-      firstName: e.firstName,
-      lastName: e.lastName,
-      fullName: e.fullName,
-      dob: e.dob,
-      gender: e.gender,
-      phone: e.phone,
-      address: e.address,
-      admissionDate: e.admissionDate,
-      guardianName: e.guardianName,
+      id:              e.id!,
+      email:           e.email,
+      role:            'STUDENT',
+      firstName:       e.firstName,
+      lastName:        e.lastName,
+      fullName:        e.fullName,
+      dob:             e.dob,
+      gender:          e.gender,
+      phone:           e.phone,
+      address:         e.address,
+      admissionDate:   e.admissionDate,
+      guardianName:    e.guardianName,
       guardianContact: e.guardianContact,
-      classId: e.classId,
-      isActive: e.isActive,
-      createdAt: e.createdAt,
-    };
+      classId:         e.classId,
+      isActive:        e.isActive,
+      createdAt:       e.createdAt,
+    }
   }
 
   static toDtoList(entities: StudentEntity[]): StudentResponseDto[] {
-    return entities.map(this.toDto);
+    return entities.map(this.toDto)
   }
 }
 
+// ── Admin ─────────────────────────────────────────────
 export class AdminMapper {
   static toDto(entity: AdminEntity): AdminResponseDto {
     return {
-      id: entity.id!,
-      email: entity.email,
-      role: 'ADMIN',
-      firstName: entity.firstName,
-      lastName: entity.lastName,
-      fullName: entity.fullName,
-      avatar: entity.avatar,
-      isActive: entity.isActive,
+      id:         entity.id!,
+      email:      entity.email,
+      role:       'ADMIN',
+      firstName:  entity.firstName,
+      lastName:   entity.lastName,
+      fullName:   entity.fullName,
+      avatar:     entity.avatar,
+      isActive:   entity.isActive,
       isVerified: entity.isVerified,
-      lastLogin: entity.lastLogin,
-      createdAt: entity.createdAt,
+      lastLogin:  entity.lastLogin,
+      createdAt:  entity.createdAt,
     }
   }
 }
+
+// ── Department ────────────────────────────────────────
 export class DepartmentMapper {
   static toDto(entity: DepartmentEntity): DepartmentResponseDto {
     return {
-      id: entity.id!,
-      deptName: entity.deptName,
-      deptHeadId: entity.deptHeadId,
+      id:          entity.id!,
+      deptName:    entity.deptName,
+      deptHeadId:  entity.deptHeadId,
       description: entity.description,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
+      createdAt:   entity.createdAt,
+      updatedAt:   entity.updatedAt,
     }
   }
 }
 
+// ── Subject ───────────────────────────────────────────
 export class SubjectMapper {
   static toDto(entity: SubjectEntity): SubjectResponseDto {
     return {
-      id: entity.id!,
+      id:          entity.id!,
       subjectName: entity.subjectName,
-      deptId: entity.deptId,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
+      deptId:      entity.deptId,
+      createdAt:   entity.createdAt,
+      updatedAt:   entity.updatedAt,
     }
   }
 }
 
+// ── Class ─────────────────────────────────────────────
 export class ClassMapper {
   static toDto(entity: ClassEntity): ClassResponseDto {
     return {
-      id: entity.id!,
-      grade: entity.grade,
+      id:      entity.id!,
+      grade:   entity.grade,
       section: entity.section,
       classTeacherId: entity.classTeacherId,
-      subjectAllocations: entity.subjectAllocations,
+      // Fix 1: teacherId is optional in entity — map to string | undefined
+      subjectAllocations: entity.subjectAllocations.map((a) => ({
+        subjectId: a.subjectId,
+        teacherId: a.teacherId ?? undefined,
+      })),
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     }
   }
 }
 
-
+// ── Exam ──────────────────────────────────────────────
 export class ExamMapper {
   static toDto(entity: ExamEntity): ExamResponseDto {
     return {
-      id:                entity.id!,
-      examName:          entity.examName,
-      examType:          entity.examType,
-      academicYear:      entity.academicYear,
-      startDate:         entity.startDate,
-      endDate:           entity.endDate,
-      applicableClasses: entity.applicableClasses,
-      status:            entity.status,
-      createdBy:         entity.createdBy,
-      createdAt:         entity.createdAt,
-      updatedAt:         entity.updatedAt,
+      id:           entity.id!,
+      examName:     entity.examName,
+      examType:     entity.examType,
+      academicYear: entity.academicYear,
+      startDate:    entity.startDate,
+      endDate:      entity.endDate,
+      status:       entity.status,
+      // gradeConfigs are plain objects — pass through directly
+      gradeConfigs: entity.gradeConfigs,
+      createdBy:    entity.createdBy,
+      createdAt:    entity.createdAt,
+      updatedAt:    entity.updatedAt,
     }
   }
 
-  static timetableToDto(entity: ExamTimetableEntity): TimetableEntryResponseDto {
-    return {
-      id:           entity.id!,
-      examId:       entity.examId,
-      subjectId:    entity.subjectId,
-      examDate:     entity.examDate,
-      startTime:    entity.startTime,
-      endTime:      entity.endTime,
-      totalMarks:   entity.totalMarks,
-      passingMarks: entity.passingMarks,
-    }
-  }
+  // Fix 2: timetableToDto removed — exam_timetable collection no longer exists
+  // Fix 3: scheduleToDto no longer references timetableId
 
   static scheduleToDto(entity: ExamScheduleEntity): ExamScheduleResponseDto {
     return {
       id:          entity.id!,
       examId:      entity.examId,
-      timetableId: entity.timetableId,
       classId:     entity.classId,
       subjectId:   entity.subjectId,
       teacherId:   entity.teacherId,
+      examDate:    entity.examDate,
+      startTime:   entity.startTime,
+      endTime:     entity.endTime,
+      totalMarks:  entity.totalMarks,
+      passingMarks: entity.passingMarks,
       marksStatus: entity.marksStatus,
       submittedAt: entity.submittedAt,
     }

@@ -1,6 +1,6 @@
 export interface SubjectAllocationDto {
   subjectId: string
-  teacherId: string
+  teacherId?: string
 }
 
 export interface CreateClassDto {
@@ -26,7 +26,6 @@ export interface ClassResponseDto {
   id: string
   grade: string
   section: string
-
   classTeacherId?: string
   subjectAllocations: SubjectAllocationDto[]
   createdAt: Date
