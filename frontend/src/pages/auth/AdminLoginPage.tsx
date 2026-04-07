@@ -24,8 +24,6 @@ const AdminManagerLoginPage = () => {
   } = useAdminManagerLogin()
 
   const isAdmin = selectedRole === 'ADMIN'
-  const isManager = selectedRole === 'MANAGER'
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm flex flex-col gap-6">
@@ -92,7 +90,7 @@ const AdminManagerLoginPage = () => {
                 Continue with Google
               </Button>
             )}
-            {isManager && (
+            {!isAdmin  && (
               <>
                 <div className="flex items-center gap-3">
                   <Separator className="flex-1" />

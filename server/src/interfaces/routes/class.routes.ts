@@ -15,7 +15,7 @@ export const createClassRouter = (ctrl: ClassController, authMW: AuthMW,): Route
 
   router.post('/', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(CreateClassSchema), ctrl.create)
   router.get('/', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.list)
-  router.get('/:id', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.getById)
+  router.get('/:id', [authenticate, authorize(Role.ADMIN, Role.MANAGER,Role.TEACHER)], ctrl.getById)
   router.patch('/:id', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(UpdateClassSchema), ctrl.update)
   router.patch('/:id/subjects/:subjectId/teacher',[authenticate, authorize(Role.ADMIN, Role.MANAGER)],validate(AssignSubjectTeacherSchema),ctrl.assignSubjectTeacher)
   router.delete('/:id', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.delete)

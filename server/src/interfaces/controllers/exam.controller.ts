@@ -77,7 +77,7 @@ export class ExamController {
 
   addCommonSubject = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        console.log('addCommonSubject body:', JSON.stringify(req.body, null, 2))  // ← add
+      console.log('addCommonSubject body:', JSON.stringify(req.body, null, 2))  // ← add
       const result = await this.addCommonSubjectUseCase.execute(req.params.id, req.body)
       res.status(200).json({ success: true, data: result })
     } catch (err) { next(err) }
@@ -159,8 +159,8 @@ export class ExamController {
 
   myPendingMarks = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const schedules = await this.scheduleRepo.findByTeacherIdAndStatus(
-        req.user!.userId, MarksStatus.PENDING,
+      const schedules = await this.scheduleRepo.findByTeacherIdAndStatuses(
+        req.user!.userId, [MarksStatus.PENDING],
       )
       res.status(200).json({ success: true, data: schedules.map(ExamMapper.scheduleToDto) })
     } catch (err) { next(err) }
@@ -177,4 +177,53 @@ export class ExamController {
       res.status(200).json({ success: true, data: marks.map(ExamMapper.marksToDto) })
     } catch (err) { next(err) }
   }
+
+
+  // Add to ExamController
+
+  mySchedulesForClass = async (
+    req: Request, res: Response, next: NextFunction
+  ): Promise<void> => {
+    try {
+      const schedules = await this.scheduleRepo.findByTeacherAndClass(
+        req.user!.userId,
+        req.params.classId,
+      )
+      res.status(200).json({
+        success: true,
+        data: schedules.map(ExamMapper.scheduleToDto),
+      })
+    } catch (err) { next(err) }
+  }
+
+  mySubmittedMarks = async (
+    req: Request, res: Response, next: NextFunction
+  ): Promise<void> => {
+    try {
+      const schedules = await this.scheduleRepo.findByTeacherIdAndStatuses(
+        req.user!.userId,
+        [MarksStatus.SUBMITTED, MarksStatus.LOCKED],
+      )
+      res.status(200).json({
+        success: true,
+        data: schedules.map(ExamMapper.scheduleToDto),
+      })
+    } catch (err) { next(err) }
+  }
+
+  getStudentResults = async (
+    req: Request, res: Response, next: NextFunction
+  ): Promise<void> => {
+    try {
+      const marks = await this.marksRepo.findByStudentAndExam(
+        req.params.studentId,
+        req.params.examId ?? '',
+      )
+      res.status(200).json({
+        success: true,
+        data: marks.map(ExamMapper.marksToDto),
+      })
+    } catch (err) { next(err) }
+  }
+
 }

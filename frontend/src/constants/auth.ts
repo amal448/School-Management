@@ -23,6 +23,7 @@ export const ERROR_MESSAGES: Record<NonNullable<AuthError>, string> = {
 export const ADMIN_ROLE_OPTIONS = [
   { value: ROLES.ADMIN,   label: 'Admin'   },
   { value: ROLES.MANAGER, label: 'Manager' },
+  { value: ROLES.TEACHER, label: 'Teacher' },
 ] as const;
 
 // 3. Derive the types from the array to keep things DRY

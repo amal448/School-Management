@@ -7,6 +7,7 @@ import {
   PaginatedTeachers,
 } from '@/types/teacher.types'
 import { ApiResponse } from '@/types/api.types'
+import { ClassResponse } from '@/types/class.types'
 
 export const teacherApi = {
 
@@ -32,6 +33,21 @@ export const teacherApi = {
     )
     return res.data.data!.user
   },
+
+  getMe: async (): Promise<TeacherResponse> => {
+    const res = await apiClient.get<ApiResponse<TeacherResponse>>(
+      '/api/teachers/me'
+    )
+    return res.data.data!
+  },
+
+  getMyClasses: async (): Promise<ClassResponse[]> => {
+    const res = await apiClient.get<ApiResponse<ClassResponse[]>>(
+      '/api/teachers/me/classes'
+    )
+    return res.data.data!
+  },
+
 
   update: async (id: string, data: UpdateTeacherInput): Promise<TeacherResponse> => {
     const res = await apiClient.patch<ApiResponse<TeacherResponse>>(

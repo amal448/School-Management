@@ -127,3 +127,26 @@ export const useEnterMarks = () =>
       queryClient.invalidateQueries({ queryKey: EXAMS_KEY })
     },
   })
+
+  export const useMySchedulesForClass = (classId: string) =>
+  useQuery({
+    queryKey: [...EXAMS_KEY, 'class-schedules', classId],
+    queryFn:  () => examApi.getMySchedulesForClass(classId),
+    enabled:  !!classId,
+    staleTime: 1000 * 30,
+  })
+
+export const useMySubmittedMarks = () =>
+  useQuery({
+    queryKey:  [...EXAMS_KEY, 'submitted'],
+    queryFn:   () => examApi.getMySubmittedMarks(),
+    staleTime: 1000 * 30,
+  })
+
+export const useStudentResults = (studentId: string) =>
+  useQuery({
+    queryKey: [...EXAMS_KEY, 'student-results', studentId],
+    queryFn:  () => examApi.getStudentResults(studentId),
+    enabled:  !!studentId,
+    staleTime: 1000 * 60 * 5,
+  })

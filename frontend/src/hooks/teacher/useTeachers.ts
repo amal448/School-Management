@@ -8,6 +8,8 @@ import {
 } from '@/types/teacher.types'
 
 export const TEACHERS_KEY = ['teachers'] as const
+export const MY_CLASSES_KEY = ['teacher', 'me', 'classes'] as const
+export const MY_PROFILE_KEY = ['teacher', 'me'] as const
 
 // ── Fetch all teachers ─────────────────────────────────
 export const useTeachers = (params?: TeacherQueryParams) => {
@@ -47,6 +49,22 @@ export const useReactivateTeacher = () => {
     },
   })
 }
+export const useMyProfile = () =>
+  useQuery({
+    queryKey:  MY_PROFILE_KEY,
+    queryFn:   () => teacherApi.getMe(),
+    staleTime: 1000 * 60 * 10,   // 10 min — profile rarely changes
+    gcTime:    1000 * 60 * 30,
+  })
+
+export const useMyClasses = () =>
+  useQuery({
+    queryKey:  MY_CLASSES_KEY,
+    queryFn:   () => teacherApi.getMyClasses(),
+    staleTime: 1000 * 60 * 5,    // 5 min
+    gcTime:    1000 * 60 * 15,
+  })
+
 
 // ── Update teacher ─────────────────────────────────────
 export const useUpdateTeacher = (id: string, onSuccess?: () => void) => {

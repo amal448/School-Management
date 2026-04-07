@@ -1,59 +1,107 @@
+// src/interfaces/routes/exam.routes.ts
 import { Router } from 'express'
 import { createAuthMiddleware } from 'src/interfaces/middlewares/auth.middleware'
 import { validate } from 'src/interfaces/middlewares/validate.middleware'
-import { Role, ExamType } from 'src/domain/enums'
-import { AddCommonSubjectSchema, AddSectionLanguageSchema, CreateExamSchema, EnterMarksSchema, UpdateCommonSubjectSchema } from '../validators/exam.validators'
-import { ExamController } from '../controllers/exam.controller'
+import { Role } from 'src/domain/enums'
+import {
+  AddCommonSubjectSchema,
+  AddSectionLanguageSchema,
+  CreateExamSchema,
+  EnterMarksSchema,
+  UpdateCommonSubjectSchema,
+} from 'src/interfaces/validators/exam.validators'
+import { ExamController } from 'src/interfaces/controllers/exam.controller'
 
 type AuthMW = ReturnType<typeof createAuthMiddleware>
 
-export const createExamRouter = (ctrl: ExamController, authMW: AuthMW,): Router => {
+export const createExamRouter = (
+  ctrl: ExamController,
+  authMW: AuthMW,
+): Router => {
+  const router = Router()
+  const { authenticate, authorize } = authMW
 
-    const router = Router()
-    const { authenticate, authorize } = authMW
+  const adminManager = [authenticate, authorize(Role.ADMIN, Role.MANAGER)]
+  const allStaff = [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)]
 
-    // ── Exam CRUD ─────────────────────────────────────────
-    router.post('/',  [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(CreateExamSchema), ctrl.create)
-    router.get('/', [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], ctrl.list)
-    router.get('/:id', [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], ctrl.getById)
-    router.patch('/:id',  [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.update)
+  // ── Static routes FIRST (before any /:id routes) ──────
 
-    // ── Common subjects (per grade) ───────────────────────
-    router.post('/:id/grades/subjects',
-         [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(AddCommonSubjectSchema), ctrl.addCommonSubject)
+  // POST /api/exams/marks
+  router.post('/marks', allStaff, validate(EnterMarksSchema), ctrl.enterMarks,
+  )
 
-    router.patch('/:id/grades/subjects',
-         [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(UpdateCommonSubjectSchema), ctrl.updateCommonSubject)
+  // GET /api/exams/pending-marks/me
+  router.get('/pending-marks/me', authenticate, authorize(Role.TEACHER), ctrl.myPendingMarks,
+  )
 
-    router.delete('/:id/grades/:grade/subjects/:subjectId',
-         [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.removeCommonSubject)
+  // GET /api/exams/schedules/:scheduleId/marks
+  router.get('/schedules/:scheduleId/marks', allStaff, ctrl.getMarksBySchedule,
+  )
 
-    // ── Section languages ─────────────────────────────────
-    router.post('/:id/grades/languages',
-         [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(AddSectionLanguageSchema), ctrl.addSectionLanguage)
+  // ── Exam CRUD ──────────────────────────────────────────
+  router.post('/', adminManager, validate(CreateExamSchema), ctrl.create,
+  )
 
-    router.delete('/:id/grades/:grade/languages/:classId',
-         [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.removeSectionLanguage)
+  router.get('/', allStaff, ctrl.list,
+  )
 
-    // ── Publish + Declare ─────────────────────────────────
-    router.post('/:id/publish',  [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.publish)
-    router.post('/:id/declare',  [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.declare)
+  // Teacher's schedules for a specific class (pending + submitted)
+  router.get(
+    '/class/:classId/my-schedules',
+    authenticate, authorize(Role.TEACHER),
+    ctrl.mySchedulesForClass,
+  )
 
-    // ── Schedules ─────────────────────────────────────────
-    router.get('/:id/schedules', [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], ctrl.getSchedules)
+  // Teacher's submitted schedules
+  router.get(
+    '/submitted-marks/me',
+    authenticate, authorize(Role.TEACHER),
+    ctrl.mySubmittedMarks,
+  )
 
-    // ── Marks ─────────────────────────────────────────────
-    router.post('/marks',
-        [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], validate(EnterMarksSchema), ctrl.enterMarks)
+  // Student results (already in your code — just fix ordering)
+  router.get(
+    '/student/:studentId/results',
+    allStaff,
+    ctrl.getStudentResults,
+  )
 
-    router.get('/schedules/:scheduleId/marks',
-        [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], ctrl.getMarksBySchedule)
 
-    router.get('/pending-marks/me',
-        authenticate, authorize(Role.TEACHER), ctrl.myPendingMarks)
 
-    router.get('/:id/results/:classId',
-        [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER)], ctrl.getClassResults)
+  router.get('/:id', allStaff, ctrl.getById,
+  )
 
-    return router
+  router.patch('/:id', adminManager, ctrl.update,
+  )
+
+  // ── Common subjects ────────────────────────────────────
+  router.post('/:id/grades/subjects', adminManager, validate(AddCommonSubjectSchema), ctrl.addCommonSubject,
+  )
+
+  router.patch('/:id/grades/subjects', adminManager, validate(UpdateCommonSubjectSchema), ctrl.updateCommonSubject,
+  )
+
+  router.delete('/:id/grades/:grade/subjects/:subjectId', adminManager, ctrl.removeCommonSubject,
+  )
+
+  // ── Section languages ──────────────────────────────────
+  router.post('/:id/grades/languages', adminManager, validate(AddSectionLanguageSchema), ctrl.addSectionLanguage,
+  )
+
+  router.delete('/:id/grades/:grade/languages/:classId', adminManager, ctrl.removeSectionLanguage,
+  )
+
+  // ── Lifecycle ──────────────────────────────────────────
+  router.post('/:id/publish', adminManager, ctrl.publish)
+  router.post('/:id/declare', adminManager, ctrl.declare)
+
+  // ── Schedules ──────────────────────────────────────────
+  router.get('/:id/schedules', allStaff, ctrl.getSchedules)
+
+  // ── Results ────────────────────────────────────────────
+  router.get('/:id/results/:classId', allStaff, ctrl.getClassResults)
+  router.get('/student/:studentId/results', allStaff, ctrl.getStudentResults,
+  )
+
+  return router
 }

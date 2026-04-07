@@ -13,6 +13,7 @@ export interface RegisterStudentDto {
   guardianName?: string;
   guardianContact?: string;
   classId?: string;
+  createdBy: string
 }
 
 export interface UpdateStudentDto {

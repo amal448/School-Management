@@ -71,4 +71,15 @@ export const studentApi = {
       classId:  s.classId,
     }))
   },
+
+  // Add to studentApi object
+resetPassword: async (
+  studentId:   string,
+  newPassword: string,
+): Promise<void> => {
+  await apiClient.post(
+    `/api/auth/students/${studentId}/reset-password`,
+    { newPassword },
+  )
+},
 }

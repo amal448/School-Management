@@ -1,5 +1,5 @@
-import { IMarksRepository }  from 'src/application/ports/repositories/marks.repository.interface'
-import { MarksEntity }       from 'src/domain/entities/marks.entity'
+import { IMarksRepository } from 'src/application/ports/repositories/marks.repository.interface'
+import { MarksEntity } from 'src/domain/entities/marks.entity'
 import {
   MarksModel,
   IMarksDocument,
@@ -23,7 +23,7 @@ export class MongooseMarksRepository implements IMarksRepository {
 
   async findByStudentAndExam(
     studentId: string,
-    examId:    string,
+    examId: string,
   ): Promise<MarksEntity[]> {
     const docs = await MarksModel
       .find({ studentId, examId })
@@ -33,7 +33,7 @@ export class MongooseMarksRepository implements IMarksRepository {
 
   async findByClassAndExam(
     classId: string,
-    examId:  string,
+    examId: string,
   ): Promise<MarksEntity[]> {
     const docs = await MarksModel
       .find({ classId, examId })
@@ -46,4 +46,14 @@ export class MongooseMarksRepository implements IMarksRepository {
     const count = await MarksModel.countDocuments({ scheduleId })
     return count > 0
   }
+
+  // src/infrastructure/repositories/marks.repository.ts — add
+  async findByStudentId(studentId: string): Promise<MarksEntity[]> {
+    const docs = await MarksModel
+      .find({ studentId })
+      .sort({ createdAt: -1 })
+      .lean<IMarksDocument[]>()
+    return (docs as IMarksDocument[]).map(MarksDocumentMapper.toDomain)
+  }
+
 }

@@ -4,6 +4,7 @@ import {
   School, CheckSquare, FileText, TrendingUp,
   Trophy, Calendar,
   type LucideIcon,
+  User,
 } from 'lucide-react'
 
 export const ROLES = {
@@ -60,6 +61,8 @@ export const ROUTES = {
     MARKS: '/teacher/marks',
     ASSIGNMENTS: '/teacher/assignments',
     STUDENTS: '/teacher/students',
+    PROFILE:   '/teacher/profile',
+
   },
   STUDENT: {
     ROOT: '/student',
@@ -109,11 +112,11 @@ export const MANAGER_NAV: NavItem[] = [
 export const TEACHER_NAV: NavItem[] = [
   { label: 'Dashboard', path: ROUTES.TEACHER.DASHBOARD, icon: LayoutDashboard },
   { label: 'My Classes', path: ROUTES.TEACHER.CLASSES, icon: School },
-  { label: 'Attendance', path: ROUTES.TEACHER.ATTENDANCE, icon: CheckSquare },
-  { label: 'Marks', path: ROUTES.TEACHER.MARKS, icon: FileText },
-  { label: 'Assignments', path: ROUTES.TEACHER.ASSIGNMENTS, icon: ClipboardList },
-  { label: 'Students', path: ROUTES.TEACHER.STUDENTS, icon: Users },
-  { label: 'Pending Marks', path: '/teacher/marks', icon: BookOpen }
+  // { label: 'Attendance', path: ROUTES.TEACHER.ATTENDANCE, icon: CheckSquare },
+  // { label: 'Marks', path: ROUTES.TEACHER.MARKS, icon: FileText },
+  // { label: 'Assignments', path: ROUTES.TEACHER.ASSIGNMENTS, icon: ClipboardList },
+  { label: 'Profile', path: ROUTES.TEACHER.PROFILE, icon: User },
+  // { label: 'Students', path: ROUTES.TEACHER.STUDENTS, icon: Users },
 
 ]
 

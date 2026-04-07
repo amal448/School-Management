@@ -232,7 +232,7 @@ export class ClassDocumentMapper {
       classTeacherId: doc.classTeacherId ?? undefined,
       subjectAllocations: doc.subjectAllocations.map((a) => ({
         subjectId: a.subjectId,
-        teacherId: a.teacherId,
+        teacherId: a.teacherId ?? undefined,
       })),
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,

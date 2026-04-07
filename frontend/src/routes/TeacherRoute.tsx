@@ -1,26 +1,34 @@
-import { ROUTES } from '@/config/routes.config'
-import MarksEntryPage from '@/pages/teacher/MarksEntryPage'
+// src/routes/TeacherRoute.tsx
+import { Navigate, Route, Routes } from 'react-router-dom'
 import PendingMarksPage from '@/pages/teacher/PendingMarksPage'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import MarksEntryPage from '@/pages/teacher/MarksEntryPage'
+import TeacherMarksViewPage from '@/pages/teacher/TeacherMarksViewPage'
+import TeacherClassDetailPage from '@/pages/teacher/TeacherClassDetailPage'
+import TeacherStudentProfilePage from '@/pages/teacher/TeacherStudentProfilePage'
+import TeacherProfilePage from '@/pages/shared/TeacherProfilePage'
+import DashboardLayout from '@/layouts/DashboardLayout'
+import TeacherDashboard from '@/pages/teacher/TeacherDashBoard'
+import { ROLES } from '@/config/routes.config'
+import TeacherClassesPage from '@/pages/teacher/TeacherClassesPage'
+import ClassMarksPage from '@/pages/teacher/ClassMarksPage'
 
-const Placeholder = ({ title }: { title: string }) => (
-  <div className="flex items-center justify-center h-64 text-gray-400">
-    <p className="text-lg font-medium">{title} — coming soon</p>
-  </div>
-)
+export const TeacherRoute = () => (
+  // <Route element={<DashboardLayout role={ROLES.ADMIN} />}>
+  //     <Route index element={<Navigate to="dashboard" replace />} />
+  //     <Route path="dashboard" element={<AdminDashboard />} />
+  <Routes>
+    <Route element={<DashboardLayout role={ROLES.TEACHER} />}>
+      <Route index element={<Navigate to="dashboard" replace />} />
+      <Route path="dashboard" element={<TeacherDashboard />} />
+      <Route path="classes" element={<TeacherClassesPage />} />
+      <Route path="classes/:id" element={<TeacherClassDetailPage />} />
+      <Route path="students/:id" element={<TeacherStudentProfilePage />} />
 
-export default function TeacherRoutes() {
-  return (
-    <Routes>
-      <Route index element={<Navigate to={ROUTES.TEACHER.DASHBOARD} replace />} />
-      <Route path="dashboard" element={<Placeholder title="Teacher Dashboard" />} />
-      <Route path="classes" element={<Placeholder title="My Classes" />} />
-      <Route path="attendance" element={<Placeholder title="Record Attendance" />} />
-      <Route path="marks" element={<PendingMarksPage />} />
+      <Route path="classes/:classId/marks" element={<ClassMarksPage />} />
       <Route path="marks/:scheduleId" element={<MarksEntryPage />} />
-      <Route path="assignments" element={<Placeholder title="Assignments" />} />
-      <Route path="students" element={<Placeholder title="My Students" />} />
-      <Route path="*" element={<Navigate to={ROUTES.TEACHER.DASHBOARD} replace />} />
-    </Routes>
-  )
-}
+      <Route path="marks/:scheduleId/view" element={<TeacherMarksViewPage />} />
+      <Route path="profile" element={<TeacherProfilePage />} />
+    </Route>
+
+  </Routes>
+)

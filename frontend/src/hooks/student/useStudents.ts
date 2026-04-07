@@ -64,3 +64,14 @@ export const useDeactivateStudent = () => {
   })
 }
 
+export const useResetStudentPassword = () => {
+  return useMutation({
+    mutationFn: ({
+      studentId,
+      newPassword,
+    }: {
+      studentId:   string
+      newPassword: string
+    }) => studentApi.resetPassword(studentId, newPassword),
+  })
+}

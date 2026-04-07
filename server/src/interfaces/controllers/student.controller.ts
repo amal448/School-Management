@@ -18,13 +18,20 @@ export class StudentController {
     ) {}
 
 
- // (Manager only)
-  register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const result = await this.registerUseCase.execute(req.body);
-      res.status(201).json({ success: true, message: 'Student registered', data: result });
-    } catch (err) { next(err); }
-  };
+
+register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const result = await this.registerUseCase.execute({
+      ...req.body,
+      createdBy: req.user!.userId,   // ← who created this student
+    })
+    res.status(201).json({
+      success: true,
+      message: 'Student registered',
+      data:    { student: result },  // ← matches frontend expectation
+    })
+  } catch (err) { next(err) }
+}
 
   //   (Manager, Teacher)
   list = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

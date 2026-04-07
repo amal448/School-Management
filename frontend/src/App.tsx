@@ -4,7 +4,7 @@ import { queryClient } from '@/lib/query-client'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import { ROUTES, ROLES } from '@/config/routes.config'
 
-import AdminManagerLogin from '@/pages/auth/AdminManagerLogin'
+import AdminManagerLogin from '@/pages/auth/AdminLoginPage'
 import AuthCallbackPage from '@/pages/auth/AuthCallbackPage'
 import NotFoundPage from '@/pages/errors/NotFoundPage'
 import UnauthorizedPage from '@/pages/errors/UnauthorizedPage'
@@ -12,6 +12,7 @@ import UnauthorizedPage from '@/pages/errors/UnauthorizedPage'
 import AdminRoutes from '@/routes/AdminRoute'
 import VerifyOtpPage from './pages/auth/VerifyOtpPage'
 import ManagerRoutes from './routes/ManagerRoute'
+import { TeacherRoute } from './routes/TeacherRoute'
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -38,6 +39,14 @@ const App = () => (
           element={
             <ProtectedRoute allowedRoles={[ROLES.MANAGER]}>
               <ManagerRoutes />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teacher/*"
+          element={
+            <ProtectedRoute allowedRoles={[ROLES.TEACHER]}>
+              <TeacherRoute />
             </ProtectedRoute>
           }
         />

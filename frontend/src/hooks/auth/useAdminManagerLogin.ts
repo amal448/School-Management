@@ -1,8 +1,8 @@
-import { useState }     from 'react'
-import { useMutation }  from '@tanstack/react-query'
-import { useNavigate }  from 'react-router-dom'
-import { authApi }      from '@/api/auth.api'
-import { ROUTES }       from '@/config/routes.config'
+import { useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
+import { authApi } from '@/api/auth.api'
+import { ROUTES } from '@/config/routes.config'
 import {
   AdminRoleOption,
   AuthError,
@@ -12,18 +12,18 @@ export const useAdminManagerLogin = () => {
   const navigate = useNavigate()
 
   const [selectedRole, setSelectedRole] = useState<AdminRoleOption>('ADMIN')
-  const [email,        setEmail]        = useState('')
-  const [password,     setPassword]     = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [error,        setError]        = useState<AuthError | null>(null)
+  const [error, setError] = useState<AuthError | null>(null)
 
-  const isAdmin   = selectedRole === 'ADMIN'
+  const isAdmin = selectedRole === 'ADMIN'
   const isManager = selectedRole === 'MANAGER'
+  const isTeacher = selectedRole === 'TEACHER'
 
-  const currentRoleLabel = isAdmin ? 'Admin' : 'Manager'
-  const emailPlaceholder = isAdmin
-    ? 'admin@school.com'
-    : 'manager@school.com'
+  const currentRoleLabel = isAdmin ? 'Admin' : isManager ? 'Manager' :'Teacher'
+
+  const emailPlaceholder =isAdmin ? 'admin@school.com' :isManager ? 'manager@school.com' : 'teacher@school.com'
 
   // Admin Google OAuth
   const googleMutation = useMutation({
@@ -32,17 +32,17 @@ export const useAdminManagerLogin = () => {
 
   // Manager credentials → OTP
   const loginMutation = useMutation({
-    mutationFn: () => authApi.login({ email, password, role: 'MANAGER' }),
+    mutationFn: () => authApi.login({ email, password, role: selectedRole as 'MANAGER' | 'TEACHER' }),
     onSuccess: () => {
       navigate(ROUTES.AUTH.VERIFY_OTP, {
-        state: { email, role: 'MANAGER' },
+        state: { email, role: selectedRole },
       })
     },
     onError: (err: any) => {
       const code = err?.response?.data?.errorCode as string
-      if (code === 'FORBIDDEN')                                  setError('ACCOUNT_BLOCKED')
+      if (code === 'FORBIDDEN') setError('ACCOUNT_BLOCKED')
       else if (code === 'UNAUTHORIZED' || code === 'NOT_FOUND') setError('INVALID_CREDENTIALS')
-      else                                                        setError('UNKNOWN')
+      else setError('UNKNOWN')
     },
   })
 
@@ -73,7 +73,7 @@ export const useAdminManagerLogin = () => {
 
   const handleCredentialLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!isManager) return
+    if (!isManager && !isTeacher) return
     setError(null)
     loginMutation.mutate()
   }
@@ -82,7 +82,7 @@ export const useAdminManagerLogin = () => {
     email, password, showPassword, error,
     selectedRole, isAdmin, isManager,
     currentRoleLabel, emailPlaceholder,
-    loading:       loginMutation.isPending,
+    loading: loginMutation.isPending,
     googleLoading: googleMutation.isPending,
     handleRoleChange, handleEmailChange, handlePasswordChange,
     toggleShowPassword, handleCredentialLogin, handleGoogleLogin,

@@ -1,5 +1,5 @@
-import apiClient                from './client'
-import { ApiResponse }          from '@/types/api.types'
+import apiClient from './client'
+import { ApiResponse } from '@/types/api.types'
 import {
   ExamResponse,
   ExamScheduleResponse,
@@ -36,7 +36,7 @@ export const examApi = {
   },
 
   update: async (
-    id:   string,
+    id: string,
     data: Partial<Pick<CreateExamInput, 'examName' | 'startDate' | 'endDate'>>,
   ): Promise<ExamResponse> => {
     const res = await apiClient.patch<ApiResponse<ExamResponse>>(
@@ -48,7 +48,7 @@ export const examApi = {
   // ── Common subjects ───────────────────────────────
   addCommonSubject: async (
     examId: string,
-    data:   AddCommonSubjectInput,
+    data: AddCommonSubjectInput,
   ): Promise<ExamResponse> => {
     const res = await apiClient.post<ApiResponse<ExamResponse>>(
       `/api/exams/${examId}/grades/subjects`, data
@@ -58,7 +58,7 @@ export const examApi = {
 
   updateCommonSubject: async (
     examId: string,
-    data:   AddCommonSubjectInput,
+    data: AddCommonSubjectInput,
   ): Promise<ExamResponse> => {
     const res = await apiClient.patch<ApiResponse<ExamResponse>>(
       `/api/exams/${examId}/grades/subjects`, data
@@ -67,8 +67,8 @@ export const examApi = {
   },
 
   removeCommonSubject: async (
-    examId:    string,
-    grade:     string,
+    examId: string,
+    grade: string,
     subjectId: string,
   ): Promise<ExamResponse> => {
     const res = await apiClient.delete<ApiResponse<ExamResponse>>(
@@ -80,7 +80,7 @@ export const examApi = {
   // ── Section languages ─────────────────────────────
   addSectionLanguage: async (
     examId: string,
-    data:   AddSectionLanguageInput,
+    data: AddSectionLanguageInput,
   ): Promise<ExamResponse> => {
     const res = await apiClient.post<ApiResponse<ExamResponse>>(
       `/api/exams/${examId}/grades/languages`, data
@@ -89,8 +89,8 @@ export const examApi = {
   },
 
   removeSectionLanguage: async (
-    examId:  string,
-    grade:   string,
+    examId: string,
+    grade: string,
     classId: string,
   ): Promise<ExamResponse> => {
     const res = await apiClient.delete<ApiResponse<ExamResponse>>(
@@ -142,7 +142,7 @@ export const examApi = {
   },
 
   getClassResults: async (
-    examId:  string,
+    examId: string,
     classId: string,
   ): Promise<MarksResponse[]> => {
     const res = await apiClient.get<ApiResponse<MarksResponse[]>>(
@@ -150,4 +150,30 @@ export const examApi = {
     )
     return res.data.data!
   },
+
+  // Add to examApi:
+
+  getMySchedulesForClass: async (
+    classId: string,
+  ): Promise<ExamScheduleResponse[]> => {
+    const res = await apiClient.get<ApiResponse<ExamScheduleResponse[]>>(
+      `/api/exams/class/${classId}/my-schedules`
+    )
+    return res.data.data!
+  },
+
+  getMySubmittedMarks: async (): Promise<ExamScheduleResponse[]> => {
+    const res = await apiClient.get<ApiResponse<ExamScheduleResponse[]>>(
+      '/api/exams/submitted-marks/me'
+    )
+    return res.data.data!
+  },
+
+  getStudentResults: async (studentId: string): Promise<MarksResponse[]> => {
+    const res = await apiClient.get<ApiResponse<MarksResponse[]>>(
+      `/api/exams/student/${studentId}/results`
+    )
+    return res.data.data!
+  },
+
 }

@@ -4,6 +4,7 @@ interface Props {
   label: string
   value: string | number
   icon:  LucideIcon
+  onClick?:()=> void
 }
 
 export const StatCard = ({ label, value, icon: Icon }: Props) => (

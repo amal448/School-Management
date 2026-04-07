@@ -1,6 +1,6 @@
-import { IExamScheduleRepository }  from 'src/application/ports/repositories/exam-schedule.repository.interface'
-import { ExamScheduleEntity }       from 'src/domain/entities/exam-schedule.entity'
-import { MarksStatus }              from 'src/domain/enums'
+import { IExamScheduleRepository } from 'src/application/ports/repositories/exam-schedule.repository.interface'
+import { ExamScheduleEntity } from 'src/domain/entities/exam-schedule.entity'
+import { MarksStatus } from 'src/domain/enums'
 import {
   ExamScheduleModel,
   IExamScheduleDocument,
@@ -25,7 +25,7 @@ export class MongooseExamScheduleRepository
   }
 
   async update(
-    id:       string,
+    id: string,
     schedule: ExamScheduleEntity,
   ): Promise<ExamScheduleEntity | null> {
     const doc = await ExamScheduleModel.findByIdAndUpdate(
@@ -61,21 +61,30 @@ export class MongooseExamScheduleRepository
     return (docs as IExamScheduleDocument[])
       .map(ExamScheduleDocumentMapper.toDomain)
   }
-
-  async findByTeacherIdAndStatus(
+  async findByTeacherAndClass(
     teacherId: string,
-    status:    MarksStatus,
+    classId: string,
   ): Promise<ExamScheduleEntity[]> {
     const docs = await ExamScheduleModel
-      .find({ teacherId, marksStatus: status })
-      .sort({ createdAt: -1 })
+      .find({ teacherId, classId })
+      .sort({ examDate: 1 })
       .lean<IExamScheduleDocument[]>()
     return (docs as IExamScheduleDocument[])
       .map(ExamScheduleDocumentMapper.toDomain)
   }
 
+  async findByTeacherIdAndStatuses(teacherId: string,
+    statuses: MarksStatus[],
+  ): Promise<ExamScheduleEntity[]> {
+    const docs = await ExamScheduleModel
+      .find({ teacherId, marksStatus: { $in: statuses } })
+      .sort({ examDate: -1 })
+      .lean<IExamScheduleDocument[]>()
+    return (docs as IExamScheduleDocument[])
+      .map(ExamScheduleDocumentMapper.toDomain)
+  }
   async findByExamAndClass(
-    examId:  string,
+    examId: string,
     classId: string,
   ): Promise<ExamScheduleEntity[]> {
     const docs = await ExamScheduleModel

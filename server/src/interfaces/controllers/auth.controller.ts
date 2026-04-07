@@ -43,7 +43,7 @@ export class AuthController {
       const result = await this.verifyOtpUseCase.execute({
         email: req.body.email,
         otp:   req.body.otp,
-        role:  req.body.role as Role.TEACHER | Role.STUDENT,
+        role:  req.body.role as Role.TEACHER ,
         res,
       })
       res.status(200).json({ success: true, ...result })
