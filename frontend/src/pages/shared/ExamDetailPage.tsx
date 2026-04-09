@@ -1,6 +1,6 @@
-import { useState }               from 'react'
+import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Button }                 from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   ArrowLeft, CheckCircle2, XCircle,
@@ -11,12 +11,12 @@ import {
   usePublishExam, useDeclareExam,
   useRemoveCommonSubject, useRemoveSectionLanguage,
 } from '@/hooks/exam/useExams'
-import { useSubjects }            from '@/hooks/subject/useSubjects'
-import { useTeachers }            from '@/hooks/teacher/useTeachers'
-import { useClasses }             from '@/hooks/class/useClasses'
+import { useSubjects } from '@/hooks/subject/useSubjects'
+import { useTeachers } from '@/hooks/teacher/useTeachers'
+import { useClasses } from '@/hooks/class/useClasses'
 import { AddSectionLanguageDialog } from '@/components/exam/AddSectionLanguageDialog'
 import { ExamStatus, MarksStatus } from '@/types/enums'
-import { GradeConfig }            from '@/types/exam.types'
+import { ExamResponse, GradeConfig } from '@/types/exam.types'
 import {
   EXAM_TYPE_LABELS,
   EXAM_STATUS_LABELS,
@@ -36,13 +36,13 @@ const ConfirmDialog = ({
   isPending,
   variant = 'default',
 }: {
-  trigger:      React.ReactNode
-  title:        string
-  description:  string
+  trigger: React.ReactNode
+  title: string
+  description: string
   confirmLabel: string
-  onConfirm:    () => void
-  isPending:    boolean
-  variant?:     'default' | 'destructive'
+  onConfirm: () => void
+  isPending: boolean
+  variant?: 'default' | 'destructive'
 }) => {
   const [open, setOpen] = useState(false)
   return (
@@ -75,20 +75,22 @@ const ConfirmDialog = ({
 
 // ── Grade config panel ─────────────────────────────────
 const GradeConfigPanel = ({
+  exam,
   examId,
   gradeConfig,
   isDraft,
   resolveSubject,
   resolveClass,
 }: {
-  examId:         string
-  gradeConfig:    GradeConfig
-  isDraft:        boolean
+  exam: ExamResponse,
+  examId: string,
+  gradeConfig: GradeConfig
+  isDraft: boolean
   resolveSubject: (id: string) => string
-  resolveClass:   (id: string) => string
+  resolveClass: (id: string) => string
 }) => {
-  const removeSubject  = useRemoveCommonSubject(examId)
-  const removeLang     = useRemoveSectionLanguage(examId)
+  const removeSubject = useRemoveCommonSubject(examId)
+  const removeLang = useRemoveSectionLanguage(examId)
 
   return (
     <Card key={gradeConfig.grade}>
@@ -100,11 +102,11 @@ const GradeConfigPanel = ({
           {isDraft && (
             <div className="flex gap-2">
               <AddCommonSubjectDialog
-                examId={examId}
+                exam={exam}
                 gradeConfig={gradeConfig}
               />
               <AddSectionLanguageDialog
-                examId={examId}
+                exam={exam}
                 gradeConfig={gradeConfig}
               />
             </div>
@@ -174,7 +176,7 @@ const GradeConfigPanel = ({
                             description={`Remove ${resolveSubject(s.subjectId)} from Grade ${gradeConfig.grade}?`}
                             confirmLabel="Remove"
                             onConfirm={() => removeSubject.mutate({
-                              grade:     gradeConfig.grade,
+                              grade: gradeConfig.grade,
                               subjectId: s.subjectId,
                             })}
                             isPending={removeSubject.isPending}
@@ -247,7 +249,7 @@ const GradeConfigPanel = ({
                             description={`Remove language for ${resolveClass(l.classId)}?`}
                             confirmLabel="Remove"
                             onConfirm={() => removeLang.mutate({
-                              grade:   gradeConfig.grade,
+                              grade: gradeConfig.grade,
                               classId: l.classId,
                             })}
                             isPending={removeLang.isPending}
@@ -279,14 +281,14 @@ const Skeleton = () => (
 
 // ── Page ──────────────────────────────────────────────
 export default function ExamDetailPage() {
-  const { id }   = useParams<{ id: string }>()
+  const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
 
-  const { data: exam,      isLoading } = useExam(id ?? '')
-  const { data: schedules }            = useExamSchedules(id ?? '')
-  const { data: subjects }             = useSubjects({ limit: 100 })
-  const { data: teachers }             = useTeachers()
-  const { data: classes }              = useClasses()
+  const { data: exam, isLoading } = useExam(id ?? '')
+  const { data: schedules } = useExamSchedules(id ?? '')
+  const { data: subjects } = useSubjects({ limit: 100 })
+  const { data: teachers } = useTeachers()
+  const { data: classes } = useClasses()
 
   const publishMutation = usePublishExam(id ?? '')
   const declareMutation = useDeclareExam(id ?? '')
@@ -314,12 +316,12 @@ export default function ExamDetailPage() {
     </div>
   )
 
-  const isDraft     = exam.status === ExamStatus.DRAFT
-  const isPending   = exam.status === ExamStatus.MARKS_PENDING
-  const isOngoing   = exam.status === ExamStatus.ONGOING
-  const isDeclared  = exam.status === ExamStatus.DECLARED
+  const isDraft = exam.status === ExamStatus.DRAFT
+  const isPending = exam.status === ExamStatus.MARKS_PENDING
+  const isOngoing = exam.status === ExamStatus.ONGOING
+  const isDeclared = exam.status === ExamStatus.DECLARED
 
-  const totalSchedules     = schedules?.length ?? 0
+  const totalSchedules = schedules?.length ?? 0
   const submittedSchedules = schedules?.filter(
     (s) => s.marksStatus !== MarksStatus.PENDING
   ).length ?? 0
@@ -414,10 +416,10 @@ export default function ExamDetailPage() {
       {/* ── Summary stat cards ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { label: 'Grades',     value: exam.gradeConfigs.length },
-          { label: 'Schedules',  value: totalSchedules },
-          { label: 'Submitted',  value: submittedSchedules },
-          { label: 'Pending',    value: totalSchedules - submittedSchedules },
+          { label: 'Grades', value: exam.gradeConfigs.length },
+          { label: 'Schedules', value: totalSchedules },
+          { label: 'Submitted', value: submittedSchedules },
+          { label: 'Pending', value: totalSchedules - submittedSchedules },
         ].map(({ label, value }) => (
           <div key={label} className="bg-secondary rounded-lg p-4">
             <p className="text-xs text-muted-foreground">{label}</p>
@@ -440,6 +442,7 @@ export default function ExamDetailPage() {
           .map((gradeConfig) => (
             <GradeConfigPanel
               key={gradeConfig.grade}
+              exam={exam}
               examId={exam.id}
               gradeConfig={gradeConfig}
               isDraft={isDraft}

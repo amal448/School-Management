@@ -41,30 +41,58 @@ export class MongooseTeacherRepository implements ITeacherRepository {
   }
 
   async findAll(query: TeacherQueryDto): Promise<PaginatedResult<TeacherEntity>> {
-    const page  = query.page  ?? DEFAULT_PAGE;
-    const limit = Math.min(query.limit ?? DEFAULT_LIMIT, 100);
-    const skip  = (page - 1) * limit;
+    const page = query.page ?? DEFAULT_PAGE
+    const limit = Math.min(query.limit ?? DEFAULT_LIMIT, 100)
+    const skip = (page - 1) * limit
 
-    const filter: FilterQuery<ITeacherDocument> = {};
-    if (query.deptId)              filter.deptId   = query.deptId;
-    if (query.isActive !== undefined) filter.isActive = query.isActive;
+    const filter: FilterQuery<ITeacherDocument> = {}
+    if (query.isActive !== undefined) filter.isActive = query.isActive
+    if (query.deptId) filter.deptId = query.deptId
     if (query.search) {
       filter.$or = [
         { firstName: { $regex: query.search, $options: 'i' } },
-        { lastName:  { $regex: query.search, $options: 'i' } },
-        { email:     { $regex: query.search, $options: 'i' } },
-      ];
+        { lastName: { $regex: query.search, $options: 'i' } },
+        { email: { $regex: query.search, $options: 'i' } },
+      ]
     }
 
     const [docs, total] = await Promise.all([
-      TeacherModel.find(filter).skip(skip).limit(limit).lean<ITeacherDocument[]>(),
+      TeacherModel.aggregate([
+        { $match: filter },
+        { $skip: skip },
+        { $limit: limit },
+        {
+          $lookup: {
+            from: 'departments',
+            localField: 'deptId',
+            foreignField: '_id',
+            as: 'department',
+            pipeline: [
+              { $project: { deptName: 1 } }
+            ],
+          },
+        },
+        {
+          $addFields: {
+            deptName: { $arrayElemAt: ['$department.deptName', 0] },
+          },
+        },
+        { $project: { department: 0 } },
+      ]),
       TeacherModel.countDocuments(filter),
-    ]);
+    ])
 
     return {
-      data: (docs as ITeacherDocument[]).map(TeacherDocumentMapper.toDomain),
-      total, page, limit,
-    };
+      data: docs.map((doc: any) => {
+        const entity = TeacherDocumentMapper.toDomain(doc);
+        // If your Entity allows extra properties or if you just need the data:
+        (entity as any).deptName = doc.deptName ?? null;
+        return entity;
+      }),
+      total,
+      page,
+      limit,
+    }
   }
 
   async existsByEmail(email: string): Promise<boolean> {
@@ -74,4 +102,51 @@ export class MongooseTeacherRepository implements ITeacherRepository {
   async countByDept(deptId: string): Promise<number> {
     return TeacherModel.countDocuments({ deptId, isActive: true });
   }
+
+  async findByDeptAndSubject(
+    deptId: string,
+    subjectId: string,
+  ): Promise<TeacherEntity[]> {
+    const docs = await TeacherModel
+      .find({
+        deptId,
+        subjectIds: subjectId,   // MongoDB checks if array contains value
+        isActive: true,
+      })
+      .lean<ITeacherDocument[]>()
+    return (docs as ITeacherDocument[]).map(TeacherDocumentMapper.toDomain)
+  }
+
+  async findByIds(ids: string[]): Promise<TeacherEntity[]> {
+    if (!ids.length) return []
+    const docs = await TeacherModel
+      .find({ _id: { $in: ids } })
+      .lean<ITeacherDocument[]>()
+    return (docs as ITeacherDocument[]).map(TeacherDocumentMapper.toDomain)
+  }
+
+  // src/infrastructure/repositories/teacher.repository.ts — add
+  async findByLevel(level: string): Promise<TeacherEntity[]> {
+    const docs = await TeacherModel
+      .find({
+        $or: [
+          { level },
+          { level: 'all' },   // teachers who can teach any level
+        ],
+        isActive: true,
+      })
+      .sort({ firstName: 1 })
+      .lean<ITeacherDocument[]>()
+    return (docs as ITeacherDocument[]).map(TeacherDocumentMapper.toDomain)
+  }
+
+
+
+
+
+
+
+
+
+
 }

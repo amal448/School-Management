@@ -70,3 +70,10 @@ export enum MarksStatus {
   SUBMITTED='submitted',
   LOCKED ='locked'
 }
+
+export enum TeacherLevel {
+  PRIMARY = 'primary',
+  MIDDLE = 'middle',
+  SECONDARY = 'secondary',
+  HIGHER_SECONDARY = 'higher_secondary'
+}

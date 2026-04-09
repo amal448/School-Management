@@ -7,7 +7,7 @@ import { CrudDialog }            from '@/components/shared/CrudDialog'
 import { useAddSectionLanguage } from '@/hooks/exam/useExams'
 import { useSubjects }           from '@/hooks/subject/useSubjects'
 import { useClasses }            from '@/hooks/class/useClasses'
-import { AddSectionLanguageInput, GradeConfig } from '@/types/exam.types'
+import { AddSectionLanguageInput, ExamResponse, GradeConfig } from '@/types/exam.types'
 
 interface FormValues {
   classId:      string
@@ -18,57 +18,60 @@ interface FormValues {
   totalMarks:   number
   passingMarks: number
 }
-
 interface Props {
-  examId:      string
+  exam:        ExamResponse   // ← was just examId + gradeConfig
   gradeConfig: GradeConfig
 }
 
-export const AddSectionLanguageDialog = ({ examId, gradeConfig }: Props) => {
+export const AddSectionLanguageDialog = ({ exam, gradeConfig }: Props) => {
   const { register, handleSubmit, reset, formState: { isDirty, errors } } =
     useForm<FormValues>({
-      defaultValues: {
-        totalMarks:   100,
-        passingMarks: 35,
-      },
+      defaultValues: { totalMarks: 100, passingMarks: 35 },
     })
 
-  const mutation           = useAddSectionLanguage(examId)
+  const mutation           = useAddSectionLanguage(exam.id)
   const { data: subjects } = useSubjects({ limit: 100 })
   const { data: classes }  = useClasses()
 
-  // Only sections of this grade
-  const gradeSections = (classes?.data ?? []).filter(
+  const gradeSections    = (classes?.data ?? []).filter(
     (c) => c.grade === gradeConfig.grade
   )
-
-  // Sections that already have a language assigned
   const assignedClassIds = new Set(
     gradeConfig.sectionLanguages.map((l) => l.classId)
   )
-
-  // Common subject IDs — language must not be one of these
   const commonSubjectIds = new Set(
     gradeConfig.commonSubjects.map((s) => s.subjectId)
   )
-
-  // Only non-common subjects available as language
   const languageSubjects = (subjects?.data ?? []).filter(
     (s) => !commonSubjectIds.has(s.id)
   )
 
+  // Date bounds
+  const minDate = exam.startDate.split('T')[0]
+  const maxDate = exam.endDate.split('T')[0]
+
+  const validateDate = (val: string): string | true => {
+    if (!val) return 'Required'
+    const d = new Date(val); d.setHours(0, 0, 0, 0)
+    const s = new Date(exam.startDate); s.setHours(0, 0, 0, 0)
+    const e = new Date(exam.endDate);   e.setHours(0, 0, 0, 0)
+    if (d < s || d > e) {
+      return `Date must be within exam period (${minDate} to ${maxDate})`
+    }
+    return true
+  }
+
   const onSubmit = (data: FormValues) => {
-    const payload: AddSectionLanguageInput = {
+    mutation.mutate({
       grade:        gradeConfig.grade,
       classId:      data.classId,
       subjectId:    data.subjectId,
       examDate:     data.examDate,
       startTime:    data.startTime,
       endTime:      data.endTime,
-      totalMarks:   Number(data.totalMarks),    // ← explicit cast
-      passingMarks: Number(data.passingMarks),  // ← explicit cast
-    }
-    mutation.mutate(payload)
+      totalMarks:   Number(data.totalMarks),
+      passingMarks: Number(data.passingMarks),
+    })
   }
 
   return (
@@ -80,7 +83,7 @@ export const AddSectionLanguageDialog = ({ examId, gradeConfig }: Props) => {
         </Button>
       }
       title={`Add section language — Grade ${gradeConfig.grade}`}
-      description="Assign one additional language subject to a specific section."
+      description={`Exam period: ${minDate} to ${maxDate}`}
       isPending={mutation.isPending}
       isSuccess={mutation.isSuccess}
       isError={mutation.isError}
@@ -120,11 +123,6 @@ export const AddSectionLanguageDialog = ({ examId, gradeConfig }: Props) => {
         {errors.classId && (
           <p className="text-xs text-destructive">{errors.classId.message}</p>
         )}
-        {!gradeSections.length && (
-          <p className="text-xs text-muted-foreground">
-            No sections found for grade {gradeConfig.grade}.
-          </p>
-        )}
       </div>
 
       {/* Language subject */}
@@ -143,16 +141,21 @@ export const AddSectionLanguageDialog = ({ examId, gradeConfig }: Props) => {
           <p className="text-xs text-destructive">{errors.subjectId.message}</p>
         )}
         <p className="text-xs text-muted-foreground">
-          Common subjects are excluded — only additional languages shown.
+          Common subjects excluded — only additional languages shown.
         </p>
       </div>
 
-      {/* Exam date */}
+      {/* Exam date — constrained to exam period */}
       <div className="flex flex-col gap-1.5">
         <Label>Exam date</Label>
         <Input
           type="date"
-          {...register('examDate', { required: 'Exam date is required' })}
+          min={minDate}
+          max={maxDate}
+          {...register('examDate', {
+            required: 'Required',
+            validate:  validateDate,
+          })}
         />
         {errors.examDate && (
           <p className="text-xs text-destructive">{errors.examDate.message}</p>
@@ -187,12 +190,9 @@ export const AddSectionLanguageDialog = ({ examId, gradeConfig }: Props) => {
             {...register('totalMarks', {
               required:      'Required',
               valueAsNumber: true,
-              min:           { value: 1, message: 'Must be at least 1' },
+              min:           { value: 1, message: 'Min 1' },
             })}
           />
-          {errors.totalMarks && (
-            <p className="text-xs text-destructive">{errors.totalMarks.message}</p>
-          )}
         </div>
         <div className="flex flex-col gap-1.5">
           <Label>Passing marks</Label>
@@ -202,12 +202,9 @@ export const AddSectionLanguageDialog = ({ examId, gradeConfig }: Props) => {
             {...register('passingMarks', {
               required:      'Required',
               valueAsNumber: true,
-              min:           { value: 1, message: 'Must be at least 1' },
+              min:           { value: 1, message: 'Min 1' },
             })}
           />
-          {errors.passingMarks && (
-            <p className="text-xs text-destructive">{errors.passingMarks.message}</p>
-          )}
         </div>
       </div>
     </CrudDialog>

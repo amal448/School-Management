@@ -6,7 +6,7 @@ export interface IManagerDocument extends Document {
   passwordHash?:  string       // optional until first-time setup completes
   firstName:      string
   lastName:       string
-  phone?:         string
+  phone:         string
   isActive:       boolean
   isVerified:     boolean      // true after first-time setup
   isFirstTime:    boolean      // true until manager sets their password
@@ -25,7 +25,7 @@ const ManagerSchema = new Schema<IManagerDocument>(
     passwordHash:   { type: String, default: null },
     firstName:      { type: String, required: true, trim: true },
     lastName:       { type: String, required: true, trim: true },
-    phone:          { type: String, default: null },
+    phone:          { type: String, required: true },
     isActive:       { type: Boolean, default: true,  index: true },
     isVerified:     { type: Boolean, default: false },
     isFirstTime:    { type: Boolean, default: true  },

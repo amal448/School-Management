@@ -1,48 +1,55 @@
-import { ColumnDef }     from '@tanstack/react-table'
-import { Button }        from '@/components/ui/button'
-import { Badge }         from '@/components/ui/badge'
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
+import { ColumnDef } from '@tanstack/react-table'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { ArrowUpDown, Eye, MoreHorizontal } from 'lucide-react'
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { TeacherResponse } from '@/types/teacher.types'
 import { useDeactivateTeacher } from '@/hooks/teacher/useTeachers'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const StatusBadge = ({ teacher }: { teacher: TeacherResponse }) => {
-  if (!teacher.isActive)    return <Badge variant="secondary">Inactive</Badge>
-  if (teacher.isFirstTime)  return <Badge variant="outline">Pending Setup</Badge>
-  if (!teacher.isVerified)  return <Badge variant="outline">Unverified</Badge>
+  if (!teacher.isActive) return <Badge variant="secondary">Inactive</Badge>
+  if (teacher.isFirstTime) return <Badge variant="outline">Pending Setup</Badge>
+  if (!teacher.isVerified) return <Badge variant="outline">Unverified</Badge>
   return <Badge variant="default">Active</Badge>
 }
 
 const ActionsCell = ({ teacher }: { teacher: TeacherResponse }) => {
   const deactivateMutation = useDeactivateTeacher()
-  const navigate=useNavigate()
+  const navigate = useNavigate()
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="size-8">
-          <MoreHorizontal className="size-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-      <DropdownMenuItem onClick={() => navigate(`/admin/teacher/${teacher.id}`)}>
-          View profile
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="text-destructive focus:text-destructive"
-          onClick={() => deactivateMutation.mutate(teacher.id)}
-          disabled={deactivateMutation.isPending}
-        >
-          Deactivate teacher
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Link
+      to={`/admin/teacher/${teacher.id}`}
+      className="inline-flex items-center gap-1.5  text-xs font-medium text-primary transition-colors  hover:text-red-500"
+    >
+      <Eye className="h-3.5 w-3.5" />
+      View Profile
+    </Link>
+    // <DropdownMenu>
+    //   <DropdownMenuTrigger asChild>
+    //     <Button variant="ghost" size="icon" className="size-8">
+    //       <MoreHorizontal className="size-4" />
+    //     </Button>
+    //   </DropdownMenuTrigger>
+    //   <DropdownMenuContent align="end">
+    //     <DropdownMenuLabel>Actions</DropdownMenuLabel>
+    //     <DropdownMenuSeparator />
+    //   <DropdownMenuItem onClick={() => navigate(`/admin/teacher/${teacher.id}`)}>
+    //       View profile
+    //     </DropdownMenuItem>
+    //     <DropdownMenuSeparator />
+    //     <DropdownMenuItem
+    //       className="text-destructive focus:text-destructive"
+    //       onClick={() => deactivateMutation.mutate(teacher.id)}
+    //       disabled={deactivateMutation.isPending}
+    //     >
+    //       Deactivate teacher
+    //     </DropdownMenuItem>
+    //   </DropdownMenuContent>
+    // </DropdownMenu>
   )
 }
 
@@ -84,7 +91,7 @@ export const teacherColumns: ColumnDef<TeacherResponse>[] = [
       </span>
     ),
   },
- 
+
   {
     accessorKey: 'isActive',
     header: 'Status',
@@ -92,7 +99,7 @@ export const teacherColumns: ColumnDef<TeacherResponse>[] = [
   },
   {
     id: 'actions',
-    enableHiding: false,
+    header: 'Action',
     cell: ({ row }) => <ActionsCell teacher={row.original} />,
   },
 ]

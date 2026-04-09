@@ -1,82 +1,28 @@
-import { ColumnDef }      from '@tanstack/react-table'
-import { Button }         from '@/components/ui/button'
-import { Badge }          from '@/components/ui/badge'
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
-import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
-  DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { ColumnDef } from '@tanstack/react-table'
+import { Badge } from '@/components/ui/badge'
+import { ArrowUpDown, Eye } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { ManagerResponse } from '@/types/manager.types'
-import {
-  useBlockManager,
-  useUnblockManager,
-  useDeleteManager,
-} from '@/hooks/admin/useManagers'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 // ── Status badge ──────────────────────────────────────
 const StatusBadge = ({ manager }: { manager: ManagerResponse }) => {
-  if (manager.isBlocked)   return <Badge variant="destructive">Blocked</Badge>
-  if (!manager.isActive)   return <Badge variant="secondary">Inactive</Badge>
-  if (manager.isFirstTime) return <Badge variant="outline">UnVerified</Badge>
+  if (manager.isBlocked) return <Badge variant="destructive">Blocked</Badge>
+  if (!manager.isActive) return <Badge variant="secondary">Inactive</Badge>
+  if (manager.isFirstTime) return <Badge variant="outline">Unverified</Badge>
   return <Badge variant="default">Active</Badge>
 }
+
 // ── Actions cell ──────────────────────────────────────
-const ActionsCell = ({ manager }: { manager: ManagerResponse }) => {
-  const navigate = useNavigate()
-  
-  const blockMutation   = useBlockManager()
-  const unblockMutation = useUnblockManager()
-  const deleteMutation  = useDeleteManager()
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="size-8">
-          <MoreHorizontal className="size-4" />
-        </Button>
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem onClick={() => navigate(`/admin/manager/${manager.id}`)}>
-          View profile
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator />
-
-        {manager.isBlocked ? (
-          <DropdownMenuItem
-            onClick={() => unblockMutation.mutate(manager.id)}
-            disabled={unblockMutation.isPending}
-          >
-            Unblock manager
-          </DropdownMenuItem>
-        ) : (
-          <DropdownMenuItem
-            className="text-destructive focus:text-destructive"
-            onClick={() => blockMutation.mutate(manager.id)}
-            disabled={blockMutation.isPending}
-          >
-            Block manager
-          </DropdownMenuItem>
-        )}
-
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem
-          className="text-destructive focus:text-destructive"
-          onClick={() => deleteMutation.mutate(manager.id)}
-          disabled={deleteMutation.isPending}
-        >
-          Remove manager
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
+const ActionsCell = ({ manager }: { manager: ManagerResponse }) => (
+  <Link
+    to={`/admin/manager/${manager.id}`}
+    className="inline-flex items-center gap-1.5  text-xs font-medium text-primary transition-colors  hover:text-red-500"
+  >
+    <Eye className="h-3.5 w-3.5" />
+    View Profile
+  </Link>
+)
 
 // ── Columns ───────────────────────────────────────────
 export const managerColumns: ColumnDef<ManagerResponse>[] = [
@@ -93,40 +39,37 @@ export const managerColumns: ColumnDef<ManagerResponse>[] = [
       </Button>
     ),
     cell: ({ row }) => (
-      <div>
-        <p className="font-medium">{row.original.fullName}</p>
-        <p className="text-xs text-muted-foreground">{row.original.email}</p>
+      <div className="flex flex-col justify-center">
+        <p className="font-medium leading-snug">{row.original.fullName}</p>
+        <p className="text-xs text-muted-foreground leading-snug">{row.original.email}</p>
       </div>
-    ),
-  },
-    {
-    accessorKey: 'department',
-    header: 'Department',
-    cell: ({ row }) => (
-      <span className="text-sm text-muted-foreground">
-        {row.original.department ?? '—'}
-      </span>
     ),
   },
   {
     accessorKey: 'phone',
     header: 'Phone',
     cell: ({ row }) => (
-      <span className="text-sm text-muted-foreground">
+      <span className="flex items-center text-sm text-muted-foreground">
         {row.original.phone ?? '—'}
       </span>
     ),
   },
-
-
   {
     accessorKey: 'isActive',
     header: 'Status',
-    cell: ({ row }) => <StatusBadge manager={row.original} />,
+    cell: ({ row }) => (
+      <span className="flex items-center">
+        <StatusBadge manager={row.original} />
+      </span>
+    ),
   },
   {
-    id:           'actions',
-    enableHiding: false,
-    cell: ({ row }) => <ActionsCell manager={row.original} />,
+    id: 'actions',
+    header: 'Action',
+    cell: ({ row }) => (
+      <span className="flex items-center">
+        <ActionsCell manager={row.original} />
+      </span>
+    ),
   },
 ]

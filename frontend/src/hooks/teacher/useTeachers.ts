@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { teacherApi }            from '@/api/teacher.api'
-import { queryClient }           from '@/lib/query-client'
+import { teacherApi } from '@/api/teacher.api'
+import { queryClient } from '@/lib/query-client'
 import {
   CreateTeacherInput,
   UpdateTeacherInput,
@@ -15,7 +15,7 @@ export const MY_PROFILE_KEY = ['teacher', 'me'] as const
 export const useTeachers = (params?: TeacherQueryParams) => {
   return useQuery({
     queryKey: [...TEACHERS_KEY, params],
-    queryFn:  () => teacherApi.getAll(params),
+    queryFn: () => teacherApi.getAll(params),
     staleTime: 1000 * 30,
   })
 }
@@ -24,8 +24,8 @@ export const useTeachers = (params?: TeacherQueryParams) => {
 export const useTeacher = (id: string) => {
   return useQuery({
     queryKey: [...TEACHERS_KEY, id],
-    queryFn:  () => teacherApi.getById(id),
-    enabled:  !!id,
+    queryFn: () => teacherApi.getById(id),
+    enabled: !!id,
   })
 }
 
@@ -51,18 +51,18 @@ export const useReactivateTeacher = () => {
 }
 export const useMyProfile = () =>
   useQuery({
-    queryKey:  MY_PROFILE_KEY,
-    queryFn:   () => teacherApi.getMe(),
+    queryKey: MY_PROFILE_KEY,
+    queryFn: () => teacherApi.getMe(),
     staleTime: 1000 * 60 * 10,   // 10 min — profile rarely changes
-    gcTime:    1000 * 60 * 30,
+    gcTime: 1000 * 60 * 30,
   })
 
 export const useMyClasses = () =>
   useQuery({
-    queryKey:  MY_CLASSES_KEY,
-    queryFn:   () => teacherApi.getMyClasses(),
+    queryKey: MY_CLASSES_KEY,
+    queryFn: () => teacherApi.getMyClasses(),
     staleTime: 1000 * 60 * 5,    // 5 min
-    gcTime:    1000 * 60 * 15,
+    gcTime: 1000 * 60 * 15,
   })
 
 
@@ -99,3 +99,18 @@ export const useAssignDepartment = () => {
     },
   })
 }
+export const useTeachersBySubject = (subjectId: string) =>
+  useQuery({
+    queryKey: [...TEACHERS_KEY, 'by-subject', subjectId],
+    queryFn: () => teacherApi.getBySubject(subjectId),
+    enabled: !!subjectId,
+    staleTime: 1000 * 60,   // teachers per subject changes rarely
+  })
+
+export const useTeachersByLevel = (level: string) =>
+  useQuery({
+    queryKey: [...TEACHERS_KEY, 'by-level', level],
+    queryFn: () => teacherApi.getByLevel(level),
+    enabled: !!level,
+    staleTime: 1000 * 60,
+  })

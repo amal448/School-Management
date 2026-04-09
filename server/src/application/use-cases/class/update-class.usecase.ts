@@ -25,6 +25,7 @@ export class UpdateClassUseCase
     if (!cls) throw AppError.notFound('Class not found')
 
     cls.updateDetails(input.dto)
+    this.logger.info('input.dto: input.dto', { "input.dto":input.dto})
 
     // If subjectAllocations provided — replace entirely
     if (input.dto.subjectAllocations !== undefined) {
@@ -42,7 +43,7 @@ export class UpdateClassUseCase
     const updated = await this.classRepo.update(input.id, cls)
     if (!updated) throw AppError.internal('Update failed')
 
-    this.logger.info('UpdateClassUseCase: updated', { id: input.id })
+    this.logger.info('UpdateClassUseCase: updated', { id: input.id ,data:input})
     return ClassMapper.toDto(updated)
   }
 }

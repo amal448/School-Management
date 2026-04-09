@@ -48,7 +48,6 @@ export const teacherApi = {
     return res.data.data!
   },
 
-
   update: async (id: string, data: UpdateTeacherInput): Promise<TeacherResponse> => {
     const res = await apiClient.patch<ApiResponse<TeacherResponse>>(
       `/api/teachers/${id}`,
@@ -82,4 +81,19 @@ export const teacherApi = {
     )
     return res.data.data!
   },
+
+  getBySubject: async (subjectId: string): Promise<TeacherResponse[]> => {
+    const res = await apiClient.get<ApiResponse<TeacherResponse[]>>(
+      `/api/teachers/by-subject/${subjectId}`
+    )
+    return res.data.data!
+  },
+
+  getByLevel: async (level: string): Promise<TeacherResponse[]> => {
+    const res = await apiClient.get<ApiResponse<TeacherResponse[]>>(
+      `/api/teachers/by-level/${level}`
+    )
+    return res.data.data!
+  },
+
 }

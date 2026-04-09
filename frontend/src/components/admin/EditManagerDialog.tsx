@@ -1,25 +1,25 @@
-import { useForm }       from 'react-hook-form'
-import { Button }        from '@/components/ui/button'
+import { useForm } from 'react-hook-form'
+import { Button } from '@/components/ui/button'
 import {
   Dialog, DialogClose, DialogContent,
   DialogDescription, DialogFooter,
   DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog'
-import { Input }         from '@/components/ui/input'
-import { Label }         from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle, Pencil, Phone, User } from 'lucide-react'
-import { UseMutationResult }  from '@tanstack/react-query'
+import { UseMutationResult } from '@tanstack/react-query'
 import { ManagerResponse, UpdateManagerInput } from '@/types/manager.types'
 
 export interface EditManagerForm {
   firstName: string
-  lastName:  string
-  phone?:    string
+  lastName: string
+  phone: string
 }
 
 interface Props {
-  manager:  ManagerResponse
+  manager: ManagerResponse
   mutation: UseMutationResult<ManagerResponse, Error, UpdateManagerInput>
   onClose?: () => void
 }
@@ -37,8 +37,8 @@ export function EditManagerDialog({ manager, mutation, onClose }: Props) {
   } = useForm<EditManagerForm>({
     defaultValues: {
       firstName: manager.firstName,
-      lastName:  manager.lastName,
-      phone:     manager.phone ?? '',
+      lastName: manager.lastName,
+      phone: manager.phone ?? '',
     },
   })
 
@@ -47,8 +47,8 @@ export function EditManagerDialog({ manager, mutation, onClose }: Props) {
       // Reset form to current manager values when dialog closes
       reset({
         firstName: manager.firstName,
-        lastName:  manager.lastName,
-        phone:     manager.phone ?? '',
+        lastName: manager.lastName,
+        phone: manager.phone ?? '',
       })
       mutation.reset()
       onClose?.()
@@ -58,8 +58,8 @@ export function EditManagerDialog({ manager, mutation, onClose }: Props) {
   const onSubmit = (data: EditManagerForm) => {
     mutation.mutate({
       firstName: data.firstName,
-      lastName:  data.lastName,
-      phone:     data.phone?.trim() || undefined,
+      lastName: data.lastName,
+      phone: data.phone?.trim() || undefined,
     })
   }
 
@@ -113,7 +113,7 @@ export function EditManagerDialog({ manager, mutation, onClose }: Props) {
                     placeholder="John"
                     className="pl-9"
                     {...register('firstName', {
-                      required:  'Required',
+                      required: 'Required',
                       minLength: { value: 2, message: 'Too short' },
                     })}
                   />
@@ -131,7 +131,7 @@ export function EditManagerDialog({ manager, mutation, onClose }: Props) {
                   id="em-lastName"
                   placeholder="Doe"
                   {...register('lastName', {
-                    required:  'Required',
+                    required: 'Required',
                     minLength: { value: 2, message: 'Too short' },
                   })}
                 />
@@ -143,23 +143,43 @@ export function EditManagerDialog({ manager, mutation, onClose }: Props) {
               </div>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="em-phone">
-                Phone
-                <span className="text-muted-foreground ml-1">(optional)</span>
-              </Label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                <Input
-                  id="em-phone"
-                  type="tel"
-                  placeholder="+91 98765 43210"
-                  className="pl-9"
-                  {...register('phone')}
-                />
-              </div>
-            </div>
-
+      <div className="flex flex-col gap-1.5">
+  <Label htmlFor="phone">Phone Number</Label>
+  <div className="relative">
+    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+    <Input
+      id="phone"
+      type="tel"
+      placeholder="919876543210"
+      className="pl-9"
+      // Native HTML attribute to stop typing after 12 chars
+      maxLength={12} 
+      {...register('phone', { 
+        required: 'Phone number is required',
+        // Minimum length (usually 10 for basic mobile)
+        minLength: { 
+          value: 10, 
+          message: 'Phone number must be at least 10 digits' 
+        },
+        // Maximum length (to match your backend API limit)
+        maxLength: { 
+          value: 12, 
+          message: 'Phone number cannot exceed 12 digits' 
+        },
+        // Pattern to ensure ONLY digits (removes spaces, +, and dashes)
+        pattern: {
+          value: /^[0-9]+$/,
+          message: 'Please enter digits only (no spaces or +)'
+        }
+      })}
+    />
+  </div>
+  {errors.phone && (
+    <p className="text-[10px] font-medium text-destructive mt-1">
+      {errors.phone.message}
+    </p>
+  )}
+</div>
           </div>
 
           <DialogFooter className="mt-4">

@@ -67,9 +67,15 @@ export class ExamEntity {
     // ── Grade management ──────────────────────────────────
 
     addGrade(grade: string): void {
-        const exists = this._gradeConfigs.some((g) => g.grade === grade)
+        const exists = this._gradeConfigs.some(
+            (g) => String(g.grade) === String(grade)
+        )
         if (exists) throw new Error(`Grade ${grade} already added to this exam`)
-        this._gradeConfigs.push({ grade, commonSubjects: [], sectionLanguages: [] })
+        this._gradeConfigs.push({
+            grade: String(grade),   // ← force string
+            commonSubjects: [],
+            sectionLanguages: [],
+        })
         this._updatedAt = new Date()
     }
 
@@ -78,25 +84,7 @@ export class ExamEntity {
         this._updatedAt = new Date()
     }
 
-    // ── Common subject management ──────────────────────────
 
-    addCommonSubject(grade: string, subject: SubjectSchedule): void {
-        const config = this.getGradeConfig(grade)
-
-        // No duplicate subjects per grade
-        const duplicate = config.commonSubjects.some(
-            (s) => s.subjectId === subject.subjectId
-        )
-        if (duplicate) {
-            throw new Error(`Subject already scheduled for grade ${grade}`)
-        }
-
-        // No time overlap with existing subjects on same date
-        this.validateNoOverlap(config.commonSubjects, subject)
-
-        config.commonSubjects.push(subject)
-        this._updatedAt = new Date()
-    }
 
     updateCommonSubject(
         grade: string,
@@ -110,50 +98,6 @@ export class ExamEntity {
         this._updatedAt = new Date()
     }
 
-    removeCommonSubject(grade: string, subjectId: string): void {
-        const config = this.getGradeConfig(grade)
-        config.commonSubjects = config.commonSubjects.filter(
-            (s) => s.subjectId !== subjectId
-        )
-        this._updatedAt = new Date()
-    }
-
-    // ── Section language management ────────────────────────
-    addSectionLanguage(grade: string, language: SectionLanguage): void {
-        const config = this.getGradeConfig(grade)   // ← use grade param
-
-        const alreadyHasLanguage = config.sectionLanguages.some(
-            (l) => l.classId === language.classId
-        )
-        if (alreadyHasLanguage) {
-            throw new Error('Section already has a language subject. Remove it first.')
-        }
-
-        const isCommonSubject = config.commonSubjects.some(
-            (s) => s.subjectId === language.subjectId
-        )
-        if (isCommonSubject) {
-            throw new Error(
-                `This subject is already a common subject for grade ${grade}`
-            )
-        }
-
-        config.sectionLanguages.push(language)
-        this._updatedAt = new Date()
-    }
-
-    // Fix removeSectionLanguage — same pattern
-    removeSectionLanguage(grade: string, classId: string): void {
-        const config = this.getGradeConfig(grade)   // ← use grade param
-        config.sectionLanguages = config.sectionLanguages.filter(
-            (l) => l.classId !== classId
-        )
-        this._updatedAt = new Date()
-    }
-
-    // ── Resolve final subjects for a class ────────────────
-    // Returns: common subjects + section language (if any)
-    // NO replace logic — purely additive
     getSubjectsForClass(grade: string, classId: string): SubjectSchedule[] {
         const config = this._gradeConfigs.find((g) => g.grade === grade)
         if (!config) return []
@@ -203,7 +147,9 @@ export class ExamEntity {
     // ── Private helpers ────────────────────────────────────
 
     private getGradeConfig(grade: string): GradeConfig {
-        const config = this._gradeConfigs.find((g) => g.grade === grade)
+        const config = this._gradeConfigs.find(
+            (g) => String(g.grade) === String(grade)   // ← force string comparison
+        )
         if (!config) throw new Error(`Grade ${grade} not added to this exam`)
         return config
     }
@@ -238,6 +184,134 @@ export class ExamEntity {
         return h * 60 + m
     }
 
+    // src/domain/entities/exam.entity.ts
+
+    private validateDateInRange(date: Date | string): void {
+        const d = new Date(date); d.setHours(0, 0, 0, 0)
+        const s = new Date(this._startDate); s.setHours(0, 0, 0, 0)
+        const e = new Date(this._endDate); e.setHours(0, 0, 0, 0)
+
+        if (d < s || d > e) {
+            throw new Error(
+                `Exam date must be within the exam period ` +
+                `(${s.toLocaleDateString()} – ${e.toLocaleDateString()})`
+            )
+        }
+    }
+
+    // Call it in both methods:
+    // addCommonSubject(grade: string, subject: SubjectSchedule): void {
+    //     const config = this.getGradeConfig(grade)
+    //     this.validateDateInRange(subject.examDate)   // ← add
+    //     // ... rest unchanged
+    // }
+    addCommonSubject(grade: string, subject: SubjectSchedule): void {
+        const idx = this._gradeConfigs.findIndex(
+            (g) => String(g.grade) === String(grade)
+        )
+        if (idx === -1) throw new Error(`Grade ${grade} not added to this exam`)
+
+        const config = this._gradeConfigs[idx]!
+
+        const duplicate = config.commonSubjects.some(
+            (s) => s.subjectId === subject.subjectId
+        )
+        if (duplicate) throw new Error(`Subject already scheduled for grade ${grade}`)
+
+        this.validateNoOverlap(config.commonSubjects, subject)
+
+        // Replace the whole gradeConfigs array with a new one
+        // This avoids any frozen/sealed object issues
+        this._gradeConfigs = this._gradeConfigs.map((g, i) =>
+            i === idx
+                ? {
+                    grade: g.grade,
+                    commonSubjects: [...g.commonSubjects, subject],  // ← new array
+                    sectionLanguages: [...g.sectionLanguages],
+                }
+                : { ...g }
+        )
+
+        this._updatedAt = new Date()
+    }
+    addSectionLanguage(grade: string, language: SectionLanguage): void {
+        const idx = this._gradeConfigs.findIndex(
+            (g) => String(g.grade) === String(grade)
+        )
+        if (idx === -1) throw new Error(`Grade ${grade} not added to this exam`)
+
+        const config = this._gradeConfigs[idx]!
+
+        const alreadyHas = config.sectionLanguages.some(
+            (l) => l.classId === language.classId
+        )
+        if (alreadyHas) {
+            throw new Error('Section already has a language subject. Remove it first.')
+        }
+
+        const isCommon = config.commonSubjects.some(
+            (s) => s.subjectId === language.subjectId
+        )
+        if (isCommon) {
+            throw new Error(`This subject is already a common subject for grade ${grade}`)
+        }
+
+        this._gradeConfigs = this._gradeConfigs.map((g, i) =>
+            i === idx
+                ? {
+                    grade: g.grade,
+                    commonSubjects: [...g.commonSubjects],
+                    sectionLanguages: [...g.sectionLanguages, language],  // ← new array
+                }
+                : { ...g }
+        )
+
+        this._updatedAt = new Date()
+    }
+
+    removeCommonSubject(grade: string, subjectId: string): void {
+        const idx = this._gradeConfigs.findIndex(
+            (g) => String(g.grade) === String(grade)
+        )
+        if (idx === -1) throw new Error(`Grade ${grade} not found`)
+
+        this._gradeConfigs = this._gradeConfigs.map((g, i) =>
+            i === idx
+                ? {
+                    grade: g.grade,
+                    commonSubjects: g.commonSubjects.filter(
+                        (s) => s.subjectId !== subjectId
+                    ),
+                    sectionLanguages: [...g.sectionLanguages],
+                }
+                : { ...g }
+        )
+
+        this._updatedAt = new Date()
+    }
+
+    removeSectionLanguage(grade: string, classId: string): void {
+        const idx = this._gradeConfigs.findIndex(
+            (g) => String(g.grade) === String(grade)
+        )
+        if (idx === -1) throw new Error(`Grade ${grade} not found`)
+
+        this._gradeConfigs = this._gradeConfigs.map((g, i) =>
+            i === idx
+                ? {
+                    grade: g.grade,
+                    commonSubjects: [...g.commonSubjects],
+                    sectionLanguages: g.sectionLanguages.filter(
+                        (l) => l.classId !== classId
+                    ),
+                }
+                : { ...g }
+        )
+
+        this._updatedAt = new Date()
+    }
+
+
     // ── Getters ────────────────────────────────────────────
     get id(): string | undefined { return this._id }
     get examName(): string { return this._examName }
@@ -246,7 +320,9 @@ export class ExamEntity {
     get startDate(): Date { return this._startDate }
     get endDate(): Date { return this._endDate }
     get status(): ExamStatus { return this._status }
-    get gradeConfigs(): GradeConfig[] { return this._gradeConfigs }
+    get gradeConfigs(): GradeConfig[] {
+        return this._gradeConfigs   // ← return direct reference
+    }
     get createdBy(): string { return this._createdBy }
     get createdAt(): Date { return this._createdAt }
     get updatedAt(): Date { return this._updatedAt }

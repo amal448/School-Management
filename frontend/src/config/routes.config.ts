@@ -37,13 +37,11 @@ export const ROUTES = {
     DEPARTMENTS: '/admin/departments',
     SUBJECTS: '/admin/subjects',
     EXAMS: '/admin/exams',
-    ANALYTICS: '/admin/analytics',
-    SETTINGS: '/admin/settings',
   },
   MANAGER: {
     ROOT: '/manager',
     DASHBOARD: '/manager/dashboard',
-    TEACHERS: '/manager/teachers',
+    TEACHERS: '/manager/teacher',
     STUDENTS: '/manager/students',
     CLASSES: '/manager/classes',
     SUBJECTS: '/manager/subjects',
@@ -90,8 +88,6 @@ export const ADMIN_NAV: NavItem[] = [
   { label: 'Subjects', path: ROUTES.ADMIN.SUBJECTS, icon: BookOpen },
   { label: 'Exams', path: ROUTES.ADMIN.EXAMS, icon: ClipboardList },
   // { label: 'Exams', path: '/ad/exams', icon: Calendar },
-  { label: 'Analytics', path: ROUTES.ADMIN.ANALYTICS, icon: BarChart3 },
-  { label: 'Settings', path: ROUTES.ADMIN.SETTINGS, icon: Settings },
 ]
 
 export const MANAGER_NAV: NavItem[] = [
@@ -102,8 +98,6 @@ export const MANAGER_NAV: NavItem[] = [
   { label: 'Subjects', path: ROUTES.MANAGER.SUBJECTS, icon: BookOpen },
   { label: 'Departments', path: ROUTES.MANAGER.DEPARTMENTS, icon: Building2 },
   { label: 'Exams', path: ROUTES.MANAGER.EXAMS, icon: ClipboardList },
-  { label: 'Exams', path: '/admin/exams', icon: Calendar },
-  { label: 'Exams', path: '/manager/exams', icon: Calendar }
   // { label: 'Analytics',   path: ROUTES.MANAGER.ANALYTICS,   icon: BarChart3       },
   // { label: 'Leaderboard', path: ROUTES.MANAGER.LEADERBOARD, icon: Trophy          },
   // { label: 'Tasks',       path: ROUTES.MANAGER.TASKS,       icon: Calendar        },

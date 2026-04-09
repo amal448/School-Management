@@ -4,20 +4,14 @@ import { Badge }              from '@/components/ui/badge'
 import { ArrowUpDown }        from 'lucide-react'
 import { useNavigate }        from 'react-router-dom'
 import { useAuthStore }       from '@/store/auth.store'
-import { useClass }           from '@/hooks/class/useClasses'
 import { Avatar }             from '@/components/shared/Avatar'
 import { ResetStudentPasswordDialog } from '@/components/shared/student/ResetStudentPasswordDialog'
 import { StudentResponse }    from '@/types/student.types'
 
-const ActionsCell = ({ student }: { student: StudentResponse }) => {
-  const navigate   = useNavigate()
-  const { user }   = useAuthStore()
 
-  // Check if current teacher is class teacher for this student
-  const { data: cls } = useClass(student.classId ?? '')
-  const isClassTeacher = user?.role === 'TEACHER'
-    ? cls?.classTeacherId === user.userId
-    : true   // admin/manager always have full access
+const ActionsCell = ({ student }: { student: StudentResponse }) => {
+  const navigate = useNavigate()
+  const { user } = useAuthStore()
 
   const profilePath =
     user?.role === 'ADMIN'   ? `/admin/students/${student.id}`   :
@@ -32,16 +26,12 @@ const ActionsCell = ({ student }: { student: StudentResponse }) => {
         className="text-xs h-7"
         onClick={() => navigate(profilePath)}
       >
-        View
+        View profile
       </Button>
-
-      {/* Password reset — only for class teacher or admin/manager */}
-      {isClassTeacher && (
-        <ResetStudentPasswordDialog
-          studentId={student.id}
-          studentName={student.fullName}
-        />
-      )}
+      <ResetStudentPasswordDialog
+        studentId={student.id}
+        studentName={student.fullName}
+      />
     </div>
   )
 }

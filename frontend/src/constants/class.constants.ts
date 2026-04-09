@@ -14,3 +14,10 @@ export const getGroupLabel = (className: string): string => {
   }
   return ''
 }
+export const getTeacherLevel = (grade: string): string => {
+  const g = Number(grade)
+  if (g <= 5)  return 'primary'
+  if (g <= 8)  return 'middle'
+  if (g <= 10) return 'secondary'
+  return 'higher_secondary'
+}

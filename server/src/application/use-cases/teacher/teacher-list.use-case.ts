@@ -7,12 +7,15 @@ import { ITeacherRepository } from "../../ports/repositories/teacher.repository.
 import { IUseCase } from "../interfaces/use-case.interface";
 
 export class ListTeachersUseCase implements IUseCase<TeacherQueryDto, PaginatedTeachersDto> {
-  constructor(private readonly teacherRepo: ITeacherRepository) {}
+  constructor(private readonly teacherRepo: ITeacherRepository) { }
 
   async execute(query: TeacherQueryDto): Promise<PaginatedTeachersDto> {
     const result: PaginatedResult<TeacherEntity> = await this.teacherRepo.findAll(query);
     return {
-      data: TeacherMapper.toDtoList(result.data),
+     data: result.data.map((t: any) => ({
+        ...TeacherMapper.toDto(t),
+        deptName: t.deptName ?? null,
+      })),
       total: result.total,
       page: result.page,
       limit: query.limit ?? DEFAULT_LIMIT,

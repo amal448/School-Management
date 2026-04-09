@@ -11,6 +11,10 @@ import { createTeacherRouter } from '../../routes/teacher.routes';
 import { TeacherController } from 'src/interfaces/controllers/teacher.controller';
 import { BcryptPasswordHasher, JwtTokenService, WinstonLogger } from 'src/infrastructure/services';
 import { MongooseClassRepository } from 'src/infrastructure/repositories/class.repository';
+import { MongooseDepartmentRepository } from 'src/infrastructure/repositories/department.repository';
+import { MongooseSubjectRepository } from 'src/infrastructure/repositories/subject.repository';
+import { GetTeachersBySubjectUseCase } from 'src/application/use-cases/teacher/teacher-get-by-subject.use-case';
+import { ListTeacherClassesUseCase } from 'src/application/use-cases/teacher/list-teacher-classes.use-case';
 
 export function buildTeacherModule(
   passwordHasher: BcryptPasswordHasher,
@@ -19,15 +23,18 @@ export function buildTeacherModule(
 ) {
   const teacherRepo = new MongooseTeacherRepository();
   const classRepo= new MongooseClassRepository()
-
+  const deptRepo=new MongooseDepartmentRepository()
+  const subjectRepo=new MongooseSubjectRepository()
+  
   const useCases = {
-    register: new RegisterTeacherUseCase(teacherRepo, passwordHasher, logger),
+    register: new RegisterTeacherUseCase(teacherRepo,deptRepo,subjectRepo ,passwordHasher, logger),
     get: new GetTeacherUseCase(teacherRepo),
     list: new ListTeachersUseCase(teacherRepo),
     update: new UpdateTeacherUseCase(teacherRepo, logger),
     assignDept: new AssignTeacherDeptUseCase(teacherRepo, logger),
     delete: new DeleteTeacherUseCase(teacherRepo, logger),
-    classRepo
+    getBySubject: new GetTeachersBySubjectUseCase(teacherRepo,subjectRepo),
+    listTeacherClasses : new ListTeacherClassesUseCase(classRepo)
   };
 
   const controller = new TeacherController(
@@ -37,7 +44,8 @@ export function buildTeacherModule(
     useCases.update,
     useCases.assignDept,
     useCases.delete,
-    useCases.classRepo
+    useCases.getBySubject,
+    useCases.listTeacherClasses
   );
 
   const router = createTeacherRouter(controller, authMW);

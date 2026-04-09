@@ -83,12 +83,17 @@ export class TeacherDocumentMapper {
       hireDate: doc.hireDate ?? undefined,
       qualification: doc.qualification ?? undefined,
       designation: doc.designation ?? undefined,
-      deptId: doc.deptId ?? undefined,
+      // FIX: Convert ObjectId to string safely
+      deptId: doc.deptId ? doc.deptId.toString() : "",
+      level: doc.level ?? undefined,
+      // FIX: Map array of ObjectIds to array of strings
+      subjectIds: (doc.subjectIds ?? []).map(id => id.toString()),
       isActive: doc.isActive,
       isVerified: doc.isVerified,
       isFirstTime: doc.isFirstTime,
       lastLogin: doc.lastLogin ?? undefined,
-      createdBy: doc.createdBy,                  // ← must be here
+      // FIX: Convert createdBy to string
+      createdBy: doc.createdBy ? doc.createdBy.toString() : "",
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     })
@@ -107,12 +112,15 @@ export class TeacherDocumentMapper {
       hireDate: entity.hireDate,
       qualification: entity.qualification,
       designation: entity.designation,
+      // Cast to any or TeacherLevel to resolve the Enum mismatch error
+      level: entity.level as any,
+      subjectIds: entity.subjectIds,
       deptId: entity.deptId,
       isActive: entity.isActive,
       isVerified: entity.isVerified,
       isFirstTime: entity.isFirstTime,
       lastLogin: entity.lastLogin,
-      createdBy: entity.createdBy,               // ← must be here
+      createdBy: entity.createdBy,           // ← must be here
     }
   }
 }
@@ -259,25 +267,24 @@ export class ExamDocumentMapper {
       startDate: doc.startDate,
       endDate: doc.endDate,
       status: doc.status as ExamStatus,
-      // gradeConfigs are plain sub-documents — map directly
       gradeConfigs: (doc.gradeConfigs ?? []).map((g) => ({
-        grade: g.grade,
+        grade: String(g.grade),   // ← force string
         commonSubjects: (g.commonSubjects ?? []).map((s) => ({
           subjectId: s.subjectId,
-          examDate: s.examDate,
+          examDate: new Date(s.examDate),
           startTime: s.startTime,
           endTime: s.endTime,
-          totalMarks: s.totalMarks,
-          passingMarks: s.passingMarks,
+          totalMarks: Number(s.totalMarks),
+          passingMarks: Number(s.passingMarks),
         })),
         sectionLanguages: (g.sectionLanguages ?? []).map((l) => ({
           classId: l.classId,
           subjectId: l.subjectId,
-          examDate: l.examDate,
+          examDate: new Date(l.examDate),
           startTime: l.startTime,
           endTime: l.endTime,
-          totalMarks: l.totalMarks,
-          passingMarks: l.passingMarks,
+          totalMarks: Number(l.totalMarks),
+          passingMarks: Number(l.passingMarks),
         })),
       })),
       createdBy: doc.createdBy,
@@ -294,8 +301,27 @@ export class ExamDocumentMapper {
       startDate: entity.startDate,
       endDate: entity.endDate,
       status: entity.status,
-      gradeConfigs: entity.gradeConfigs as any,
       createdBy: entity.createdBy,
+      gradeConfigs: entity.gradeConfigs.map((g) => ({
+        grade: g.grade,
+        commonSubjects: g.commonSubjects.map((s) => ({
+          subjectId: s.subjectId,
+          examDate: s.examDate instanceof Date ? s.examDate : new Date(s.examDate),
+          startTime: s.startTime,
+          endTime: s.endTime,
+          totalMarks: s.totalMarks,
+          passingMarks: s.passingMarks,
+        })),
+        sectionLanguages: g.sectionLanguages.map((l) => ({
+          classId: l.classId,
+          subjectId: l.subjectId,
+          examDate: l.examDate instanceof Date ? l.examDate : new Date(l.examDate),
+          startTime: l.startTime,
+          endTime: l.endTime,
+          totalMarks: l.totalMarks,
+          passingMarks: l.passingMarks,
+        })),
+      })),
     }
   }
 }

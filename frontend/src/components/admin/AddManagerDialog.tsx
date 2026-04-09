@@ -1,14 +1,14 @@
 // src/components/admin/AddManagerDialog.tsx
-import { useState }       from 'react'
-import { useForm }        from 'react-hook-form'
-import { Button }         from '@/components/ui/button'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { Button } from '@/components/ui/button'
 import {
   Dialog, DialogClose, DialogContent,
   DialogDescription, DialogFooter,
   DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog'
-import { Input }          from '@/components/ui/input'
-import { Label }          from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle, Plus, Mail, User, Lock, Phone } from 'lucide-react'
 import {
@@ -20,8 +20,6 @@ import {
   WhitelistManagerInput,
 } from '@/types/manager.types'
 
-// ── Tab type ───────────────────────────────────────────
-type Tab = 'custom' | 'whitelist'
 
 // ── Spinner ────────────────────────────────────────────
 const Spinner = () => (
@@ -30,8 +28,7 @@ const Spinner = () => (
 
 // ── Main component ─────────────────────────────────────
 export function AddManagerDialog() {
-  const [open, setOpen]   = useState(false)
-  const [tab,  setTab]    = useState<Tab>('custom')
+  const [open, setOpen] = useState(false)
 
   const handleSuccess = () => setOpen(false)
 
@@ -53,37 +50,9 @@ export function AddManagerDialog() {
           </DialogDescription>
         </DialogHeader>
 
-        {/* ── Tab toggle ── */}
-        <div className="flex rounded-lg bg-muted p-1 gap-1">
-          <button
-            type="button"
-            onClick={() => setTab('custom')}
-            className={`flex-1 rounded-md py-1.5 text-sm font-medium transition-all ${
-              tab === 'custom'
-                ? 'bg-background text-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Custom Credentials
-          </button>
-          <button
-            type="button"
-            onClick={() => setTab('whitelist')}
-            className={`flex-1 rounded-md py-1.5 text-sm font-medium transition-all ${
-              tab === 'whitelist'
-                ? 'bg-background text-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Whitelist Email
-          </button>
-        </div>
 
-        {/* ── Tab content ── */}
-        {tab === 'custom'
-          ? <CustomForm    onSuccess={handleSuccess} />
-          : <WhitelistForm onSuccess={handleSuccess} />
-        }
+        <CustomForm onSuccess={handleSuccess} />
+
 
       </DialogContent>
     </Dialog>
@@ -170,7 +139,7 @@ function CustomForm({ onSuccess }: CustomFormProps) {
               {...register('email', {
                 required: 'Email is required',
                 pattern: {
-                  value:   /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                   message: 'Invalid email address',
                 },
               })}
@@ -192,7 +161,7 @@ function CustomForm({ onSuccess }: CustomFormProps) {
               placeholder="Min 8 characters"
               className="pl-9"
               {...register('password', {
-                required:  'Password is required',
+                required: 'Password is required',
                 minLength: { value: 8, message: 'Min 8 characters' },
               })}
             />
@@ -207,20 +176,41 @@ function CustomForm({ onSuccess }: CustomFormProps) {
 
         {/* Phone (optional) */}
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="phone">
-            Phone
-            <span className="text-muted-foreground ml-1">(optional)</span>
-          </Label>
+          <Label htmlFor="phone">Phone Number</Label>
           <div className="relative">
             <Phone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <Input
               id="phone"
               type="tel"
-              placeholder="+91 98765 43210"
+              placeholder="919876543210"
               className="pl-9"
-              {...register('phone')}
+              // Native HTML attribute to stop typing after 12 chars
+              maxLength={12}
+              {...register('phone', {
+                required: 'Phone number is required',
+                // Minimum length (usually 10 for basic mobile)
+                minLength: {
+                  value: 10,
+                  message: 'Phone number must be at least 10 digits'
+                },
+                // Maximum length (to match your backend API limit)
+                maxLength: {
+                  value: 12,
+                  message: 'Phone number cannot exceed 12 digits'
+                },
+                // Pattern to ensure ONLY digits (removes spaces, +, and dashes)
+                pattern: {
+                  value: /^[0-9]+$/,
+                  message: 'Please enter digits only (no spaces or +)'
+                }
+              })}
             />
           </div>
+          {errors.phone && (
+            <p className="text-[10px] font-medium text-destructive mt-1">
+              {errors.phone.message}
+            </p>
+          )}
         </div>
 
       </div>
@@ -295,7 +285,7 @@ function WhitelistForm({ onSuccess }: WhitelistFormProps) {
               {...register('email', {
                 required: 'Email is required',
                 pattern: {
-                  value:   /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                   message: 'Invalid email address',
                 },
               })}

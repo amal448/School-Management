@@ -10,6 +10,11 @@ export interface ITeacherRepository {
   softDelete(id: string): Promise<boolean>;
   findById(id: string): Promise<TeacherEntity | null>;
   findByEmail(email: string): Promise<TeacherEntity | null>;
+  findByDeptAndSubject(deptId: string, subjectId: string): Promise<TeacherEntity[]>
+  findByIds(ids: string[]): Promise<TeacherEntity[]>
+
+  findByLevel(level: string): Promise<TeacherEntity[]>
+  
   findAll(query: TeacherQueryDto): Promise<PaginatedResult<TeacherEntity>>;
   existsByEmail(email: string): Promise<boolean>;
   countByDept(deptId: string): Promise<number>;

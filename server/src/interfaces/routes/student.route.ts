@@ -16,12 +16,11 @@ export const createStudentRouter = (ctrl: StudentController, { authenticate, aut
   const router = Router();
   router.post('/', authenticate, authorize(Role.ADMIN, Role.MANAGER,Role.TEACHER), validate(RegisterStudentSchema), ctrl.register,);
   router.get('/', authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER), validate(StudentQuerySchema, 'query'), ctrl.list,);
-  router.get('/:id', authenticate, authorize(Role.MANAGER, Role.TEACHER, Role.STUDENT), ctrl.getById,);
+  router.get('/:id', authenticate, authorize(Role.ADMIN,Role.MANAGER, Role.TEACHER, Role.STUDENT), ctrl.getById,);
   // Ensure teacher can read students (filtered by classId)
-  router.get('/', authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER),   // ← teacher includedctrl.list,
-  )
-  router.get('/:id', authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER),   // ← teacher includedctrl.getById,
-  )
+  // router.get('/', authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER),   // ← teacher includedctrl.list,
+  // )
+
 
   router.patch('/:id', authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.STUDENT), validate(UpdateStudentSchema), ctrl.update,);
   router.delete('/:id', authenticate, authorize(Role.ADMIN, Role.MANAGER), ctrl.remove,);

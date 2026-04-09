@@ -14,7 +14,7 @@ export class GetStudentUseCase implements IUseCase<GetStudentInput, StudentRespo
   async execute(input: GetStudentInput): Promise<StudentResponseDto> {
     // Students may only view their own profile; teachers/managers can view any
     const isOwner   = input.targetId === input.requesterId;
-    const isPrivileged = [Role.MANAGER, Role.TEACHER].includes(input.requesterRole);
+    const isPrivileged = [Role.MANAGER, Role.TEACHER,Role.ADMIN].includes(input.requesterRole);
     if (!isOwner && !isPrivileged) throw AppError.forbidden('Access denied');
 
     const student = await this.studentRepo.findById(input.targetId);

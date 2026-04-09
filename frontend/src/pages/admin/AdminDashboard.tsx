@@ -10,7 +10,7 @@ export default function AdminDashboard() {
       <PageHeader
         title="Dashboard"
         description="Welcome back, Amal. Here's what's happening today."
-        actions={<Button size="sm">Download Report</Button>}
+        // actions={<Button size="sm">Download Report</Button>}
       />
 
       <StatsGrid>

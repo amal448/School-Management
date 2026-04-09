@@ -14,7 +14,7 @@ const passwordSchema = z
 const genderEnum = z.nativeEnum(Gender).optional();
 
 const paginationSchema = {
-  page:  z.string().optional().transform(v => v ? parseInt(v, 10) : 1),
+  page: z.string().optional().transform(v => v ? parseInt(v, 10) : 1),
   limit: z.string().optional().transform(v => v ? parseInt(v, 10) : 10),
   search: z.string().optional(),
   isActive: z.string().optional().transform(v =>
@@ -24,9 +24,9 @@ const paginationSchema = {
 
 // ── Auth ───────────────────────────────────────────────
 export const LoginSchema = z.object({
-  email:    z.string().email('Invalid email'),
+  email: z.string().email('Invalid email'),
   password: z.string().min(1, 'Password is required'),
-  role:     z.nativeEnum(Role, { errorMap: () => ({ message: 'Role must be MANAGER, TEACHER, or STUDENT' }) }),
+  role: z.nativeEnum(Role, { errorMap: () => ({ message: 'Role must be MANAGER, TEACHER, or STUDENT' }) }),
 });
 
 export const RefreshTokenSchema = z.object({
@@ -35,49 +35,59 @@ export const RefreshTokenSchema = z.object({
 
 export const ChangePasswordSchema = z.object({
   currentPassword: z.string().min(1, 'Current password is required'),
-  newPassword:     passwordSchema,
+  newPassword: passwordSchema,
 });
 
 // ── Manager ────────────────────────────────────────────
 export const RegisterManagerSchema = z.object({
-  email:     z.string().email(),
-  password:  passwordSchema,
+  email: z.string().email(),
+  password: passwordSchema,
   firstName: z.string().min(1).max(60),
-  lastName:  z.string().min(1).max(60),
-  phone:     z.string().optional(),
+  lastName: z.string().min(1).max(60),
+  phone: z.string().optional(),
 });
 
 export const UpdateManagerSchema = z.object({
   firstName: z.string().min(1).max(60).optional(),
-  lastName:  z.string().min(1).max(60).optional(),
-  phone:     z.string().optional(),
+  lastName: z.string().min(1).max(60).optional(),
+  phone: z.string().optional(),
 });
 
 // ── Teacher ────────────────────────────────────────────
 export const RegisterTeacherSchema = z.object({
-  email:         z.string().email(),
-  password:      passwordSchema,
-  firstName:     z.string().min(1).max(60),
-  lastName:      z.string().min(1).max(60),
-  dob:           z.string().optional(),
-  gender:        genderEnum,
-  phone:         z.string().optional(),
-  address:       z.string().optional(),
-  hireDate:      z.string().optional(),
-  qualification: z.string().optional(),
-  designation:   z.string().optional(),
-  deptId:        z.string().optional(),
+  email: z.string().email(),
+  password: passwordSchema,
+  firstName: z.string().min(1).max(60),
+  lastName: z.string().min(1).max(60),
+  dob: z.string().optional().nullable(),
+  gender: genderEnum.optional().nullable(),
+  phone: z.string().min(10).max(12), // Adjusted to 10-12 based on our previous talk
+  address: z.string().optional().nullable(),
+  hireDate: z.string().optional().nullable(),
+  qualification: z.string().optional().nullable(),
+  designation: z.string().optional().nullable(),
+  deptId: z.string().min(1, "Department is required"), // Made mandatory
+  
+  // ADD THESE TWO FIELDS HERE:
+  level: z.enum(["primary", "middle", "secondary", "higher_secondary"], {
+    required_error: "Teaching level is required",
+  }),
+  subjectIds: z.array(z.string()).min(1, "At least one subject is required"),
 });
 
 export const UpdateTeacherSchema = z.object({
-  firstName:     z.string().min(1).max(60).optional(),
-  lastName:      z.string().min(1).max(60).optional(),
-  phone:         z.string().optional(),
-  address:       z.string().optional(),
-  dob:           z.string().optional(),
-  gender:        genderEnum,
+  firstName: z.string().min(1).max(60).optional(),
+  lastName: z.string().min(1).max(60).optional(),
+  phone: z.string().min(10).max(12).optional(),
+  address: z.string().optional(),
+  dob: z.string().optional(),
+  gender: genderEnum.optional(),
   qualification: z.string().optional(),
-  designation:   z.string().optional(),
+  designation: z.string().optional(),
+  
+  // Add them to update as well if teachers can change levels/subjects
+  level: z.enum(["primary", "middle", "secondary", "higher_secondary"]).optional(),
+  subjectIds: z.array(z.string()).optional(),
 });
 
 export const AssignDeptSchema = z.object({
@@ -91,27 +101,27 @@ export const TeacherQuerySchema = z.object({
 
 // ── Student ────────────────────────────────────────────
 export const RegisterStudentSchema = z.object({
-  email:           z.string().email(),
-  password:        passwordSchema,
-  firstName:       z.string().min(1).max(60),
-  lastName:        z.string().min(1).max(60),
-  dob:             z.string().optional(),
-  gender:          genderEnum,
-  address:         z.string().optional(),
-  admissionDate:   z.string().optional(),
-  guardianName:    z.string().optional(),
+  email: z.string().email(),
+  password: passwordSchema,
+  firstName: z.string().min(1).max(60),
+  lastName: z.string().min(1).max(60),
+  dob: z.string().optional(),
+  gender: genderEnum,
+  address: z.string().optional(),
+  admissionDate: z.string().optional(),
+  guardianName: z.string().optional(),
   guardianContact: z.string().optional(),
-  classId:         z.string().optional(),
+  classId: z.string().optional(),
 });
 
 export const UpdateStudentSchema = z.object({
-  firstName:       z.string().min(1).max(60).optional(),
-  lastName:        z.string().min(1).max(60).optional(),
-  phone:           z.string().optional(),
-  address:         z.string().optional(),
-  dob:             z.string().optional(),
-  gender:          genderEnum,
-  guardianName:    z.string().optional(),
+  firstName: z.string().min(1).max(60).optional(),
+  lastName: z.string().min(1).max(60).optional(),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+  dob: z.string().optional(),
+  gender: genderEnum,
+  guardianName: z.string().optional(),
   guardianContact: z.string().optional(),
 });
 
@@ -127,8 +137,8 @@ export const StudentQuerySchema = z.object({
 // src/interfaces/validators/index.ts  (add this)
 export const VerifyOtpSchema = z.object({
   email: z.string().email(),
-  otp:   z.string().length(6, 'OTP must be 6 digits'),
-  role:  z.enum(['TEACHER', 'MANAGER'], {
+  otp: z.string().length(6, 'OTP must be 6 digits'),
+  role: z.enum(['TEACHER', 'MANAGER'], {
     errorMap: () => ({ message: "Role must be TEACHER or MANAGER" }),
   }),
 })
@@ -138,14 +148,14 @@ export const VerifyOtpSchema = z.object({
 
 export const ForgotPasswordSchema = z.object({
   email: z.string().email('Invalid email'),
-  role:  z.enum(['ADMIN', 'MANAGER'], {
+  role: z.enum(['ADMIN', 'MANAGER'], {
     errorMap: () => ({ message: "Role must be ADMIN or MANAGER" }),
   }),
 })
 
 export const ResetPasswordSchema = z.object({
-  token:       z.string().min(1, 'Token is required'),
-  role:        z.enum(['ADMIN', 'MANAGER'], {
+  token: z.string().min(1, 'Token is required'),
+  role: z.enum(['ADMIN', 'MANAGER'], {
     errorMap: () => ({ message: "Role must be ADMIN or MANAGER" }),
   }),
   newPassword: z
@@ -158,8 +168,8 @@ export const ResetPasswordSchema = z.object({
 })
 
 export const FirstTimeSetupSchema = z.object({
-  token:       z.string().min(1, 'Token is required'),
-  role:        z.enum(['TEACHER', 'STUDENT'], {
+  token: z.string().min(1, 'Token is required'),
+  role: z.enum(['TEACHER', 'STUDENT'], {
     errorMap: () => ({ message: "Role must be TEACHER or STUDENT" }),
   }),
   newPassword: z
