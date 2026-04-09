@@ -75,25 +75,17 @@ export const createExamRouter = (
   )
 
   // ── Common subjects ────────────────────────────────────
-  router.post('/:id/grades/subjects', adminManager, validate(AddCommonSubjectSchema), ctrl.addCommonSubject,
-  )
-
-  router.patch('/:id/grades/subjects', adminManager, validate(UpdateCommonSubjectSchema), ctrl.updateCommonSubject,
-  )
-
-  router.delete('/:id/grades/:grade/subjects/:subjectId', adminManager, ctrl.removeCommonSubject,
-  )
+  router.post('/:id/grades/subjects', adminManager, validate(AddCommonSubjectSchema), ctrl.addCommonSubject)
+  router.patch('/:id/grades/subjects', adminManager, validate(UpdateCommonSubjectSchema), ctrl.updateCommonSubject)
+  router.delete('/:id/grades/:grade/subjects/:subjectId', adminManager, ctrl.removeCommonSubject)
 
   // ── Section languages ──────────────────────────────────
-  router.post('/:id/grades/languages', adminManager, validate(AddSectionLanguageSchema), ctrl.addSectionLanguage,
-  )
-
-  router.delete('/:id/grades/:grade/languages/:classId', adminManager, ctrl.removeSectionLanguage,
-  )
+  router.post('/:id/grades/languages', adminManager, validate(AddSectionLanguageSchema), ctrl.addSectionLanguage)
+  router.delete('/:id/grades/:grade/languages/:classId', adminManager, ctrl.removeSectionLanguage)
 
   // ── Lifecycle ──────────────────────────────────────────
   router.post('/:id/publish', adminManager, ctrl.publish)
-  router.post('/:id/declare', adminManager, ctrl.declare)
+  router.post('/:id/declare', adminManager, ctrl.declare) //marks 
 
   // ── Schedules ──────────────────────────────────────────
   router.get('/:id/schedules', allStaff, ctrl.getSchedules)

@@ -64,7 +64,6 @@ export class ExamEntity {
         return new ExamEntity(props)
     }
 
-    // ── Grade management ──────────────────────────────────
 
     addGrade(grade: string): void {
         const exists = this._gradeConfigs.some(
@@ -83,8 +82,6 @@ export class ExamEntity {
         this._gradeConfigs = this._gradeConfigs.filter((g) => g.grade !== grade)
         this._updatedAt = new Date()
     }
-
-
 
     updateCommonSubject(
         grade: string,
@@ -112,6 +109,7 @@ export class ExamEntity {
 
         return subjects
     }
+    
     // ── Lifecycle ──────────────────────────────────────────
 
     publish(): void {
