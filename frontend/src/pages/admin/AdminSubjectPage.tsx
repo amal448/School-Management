@@ -5,7 +5,7 @@ import { AddManagerDialog } from '@/components/admin/AddManagerDialog'
 import {
   useManagers,
 } from '@/hooks/admin/useManagers'
-import { subjectcolumns } from '@/components/shared/columns/subject.columns'
+import { subjectColumns } from '@/components/shared/columns/subject.columns'
 
 // ── Page ──────────────────────────────────────────────
 export default function AdminSubjectPage() {
@@ -20,7 +20,7 @@ export default function AdminSubjectPage() {
       />
 
       <DataTable
-        columns={subjectcolumns}
+        columns={subjectColumns}
         data={data?.data ?? []}
         searchKey="fullName"
         searchPlaceholder="Search managers..."

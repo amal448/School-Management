@@ -25,8 +25,16 @@ const AdminManagerLoginPage = () => {
 
   const isAdmin = selectedRole === 'ADMIN'
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-sm flex flex-col gap-6">
+    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
+      {/* Standard smooth & light background image (Modern Education/Architecture) */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2000&auto=format&fit=crop')" }}
+      />
+      {/* Light frosted glass overlay to ensure the form remains perfectly readable */}
+      <div className="absolute inset-0 bg-white/20 backdrop-blur-sm z-0" />
+
+      <div className="w-full max-w-sm flex flex-col gap-6 relative z-10">
         <div className="flex flex-col items-center gap-3 text-center">
           <div className="size-12 rounded-xl bg-primary flex items-center justify-center">
             <GraduationCap className="size-6 text-primary-foreground" />
@@ -90,7 +98,7 @@ const AdminManagerLoginPage = () => {
                 Continue with Google
               </Button>
             )}
-            {!isAdmin  && (
+            {!isAdmin && (
               <>
                 <div className="flex items-center gap-3">
                   <Separator className="flex-1" />

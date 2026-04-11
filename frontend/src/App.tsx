@@ -13,13 +13,15 @@ import AdminRoutes from '@/routes/AdminRoute'
 import VerifyOtpPage from './pages/auth/VerifyOtpPage'
 import ManagerRoutes from './routes/ManagerRoute'
 import { TeacherRoute } from './routes/TeacherRoute'
+import PublicRoutes from './routes/PublicRoute'
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Routes>
         {/* Default */}
-        <Route path="/" element={<Navigate to={ROUTES.AUTH.ADMIN_MANAGER_LOGIN} replace />} />
+        <Route path="/*" element={<PublicRoutes />} />
+        {/* <Route path="/" element={<Navigate to={ROUTES.AUTH.ADMIN_MANAGER_LOGIN} replace />} /> */}
 
         {/* Public auth */}
         <Route path={ROUTES.AUTH.ADMIN_MANAGER_LOGIN} element={<AdminManagerLogin />} />

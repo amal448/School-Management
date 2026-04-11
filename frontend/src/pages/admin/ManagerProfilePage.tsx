@@ -1,12 +1,7 @@
 import { useParams, useNavigate }    from 'react-router-dom'
-import { Badge }                     from '@/components/ui/badge'
 import { Button }                    from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  ArrowLeft, Mail, Phone, Clock,
-  ShieldAlert, ShieldCheck, UserX, ShieldOff,
-} from 'lucide-react'
-import { ManagerResponse }           from '@/types/manager.types'
+import {ArrowLeft, Mail, Phone, Clock,ShieldAlert, ShieldCheck, UserX, ShieldOff} from 'lucide-react'
 import { EditManagerDialog }         from '@/components/admin/EditManagerDialog'
 import {
   useManager,
@@ -15,25 +10,11 @@ import {
   useUnblockManager,
   useDeleteManager,
 } from '@/hooks/admin/useManagers'
+import ProfileSkeleton from '@/components/shared/ProfileSkeleton'
+import { Avatar } from '@/components/shared/Avatar'
+import { FlagRow } from '@/components/shared/FlagRow'
+import { StatusBadge } from '@/components/shared/StatusBadge'
 
-// ── Sub-components unchanged ──────────────────────────
-const Avatar = ({ name }: { name: string }) => {
-  const initials = name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
-  return (
-    <div className="size-20 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0">
-      <span className="text-2xl font-semibold text-amber-700 dark:text-amber-400">
-        {initials}
-      </span>
-    </div>
-  )
-}
-
-const StatusBadge = ({ manager }: { manager: ManagerResponse }) => {
-  if (manager.isBlocked)   return <Badge variant="destructive">Blocked</Badge>
-  if (!manager.isActive)   return <Badge variant="secondary">Inactive</Badge>
-  if (manager.isFirstTime) return <Badge variant="outline">Pending Setup</Badge>
-  return <Badge variant="default">Active</Badge>
-}
 
 const InfoRow = ({
   icon: Icon, label, value,
@@ -49,34 +30,6 @@ const InfoRow = ({
     <div className="flex flex-col gap-0.5 min-w-0">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="text-sm font-medium truncate">{value ?? '—'}</p>
-    </div>
-  </div>
-)
-
-const FlagRow = ({
-  label, active, activeLabel = 'Yes', inactiveLabel = 'No',
-}: {
-  label: string
-  active: boolean
-  activeLabel?: string
-  inactiveLabel?: string
-}) => (
-  <div className="flex items-center justify-between py-3">
-    <span className="text-sm text-muted-foreground">{label}</span>
-    <Badge variant={active ? 'default' : 'secondary'}>
-      {active ? activeLabel : inactiveLabel}
-    </Badge>
-  </div>
-)
-
-const ProfileSkeleton = () => (
-  <div className="flex flex-col gap-6 animate-pulse">
-    <div className="h-8 w-32 bg-muted rounded" />
-    <div className="h-40 bg-muted rounded-xl" />
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      {[...Array(3)].map((_, i) => (
-        <div key={i} className="h-40 bg-muted rounded-xl" />
-      ))}
     </div>
   </div>
 )

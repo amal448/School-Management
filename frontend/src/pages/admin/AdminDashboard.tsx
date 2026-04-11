@@ -1,7 +1,5 @@
-// pages/admin/AdminDashboard.tsx
 import { PageRoot, PageHeader, StatsGrid, StatCard, ContentGrid, PageSection } from '@/components/ui/page'
 import { Users, GraduationCap, BookOpen, BarChart3 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function AdminDashboard() {
@@ -10,7 +8,6 @@ export default function AdminDashboard() {
       <PageHeader
         title="Dashboard"
         description="Welcome back, Amal. Here's what's happening today."
-        // actions={<Button size="sm">Download Report</Button>}
       />
 
       <StatsGrid>

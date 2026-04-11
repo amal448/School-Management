@@ -2,7 +2,6 @@
 
 import { useParams, useNavigate }  from 'react-router-dom'
 import { useAuthStore }            from '@/store/auth.store'
-import { Badge }                   from '@/components/ui/badge'
 import { Button }                  from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -10,7 +9,6 @@ import {
   GraduationCap, Building2, Briefcase, Clock,
   ShieldAlert, ShieldCheck, UserX, UserCheck,
 } from 'lucide-react'
-import { TeacherResponse }         from '@/types/teacher.types'
 import { EditTeacherDialog }       from '@/components/shared/teacher/EditTeacherDialog'
 import {
   useTeacher,
@@ -18,6 +16,8 @@ import {
   useDeactivateTeacher,
   useReactivateTeacher,
 } from '@/hooks/teacher/useTeachers'
+import ProfileSkeleton from '@/components/shared/ProfileSkeleton'
+import { TeacherStatusBadge } from '@/components/shared/StatusBadge'
 
 // ── Avatar ─────────────────────────────────────────────
 const Avatar = ({ name }: { name: string }) => {
@@ -35,13 +35,6 @@ const Avatar = ({ name }: { name: string }) => {
   )
 }
 
-// ── Status badge ───────────────────────────────────────
-const StatusBadge = ({ teacher }: { teacher: TeacherResponse }) => {
-  if (!teacher.isActive)   return <Badge variant="secondary">Inactive</Badge>
-  if (teacher.isFirstTime) return <Badge variant="outline">Pending Setup</Badge>
-  if (!teacher.isVerified) return <Badge variant="outline">Unverified</Badge>
-  return <Badge variant="default">Active</Badge>
-}
 
 // ── Info row ───────────────────────────────────────────
 const InfoRow = ({
@@ -62,18 +55,7 @@ const InfoRow = ({
   </div>
 )
 
-// ── Skeleton ───────────────────────────────────────────
-const ProfileSkeleton = () => (
-  <div className="flex flex-col gap-6 animate-pulse">
-    <div className="h-8 w-32 bg-muted rounded" />
-    <div className="h-40 bg-muted rounded-xl" />
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      {[...Array(4)].map((_, i) => (
-        <div key={i} className="h-40 bg-muted rounded-xl" />
-      ))}
-    </div>
-  </div>
-)
+
 
 // ── Page ──────────────────────────────────────────────
 export default function TeacherProfilePage() {
@@ -142,7 +124,7 @@ export default function TeacherProfilePage() {
             <div className="flex flex-col gap-2 flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-xl font-semibold truncate">{teacher.fullName}</h1>
-                <StatusBadge teacher={teacher} />
+                <TeacherStatusBadge teacher={teacher} />
               </div>
               <p className="text-sm text-muted-foreground">
                 {teacher.designation ?? 'Teacher'}

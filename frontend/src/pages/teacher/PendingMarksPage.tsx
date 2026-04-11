@@ -11,6 +11,7 @@ import { useExams }          from '@/hooks/exam/useExams'
 import { useSubjects }       from '@/hooks/subject/useSubjects'
 import { useMyClasses }      from '@/hooks/teacher/useTeachers'
 import { ExamScheduleResponse } from '@/types/exam.types'
+import { Skeleton } from '@/components/shared/Skeleton'
 
 const ScheduleRow = ({
   schedule,
@@ -104,13 +105,7 @@ const ScheduleRow = ({
   )
 }
 
-const Skeleton = () => (
-  <div className="flex flex-col gap-3 animate-pulse">
-    {[...Array(3)].map((_, i) => (
-      <div key={i} className="h-20 bg-muted rounded-xl" />
-    ))}
-  </div>
-)
+
 
 export default function PendingMarksPage() {
   const { data: pending,   isLoading: pendingLoading }   = useMyPendingMarks()

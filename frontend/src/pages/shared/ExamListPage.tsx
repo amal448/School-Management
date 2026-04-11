@@ -1,7 +1,6 @@
 import { useNavigate }       from 'react-router-dom'
 import { Badge }             from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import { Button }            from '@/components/ui/button'
 import { Calendar, ChevronRight, GraduationCap } from 'lucide-react'
 import { useExams }          from '@/hooks/exam/useExams'
 import { useAuthStore }      from '@/store/auth.store'

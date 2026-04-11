@@ -25,6 +25,7 @@ import {
   MARKS_STATUS_COLORS,
 } from '@/constants/exam.constants'
 import { AddCommonSubjectDialog } from '@/components/exam/AddCommonSubjectDialog'
+import { Skeleton } from '@/components/ui/skeleton'
 
 // ── Confirm dialog (inline) ────────────────────────────
 const ConfirmDialog = ({
@@ -270,14 +271,7 @@ const GradeConfigPanel = ({
   )
 }
 
-// ── Skeleton ───────────────────────────────────────────
-const Skeleton = () => (
-  <div className="p-6 flex flex-col gap-6 animate-pulse">
-    <div className="h-8 w-48 bg-muted rounded" />
-    <div className="h-32 bg-muted rounded-xl" />
-    <div className="h-48 bg-muted rounded-xl" />
-  </div>
-)
+
 
 // ── Page ──────────────────────────────────────────────
 export default function ExamDetailPage() {
