@@ -15,6 +15,7 @@ import { MongooseDepartmentRepository } from 'src/infrastructure/repositories/de
 import { MongooseSubjectRepository } from 'src/infrastructure/repositories/subject.repository';
 import { GetTeachersBySubjectUseCase } from 'src/application/use-cases/teacher/teacher-get-by-subject.use-case';
 import { ListTeacherClassesUseCase } from 'src/application/use-cases/teacher/list-teacher-classes.use-case';
+import { GetTeachersByLevelUseCase } from 'src/application/use-cases/teacher/get-teachers-by-level.use-case';
 
 export function buildTeacherModule(
   passwordHasher: BcryptPasswordHasher,
@@ -34,7 +35,8 @@ export function buildTeacherModule(
     assignDept: new AssignTeacherDeptUseCase(teacherRepo, logger),
     delete: new DeleteTeacherUseCase(teacherRepo, logger),
     getBySubject: new GetTeachersBySubjectUseCase(teacherRepo,subjectRepo),
-    listTeacherClasses : new ListTeacherClassesUseCase(classRepo)
+    listTeacherClasses : new ListTeacherClassesUseCase(classRepo),
+    getByLevel: new GetTeachersByLevelUseCase(teacherRepo)
   };
 
   const controller = new TeacherController(
@@ -45,7 +47,8 @@ export function buildTeacherModule(
     useCases.assignDept,
     useCases.delete,
     useCases.getBySubject,
-    useCases.listTeacherClasses
+    useCases.listTeacherClasses,
+    useCases.getByLevel
   );
 
   const router = createTeacherRouter(controller, authMW);

@@ -1,11 +1,11 @@
-import { FilterQuery }         from 'mongoose'
-import { ISubjectRepository }  from 'src/application/ports/repositories/subject.repository.interface'
-import { SubjectEntity }       from 'src/domain/entities/subject.entity'
-import { SubjectQueryDto }     from 'src/domain/dtos/subject.dto'
+import { FilterQuery } from 'mongoose'
+import { ISubjectRepository } from 'src/application/ports/repositories/subject.repository.interface'
+import { SubjectEntity } from 'src/domain/entities/subject.entity'
+import { SubjectQueryDto } from 'src/domain/dtos/subject.dto'
 import { SubjectModel, ISubjectDocument } from 'src/infrastructure/database/schemas/subject.schema'
 import { DEFAULT_PAGE, DEFAULT_LIMIT } from 'src/shared/constants/index'
 import { SubjectDocumentMapper } from './mappers'
-import { PaginatedResult } from 'src/shared/types/Pagination-type'
+import { PaginatedResult } from 'src/application/ports/repositories/base.repository.interface'
 
 export class MongooseSubjectRepository implements ISubjectRepository {
 
@@ -25,9 +25,12 @@ export class MongooseSubjectRepository implements ISubjectRepository {
     return doc ? SubjectDocumentMapper.toDomain(doc) : null
   }
 
-  async delete(id: string): Promise<boolean> {
-    const result = await SubjectModel.findByIdAndDelete(id)
-    return !!result
+  async delete(id: string): Promise<void> {
+    await SubjectModel.findByIdAndDelete(id)
+  }
+
+  async existsById(id: string): Promise<boolean> {
+    return (await SubjectModel.countDocuments({ _id: id })) > 0
   }
 
   async findById(id: string): Promise<SubjectEntity | null> {
@@ -36,9 +39,9 @@ export class MongooseSubjectRepository implements ISubjectRepository {
   }
 
   async findAll(query: SubjectQueryDto): Promise<PaginatedResult<SubjectEntity>> {
-    const page  = query.page  ?? DEFAULT_PAGE
+    const page = query.page ?? DEFAULT_PAGE
     const limit = Math.min(query.limit ?? DEFAULT_LIMIT, 100)
-    const skip  = (page - 1) * limit
+    const skip = (page - 1) * limit
 
     const filter: FilterQuery<ISubjectDocument> = {}
     if (query.deptId) filter.deptId = query.deptId
@@ -53,8 +56,11 @@ export class MongooseSubjectRepository implements ISubjectRepository {
     ])
 
     return {
-      data:  (docs as ISubjectDocument[]).map(SubjectDocumentMapper.toDomain),
-      total, page, limit,
+      data: (docs as ISubjectDocument[]).map(SubjectDocumentMapper.toDomain),
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
     }
   }
 

@@ -47,7 +47,6 @@ export class MongooseMarksRepository implements IMarksRepository {
     return count > 0
   }
 
-  // src/infrastructure/repositories/marks.repository.ts — add
   async findByStudentId(studentId: string): Promise<MarksEntity[]> {
     const docs = await MarksModel
       .find({ studentId })

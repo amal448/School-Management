@@ -5,7 +5,7 @@ import { ClassQueryDto } from 'src/domain/dtos/class.dto'
 import { ClassModel, IClassDocument } from 'src/infrastructure/database/schemas/class.schema'
 import { DEFAULT_PAGE, DEFAULT_LIMIT } from 'src/shared/constants/index'
 import { ClassDocumentMapper } from './mappers'
-import { PaginatedResult } from 'src/shared/types/Pagination-type'
+import { PaginatedResult } from 'src/application/ports/repositories/base.repository.interface'
 
 export class MongooseClassRepository implements IClassRepository {
 
@@ -30,10 +30,21 @@ export class MongooseClassRepository implements IClassRepository {
     )
     return doc ? ClassDocumentMapper.toDomain(doc) : null
   }
+  async delete(id: string): Promise<void> {
+    await ClassModel.findByIdAndDelete(id)
+  }
 
-  async delete(id: string): Promise<boolean> {
-    const result = await ClassModel.findByIdAndDelete(id)
-    return !!result
+  async existsById(id: string): Promise<boolean> {
+    const count = await ClassModel.countDocuments({ _id: id })
+    return count > 0
+  }
+
+  async existsByGradeAndSection(
+    grade: string,
+    section: string,
+  ): Promise<boolean> {
+    const count = await ClassModel.countDocuments({ grade, section })
+    return count > 0
   }
 
   async findById(id: string): Promise<ClassEntity | null> {

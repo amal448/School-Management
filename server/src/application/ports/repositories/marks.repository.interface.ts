@@ -3,9 +3,9 @@
 import { MarksEntity } from 'src/domain/entities/marks.entity'
 
 export interface IMarksRepository {
-  save(marks: MarksEntity): Promise<MarksEntity>
+  // save(marks: MarksEntity): Promise<MarksEntity>
   saveMany(marks: MarksEntity[]): Promise<void>
-  findById(id: string): Promise<MarksEntity | null>
+  // findById(id: string): Promise<MarksEntity | null>
   findByScheduleId(scheduleId: string): Promise<MarksEntity[]>
   findByStudentId(studentId: string): Promise<MarksEntity[]>
   findByClassAndExam(

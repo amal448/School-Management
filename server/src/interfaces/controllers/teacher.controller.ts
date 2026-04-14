@@ -9,6 +9,7 @@ import { AssignTeacherDeptUseCase } from 'src/application/use-cases/teacher/teac
 import { DeleteTeacherUseCase } from 'src/application/use-cases/teacher/teacher-delete.use-case'
 import { GetTeachersBySubjectUseCase } from 'src/application/use-cases/teacher/teacher-get-by-subject.use-case'
 import { ListTeacherClassesUseCase } from 'src/application/use-cases/teacher/list-teacher-classes.use-case'
+import { GetTeachersByLevelUseCase } from 'src/application/use-cases/teacher/get-teachers-by-level.use-case'
 
 export class TeacherController {
   constructor(
@@ -20,6 +21,7 @@ export class TeacherController {
     private readonly deleteUseCase: DeleteTeacherUseCase,
     private readonly getBySubjectUseCase: GetTeachersBySubjectUseCase,
     private readonly listTeacherClassesUseCase: ListTeacherClassesUseCase,
+    private readonly getByLevelUseCase: GetTeachersByLevelUseCase,
   ) { }
 
   register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -112,17 +114,17 @@ export class TeacherController {
     }
   }
 
-  getByLevel = async (
-    req: Request, res: Response, next: NextFunction
-  ): Promise<void> => {
+  getByLevel = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { level } = req.params
-      const teachers = await this.teacherRepo.findByLevel(level)
+      const { level } = req.params;
+      const result = await this.getByLevelUseCase.execute(level);
       res.status(200).json({
         success: true,
-        data: teachers.map(TeacherMapper.toDto),
-      })
-    } catch (err) { next(err) }
+        data: result,
+      });
+    } catch (err) {
+      next(err);
+    }
   }
 
 

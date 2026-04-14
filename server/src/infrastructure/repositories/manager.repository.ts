@@ -5,7 +5,7 @@ import { ManagerModel, IManagerDocument } from 'src/infrastructure/database/sche
 import { DEFAULT_PAGE, DEFAULT_LIMIT } from 'src/shared/constants/index'
 import { ManagerDocumentMapper } from './mappers'
 import { ManagerQueryDto } from 'src/domain/dtos/manager.dto'
-import { PaginatedResult } from 'src/shared/types/Pagination-type'
+import { PaginatedResult } from 'src/application/ports/repositories/base.repository.interface'
 
 export class MongooseManagerRepository implements IManagerRepository {
 
@@ -25,6 +25,14 @@ export class MongooseManagerRepository implements IManagerRepository {
       { new: true, runValidators: true },
     )
     return doc ? ManagerDocumentMapper.toDomain(doc) : null
+  }
+
+  async delete(id: string): Promise<void> {
+    await ManagerModel.findByIdAndDelete(id)
+  }
+
+  async existsById(id: string): Promise<boolean> {
+    return (await ManagerModel.countDocuments({ _id: id })) > 0
   }
 
   async softDelete(id: string): Promise<boolean> {

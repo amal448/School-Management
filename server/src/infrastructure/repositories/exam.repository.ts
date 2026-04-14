@@ -5,7 +5,7 @@ import { ExamQueryDto } from 'src/domain/dtos/exam.dto'
 import { ExamModel, IExamDocument } from 'src/infrastructure/database/schemas/exam.schema'
 import { DEFAULT_PAGE, DEFAULT_LIMIT } from 'src/shared/constants/index'
 import { ExamDocumentMapper } from './mappers'
-import { PaginatedResult } from 'src/shared/types/Pagination-type'
+import { PaginatedResult } from 'src/application/ports/repositories/base.repository.interface'
 
 export class MongooseExamRepository implements IExamRepository {
 
@@ -15,20 +15,28 @@ export class MongooseExamRepository implements IExamRepository {
     )
     return ExamDocumentMapper.toDomain(doc)
   }
-async update(id: string, exam: ExamEntity): Promise<ExamEntity | null> {
-  const persistence = ExamDocumentMapper.toPersistence(exam)
+  async update(id: string, exam: ExamEntity): Promise<ExamEntity | null> {
+    const persistence = ExamDocumentMapper.toPersistence(exam)
 
-  const doc = await ExamModel.findByIdAndUpdate(
-    id,
-    { $set: persistence },
-    { new: true, runValidators: false },  // ← runValidators: false avoids schema issues
-  ).lean<IExamDocument>()
+    const doc = await ExamModel.findByIdAndUpdate(
+      id,
+      { $set: persistence },
+      { new: true, runValidators: false },  // ← runValidators: false avoids schema issues
+    ).lean<IExamDocument>()
 
-  return doc ? ExamDocumentMapper.toDomain(doc as IExamDocument) : null
-}
+    return doc ? ExamDocumentMapper.toDomain(doc as IExamDocument) : null
+  }
   async findById(id: string): Promise<ExamEntity | null> {
     const doc = await ExamModel.findById(id).lean<IExamDocument>()
     return doc ? ExamDocumentMapper.toDomain(doc as IExamDocument) : null
+  }
+
+  async delete(id: string): Promise<void> {
+    await ExamModel.findByIdAndDelete(id)
+  }
+
+  async existsById(id: string): Promise<boolean> {
+    return (await ExamModel.countDocuments({ _id: id })) > 0
   }
 
   async findAll(query: ExamQueryDto): Promise<PaginatedResult<ExamEntity>> {
@@ -55,7 +63,10 @@ async update(id: string, exam: ExamEntity): Promise<ExamEntity | null> {
 
     return {
       data: (docs as IExamDocument[]).map(ExamDocumentMapper.toDomain),
-      total, page, limit,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),   // ← add this everywhere it's missing
     }
   }
 }

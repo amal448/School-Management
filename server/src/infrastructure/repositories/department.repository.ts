@@ -1,11 +1,10 @@
-import { FilterQuery }           from 'mongoose'
+import { FilterQuery } from 'mongoose'
 import { IDepartmentRepository } from 'src/application/ports/repositories/department.repository.interface'
-import { DepartmentEntity }      from 'src/domain/entities/department.entity'
-import { DepartmentQueryDto }    from 'src/domain/dtos/department.dto'
+import { DepartmentEntity } from 'src/domain/entities/department.entity'
+import { DepartmentQueryDto } from 'src/domain/dtos/department.dto'
 import { DepartmentModel, IDepartmentDocument } from 'src/infrastructure/database/schemas/department.schema'
 import { DEFAULT_PAGE, DEFAULT_LIMIT } from 'src/shared/constants/index'
 import { DepartmentDocumentMapper } from './mappers'
-import { PaginatedResult } from 'src/shared/types/Pagination-type'
 
 export class MongooseDepartmentRepository implements IDepartmentRepository {
 
@@ -25,9 +24,13 @@ export class MongooseDepartmentRepository implements IDepartmentRepository {
     return doc ? DepartmentDocumentMapper.toDomain(doc) : null
   }
 
-  async delete(id: string): Promise<boolean> {
-    const result = await DepartmentModel.findByIdAndDelete(id)
-    return !!result
+
+  async delete(id: string): Promise<void> {
+    await DepartmentModel.findByIdAndDelete(id)
+  }
+
+  async existsById(id: string): Promise<boolean> {
+    return (await DepartmentModel.countDocuments({ _id: id })) > 0
   }
 
   async findById(id: string): Promise<DepartmentEntity | null> {
@@ -36,9 +39,9 @@ export class MongooseDepartmentRepository implements IDepartmentRepository {
   }
 
   async findAll(query: DepartmentQueryDto): Promise<PaginatedResult<DepartmentEntity>> {
-    const page  = query.page  ?? DEFAULT_PAGE
+    const page = query.page ?? DEFAULT_PAGE
     const limit = Math.min(query.limit ?? DEFAULT_LIMIT, 100)
-    const skip  = (page - 1) * limit
+    const skip = (page - 1) * limit
 
     const filter: FilterQuery<IDepartmentDocument> = {}
     if (query.search) {
@@ -52,7 +55,7 @@ export class MongooseDepartmentRepository implements IDepartmentRepository {
     ])
 
     return {
-      data:  (docs as IDepartmentDocument[]).map(DepartmentDocumentMapper.toDomain),
+      data: (docs as IDepartmentDocument[]).map(DepartmentDocumentMapper.toDomain),
       total, page, limit,
     }
   }

@@ -6,7 +6,7 @@ import { IStudentDocument, StudentModel } from '../database/schemas/student.sche
 import { StudentDocumentMapper } from './mappers';
 import { StudentQueryDto } from 'src/domain/dtos/student.dto';
 import { IStudentRepository } from 'src/application/ports/repositories/student.repository.interface';
-import { PaginatedResult } from 'src/shared/types/Pagination-type';
+import { PaginatedResult } from 'src/application/ports/repositories/base.repository.interface';
 
 
 // ── Student Repository ─────────────────────────────────
@@ -15,6 +15,13 @@ export class MongooseStudentRepository implements IStudentRepository {
     const doc = await StudentModel.create(StudentDocumentMapper.toPersistence(student));
     return StudentDocumentMapper.toDomain(doc);
   }
+  async delete(id: string): Promise<void> {
+  await StudentModel.findByIdAndDelete(id)
+}
+
+async existsById(id: string): Promise<boolean> {
+  return (await StudentModel.countDocuments({ _id: id })) > 0
+}
 
   async update(id: string, student: StudentEntity): Promise<StudentEntity | null> {
     const doc = await StudentModel.findByIdAndUpdate(
@@ -63,7 +70,10 @@ export class MongooseStudentRepository implements IStudentRepository {
 
     return {
       data: (docs as IStudentDocument[]).map(StudentDocumentMapper.toDomain),
-      total, page, limit,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
     };
   }
 

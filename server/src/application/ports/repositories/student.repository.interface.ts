@@ -1,5 +1,4 @@
 import { StudentEntity } from '../../../domain/entities/student.entity';
-import { PaginatedResult } from '../../../shared/types/Pagination-type';
 import { IBaseRepository, PaginationOptions } from './base.repository.interface';
 
 export interface StudentQueryDto extends PaginationOptions {
