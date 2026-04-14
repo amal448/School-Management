@@ -6,11 +6,8 @@ import { ExamStatus }      from 'src/domain/enums'
 import { CreateExamDto, ExamResponseDto } from 'src/domain/dtos/exam.dto'
 import { AppError }        from 'src/shared/types/app-error'
 import { ExamMapper } from 'src/application/mappers'
+import { CreateExamInput } from '../interfaces/inputs'
 
-export interface CreateExamInput {
-  dto:       CreateExamDto
-  createdBy: string
-}
 
 export class CreateExamUseCase
   implements IUseCase<CreateExamInput, ExamResponseDto> {

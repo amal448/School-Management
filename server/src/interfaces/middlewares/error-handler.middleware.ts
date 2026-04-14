@@ -1,21 +1,41 @@
-import { ILogger } from '../../application/ports/services/index';
-import { Request,Response,NextFunction } from 'express';
-import { AppError } from '../../shared/types/app-error';
+// src/interfaces/middlewares/error-handler.middleware.ts
 
-export const createErrorHandler =
-  (logger: ILogger) =>
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (err: Error, req: Request, res: Response, _next: NextFunction): void => {
-    if (err instanceof AppError && err.isOperational) {
-      logger.warn('Operational error', { errorCode: err.errorCode, message: err.message, path: req.path });
-      res.status(err.statusCode).json({ success: false, errorCode: err.errorCode, message: err.message });
-      return;
-    }
+import { Request, Response, NextFunction } from 'express'
+import { AppError }   from 'src/shared/types/app-error'
+import { HttpStatus } from 'src/shared/enums/http-status.enum'
+import { ZodError }   from 'zod'
 
-    logger.error('Unhandled error', { name: err.name, message: err.message, stack: err.stack, path: req.path });
-    res.status(500).json({
+export function errorHandler(
+  err:  unknown,
+  req:  Request,
+  res:  Response,
+  next: NextFunction,
+): void {
+  if (err instanceof ZodError) {
+    const errors = err.errors.map((e) => ({
+      field:   e.path.join('.'),
+      message: e.message,
+    }))
+    res.status(HttpStatus.BAD_REQUEST).json({
       success: false,
-      errorCode: 'INTERNAL_SERVER_ERROR',
-      message: process.env.NODE_ENV === 'development' ? err.message : 'An unexpected error occurred',
-    });
-  };
+      message: 'Validation failed',
+      errors,
+    })
+    return
+  }
+
+  if (err instanceof AppError) {
+    res.status(err.statusCode).json({
+      success:   false,
+      message:   err.message,
+      errorType: err.errorType,
+    })
+    return
+  }
+
+  console.error('Unhandled error:', err)
+  res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+    success: false,
+    message: 'An unexpected error occurred',
+  })
+}

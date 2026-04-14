@@ -7,11 +7,9 @@ import { IEmailService, ILogger }           from 'src/application/ports/services
 import { AppError }          from 'src/shared/types/app-error'
 import { Role }              from 'src/domain/enums'
 import { AppConfig }         from 'src/config/app.config'
+import { ForgotPasswordInput } from '../interfaces/inputs'
 
-export interface ForgotPasswordInput {
-  email: string
-  role:  Role.MANAGER | Role.TEACHER
-}
+
 
 export class ForgotPasswordUseCase implements IUseCase<ForgotPasswordInput, void> {
   constructor(

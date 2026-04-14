@@ -6,13 +6,7 @@ import { ITeacherRepository } from 'src/application/ports/repositories/teacher.r
 import { IStudentRepository } from 'src/application/ports/repositories/student.repository.interface'
 import { AppError } from 'src/shared/types/app-error'
 import { Role } from 'src/domain/enums'
-
-export interface ChangePasswordInput {
-  userId:          string
-  role:            Role
-  currentPassword: string
-  newPassword:     string
-}
+import { ChangePasswordInput } from '../interfaces/inputs'
 
 export class ChangePasswordUseCase implements IUseCase<ChangePasswordInput, void> {
   constructor(

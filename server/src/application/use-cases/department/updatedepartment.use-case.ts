@@ -7,12 +7,9 @@ import {
 } from 'src/domain/dtos/department.dto'
 import { AppError }              from 'src/shared/types/app-error'
 import { DepartmentMapper } from 'src/application/mappers'
+import { UpdateDepartmentInput } from '../interfaces/inputs'
 
-// ── Update ─────────────────────────────────────────────
-export interface UpdateDepartmentInput {
-  id:  string
-  dto: UpdateDepartmentDto
-}
+
 
 export class UpdateDepartmentUseCase
   implements IUseCase<UpdateDepartmentInput, DepartmentResponseDto> {

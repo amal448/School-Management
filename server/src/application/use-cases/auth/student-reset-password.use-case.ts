@@ -8,16 +8,8 @@ import { IPasswordHasher, ILogger } from 'src/application/ports/services'
 import { OtpService } from 'src/infrastructure/services/otp.service'
 import { AppError } from 'src/shared/types/app-error'
 import { Role } from 'src/domain/enums'
+import { StudentResetPasswordInput, StudentResetPasswordResult } from '../interfaces/inputs'
 
-export interface StudentResetPasswordInput {
-  studentId:   string
-  requesterId: string
-  requesterRole: Role.MANAGER | Role.TEACHER
-}
-
-export interface StudentResetPasswordResult {
-  firstTimeToken: string  // returned to manager/teacher to send to student
-}
 
 export class StudentResetPasswordUseCase
   implements IUseCase<StudentResetPasswordInput, StudentResetPasswordResult> {

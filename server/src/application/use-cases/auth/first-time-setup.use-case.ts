@@ -10,12 +10,7 @@ import { IPasswordHasher, ILogger } from 'src/application/ports/services'
 import { OtpService } from 'src/infrastructure/services/otp.service'
 import { AppError } from 'src/shared/types/app-error'
 import { Role } from 'src/domain/enums'
-
-export interface FirstTimeSetupInput {
-  token:       string
-  role:        Role.TEACHER | Role.STUDENT
-  newPassword: string
-}
+import { FirstTimeSetupInput } from '../interfaces/inputs'
 
 export class FirstTimeSetupUseCase implements IUseCase<FirstTimeSetupInput, void> {
   constructor(

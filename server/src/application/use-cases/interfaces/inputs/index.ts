@@ -1,0 +1,7 @@
+export * from './auth.inputs'
+export * from './teacher.inputs'
+export * from './student.inputs'
+export * from './manager.inputs'
+export * from './admin.inputs'
+export * from './academic.inputs'
+export * from './exam.inputs'

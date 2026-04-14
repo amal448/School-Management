@@ -6,11 +6,8 @@ import { ILogger }          from 'src/application/ports/services'
 import { ClassMapper }      from 'src/application/mappers'
 import { UpdateClassDto, ClassResponseDto } from 'src/domain/dtos/class.dto'
 import { AppError }         from 'src/shared/types/app-error'
+import { UpdateClassInput } from '../interfaces/inputs'
 
-export interface UpdateClassInput {
-  id:  string
-  dto: UpdateClassDto
-}
 
 export class UpdateClassUseCase
   implements IUseCase<UpdateClassInput, ClassResponseDto> {

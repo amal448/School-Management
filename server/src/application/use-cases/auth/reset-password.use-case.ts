@@ -6,12 +6,8 @@ import { IPasswordHasher, ILogger } from 'src/application/ports/services'
 import { OtpService } from 'src/infrastructure/services/otp.service'
 import { AppError } from 'src/shared/types/app-error'
 import { Role } from 'src/domain/enums'
+import { ResetPasswordInput } from '../interfaces/inputs'
 
-export interface ResetPasswordInput {
-  token: string
-  role: Role.MANAGER | Role.TEACHER
-  newPassword: string
-}
 
 export class ResetPasswordUseCase implements IUseCase<ResetPasswordInput, void> {
   constructor(

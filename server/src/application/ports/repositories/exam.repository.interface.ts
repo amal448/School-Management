@@ -1,10 +1,9 @@
-import { ExamEntity }    from 'src/domain/entities/exam.entity'
-import { ExamQueryDto }  from 'src/domain/dtos/exam.dto'
-import { PaginatedResult } from 'src/shared/types/Pagination-type'
+// src/application/ports/repositories/exam.repository.interface.ts
 
-export interface IExamRepository {
-  save(exam: ExamEntity):                       Promise<ExamEntity>
-  update(id: string, exam: ExamEntity):         Promise<ExamEntity | null>
-  findById(id: string):                         Promise<ExamEntity | null>
-  findAll(query: ExamQueryDto):                 Promise<PaginatedResult<ExamEntity>>
+import { IBaseRepository }  from './base.repository.interface'
+import { ExamEntity }        from 'src/domain/entities/exam.entity'
+import { ExamQueryDto }      from 'src/domain/dtos/exam.dto'
+
+export interface IExamRepository
+  extends IBaseRepository<ExamEntity, ExamQueryDto> {
 }

@@ -1,30 +1,26 @@
 // src/application/use-cases/exam/enter-marks.use-case.ts
 
-import { IUseCase }                  from '../interfaces/use-case.interface'
+import { IVoidUseCase }              from '../interfaces/use-case.interface'
+import { EnterMarksInput }           from '../interfaces/inputs/exam.inputs'  // ← from shared file
 import { IExamScheduleRepository }   from 'src/application/ports/repositories/exam-schedule.repository.interface'
 import { IExamRepository }           from 'src/application/ports/repositories/exam.repository.interface'
 import { IStudentRepository }        from 'src/application/ports/repositories/student.repository.interface'
 import { IMarksRepository }          from 'src/application/ports/repositories/marks.repository.interface'
-import { ILogger }                   from 'src/application/ports/services'
+import { ILogger }                   from 'src/application/ports/services/logger.service.interface'
 import { MarksEntity }               from 'src/domain/entities/marks.entity'
 import { MarksStatus, ExamStatus }   from 'src/domain/enums'
-import { EnterMarksDto }             from 'src/domain/dtos/exam.dto'
 import { AppError }                  from 'src/shared/types/app-error'
 
-export interface EnterMarksInput {
-  dto:       EnterMarksDto
-  teacherId: string
-}
+// ← REMOVED: local EnterMarksInput interface — it now lives in exam.inputs.ts
 
-export class EnterMarksUseCase
-  implements IUseCase<EnterMarksInput, void> {
+export class EnterMarksUseCase implements IVoidUseCase<EnterMarksInput> {
 
   constructor(
     private readonly scheduleRepo: IExamScheduleRepository,
     private readonly examRepo:     IExamRepository,
     private readonly studentRepo:  IStudentRepository,
     private readonly marksRepo:    IMarksRepository,
-    private readonly logger:       ILogger,            // ← add logger back
+    private readonly logger:       ILogger,
   ) {}
 
   async execute(input: EnterMarksInput): Promise<void> {
@@ -50,10 +46,8 @@ export class EnterMarksUseCase
       throw AppError.badRequest('Exam is not accepting marks at this time')
     }
 
-    // totalMarks comes directly from schedule — no timetableId needed
-    const totalMarks = schedule.totalMarks   // ← was: fetch from timetable
+    const totalMarks = schedule.totalMarks
 
-    // Validate all students belong to this class
     const students = await this.studentRepo.findAll({
       classId: schedule.classId,
       limit:   1000,
@@ -91,7 +85,6 @@ export class EnterMarksUseCase
     schedule.submitMarks()
     await this.scheduleRepo.update(schedule.id!, schedule)
 
-    // Auto-transition exam if all schedules submitted
     const allDone = await this.scheduleRepo.allSubmitted(schedule.examId)
     if (allDone) {
       exam.markPending()

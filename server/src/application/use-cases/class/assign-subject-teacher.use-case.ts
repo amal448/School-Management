@@ -4,12 +4,8 @@ import { IClassRepository } from "src/application/ports/repositories/class.repos
 import { ILogger } from "src/application/ports/services"
 import { AppError } from "src/shared/types/app-error"
 import { ClassMapper } from "src/application/mappers"
+import { AssignSubjectTeacherInput } from "../interfaces/inputs"
 
-export interface AssignSubjectTeacherInput {
-    classId: string
-    subjectId: string
-    teacherId: string
-}
 
 export class AssignSubjectTeacherUseCase implements IUseCase<AssignSubjectTeacherInput, ClassResponseDto> {
     constructor(
@@ -32,7 +28,11 @@ export class AssignSubjectTeacherUseCase implements IUseCase<AssignSubjectTeache
         )
         if (!updated) throw AppError.internal('Assignment failed')
 
-        this.logger.info('AssignSubjectTeacherUseCase : assigned', input)
+        this.logger.info('AssignSubjectTeacherUseCase: assigned', {
+            classId: input.classId,
+            subjectId: input.subjectId,
+            teacherId: input.teacherId,
+        })
         return ClassMapper.toDto(updated)
     }
 }

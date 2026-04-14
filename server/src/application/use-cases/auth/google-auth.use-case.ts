@@ -7,20 +7,7 @@ import { AppError } from 'src/shared/types/app-error'
 import { Role } from 'src/domain/enums'
 import { JwtTokenService } from 'src/infrastructure/services/token.service'
 import { AdminMapper } from 'src/application/mappers'
-
-export interface GoogleProfile {
-  googleId:  string
-  email:     string
-  firstName: string
-  lastName:  string
-  avatar?:   string
-}
-
-export interface GoogleAuthResult {
-  sessionId: string
-  csrfToken: string
-  user:      ReturnType<typeof AdminMapper.toDto>
-}
+import { GoogleAuthResult, GoogleProfile } from '../interfaces/inputs'
 
 export class GoogleAuthUseCase {
   constructor(

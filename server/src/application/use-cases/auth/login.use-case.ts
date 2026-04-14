@@ -8,21 +8,7 @@ import { Role } from 'src/domain/enums'
 import { IManagerRepository } from 'src/application/ports/repositories/manager.repository.interface'
 import { ITeacherRepository } from 'src/application/ports/repositories/teacher.repository.interface'
 import { IStudentRepository } from 'src/application/ports/repositories/student.repository.interface'
-
-export interface LoginInput {
-  email:    string
-  password: string
-  role:     Role
-  req:      Request
-  res:      Response
-}
-
-export interface LoginResult {
-  message:   string
-  otpSent:   boolean
-  sessionId?: string
-  csrfToken?: string
-}
+import { LoginInput, LoginResult } from '../interfaces/inputs'
 
 export class LoginUseCase {
   constructor(

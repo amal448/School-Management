@@ -1,34 +1,49 @@
-// src/shared/types/app-error.ts
+import { HttpStatus } from 'src/shared/enums/http-status.enum'
+
 export class AppError extends Error {
-  public readonly errorCode: string;
-  public readonly statusCode: number;
-  public readonly isOperational: boolean;
-
-  constructor(errorCode: string, message: string, statusCode = 500, isOperational = true) {
-    super(message);
-    this.name = 'AppError';
-    this.errorCode = errorCode;
-    this.statusCode = statusCode;
-    this.isOperational = isOperational;
-    Error.captureStackTrace(this, this.constructor);
+  constructor(
+    public readonly statusCode: HttpStatus,
+    message:                    string,
+    public readonly errorType?: string,
+  ) {
+    super(message)
+    this.name = 'AppError'
+    Object.setPrototypeOf(this, AppError.prototype)
   }
 
-  static badRequest(message: string, code = 'BAD_REQUEST'): AppError {
-    return new AppError(code, message, 400);
+  static badRequest(message: string): AppError {
+    return new AppError(HttpStatus.BAD_REQUEST, message, 'BAD_REQUEST')
   }
+
   static unauthorized(message = 'Unauthorized'): AppError {
-    return new AppError('UNAUTHORIZED', message, 401);
+    return new AppError(HttpStatus.UNAUTHORIZED, message, 'UNAUTHORIZED')
   }
+
   static forbidden(message = 'Forbidden'): AppError {
-    return new AppError('FORBIDDEN', message, 403);
+    return new AppError(HttpStatus.FORBIDDEN, message, 'FORBIDDEN')
   }
+
   static notFound(message: string): AppError {
-    return new AppError('NOT_FOUND', message, 404);
+    return new AppError(HttpStatus.NOT_FOUND, message, 'NOT_FOUND')
   }
+
   static conflict(message: string): AppError {
-    return new AppError('ALREADY_EXISTS', message, 409);
+    return new AppError(HttpStatus.CONFLICT, message, 'CONFLICT')
   }
+
+  static unprocessable(message: string): AppError {
+    return new AppError(HttpStatus.UNPROCESSABLE_ENTITY, message, 'UNPROCESSABLE_ENTITY')
+  }
+
+  static tooManyRequests(message = 'Too many requests'): AppError {
+    return new AppError(HttpStatus.TOO_MANY_REQUESTS, message, 'TOO_MANY_REQUESTS')
+  }
+
   static internal(message = 'Internal server error'): AppError {
-    return new AppError('INTERNAL_ERROR', message, 500, false);
+    return new AppError(HttpStatus.INTERNAL_SERVER_ERROR, message, 'INTERNAL_SERVER_ERROR')
+  }
+
+  static notImplemented(message = 'Not implemented'): AppError {
+    return new AppError(HttpStatus.NOT_IMPLEMENTED, message, 'NOT_IMPLEMENTED')
   }
 }

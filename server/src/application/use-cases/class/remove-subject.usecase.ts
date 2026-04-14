@@ -4,18 +4,15 @@ import { IClassRepository } from 'src/application/ports/repositories/class.repos
 import { ILogger } from 'src/application/ports/services'
 import { ClassResponseDto } from 'src/domain/dtos/class.dto'
 import { AppError } from 'src/shared/types/app-error'
-
-export interface RemoveSubjectInput {
-  classId: string
-  subjectId: string
-}
+import { RemoveSubjectInput } from '../interfaces/inputs'
+// src/application/use-cases/class/remove-subject.usecase.ts
 
 export class RemoveSubjectAllocationUseCase
   implements IUseCase<RemoveSubjectInput, ClassResponseDto> {
 
   constructor(
     private readonly classRepo: IClassRepository,
-    private readonly logger: ILogger,
+    private readonly logger:    ILogger,
   ) {}
 
   async execute(input: RemoveSubjectInput): Promise<ClassResponseDto> {
@@ -27,7 +24,11 @@ export class RemoveSubjectAllocationUseCase
     const updated = await this.classRepo.update(input.classId, cls)
     if (!updated) throw AppError.internal('Removal failed')
 
-    this.logger.info('Subject removed', input)
+    // ← Fix: don't pass input directly to logger
+    this.logger.info('Subject removed', {
+      classId:   input.classId,
+      subjectId: input.subjectId,
+    })
 
     return ClassMapper.toDto(updated)
   }
