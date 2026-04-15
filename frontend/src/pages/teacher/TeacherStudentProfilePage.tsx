@@ -14,6 +14,20 @@ import { useClass }                from '@/hooks/class/useClasses'
 import { useAuthStore }            from '@/store/auth.store'
 import { Avatar }                  from '@/components/shared/Avatar'
 import { ResetStudentPasswordDialog } from '@/components/shared/student/ResetStudentPasswordDialog'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 const InfoRow = ({
   icon: Icon, label, value,
@@ -188,11 +202,17 @@ export default function TeacherStudentProfilePage() {
       )}
 
       {/* ── Academic performance ── */}
+    {/* ── Academic performance ── */}
       <Card>
         <CardHeader className="pb-0 pt-5 px-6">
-          <CardTitle className="text-sm font-medium">
-            Academic performance
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-medium">
+              Academic performance
+            </CardTitle>
+            <span className="text-xs text-muted-foreground">
+              {Object.keys(marksByExam).length} exam{Object.keys(marksByExam).length !== 1 ? 's' : ''}
+            </span>
+          </div>
         </CardHeader>
         <CardContent className="p-0 mt-3">
           {!marks?.length ? (
@@ -200,53 +220,123 @@ export default function TeacherStudentProfilePage() {
               No exam results yet.
             </div>
           ) : (
-            <div className="divide-y divide-border">
-              {Object.entries(marksByExam).map(([examId, examMarks]) => (
-                <div key={examId} className="px-6 py-4">
-                  <p className="text-sm font-medium mb-3">
-                    {resolveExam(examId)}
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {examMarks!.map((mark) => (
-                      <div
-                        key={mark.id}
-                        className="flex items-center justify-between p-2.5 rounded-lg bg-muted/40 border border-border"
-                      >
-                        <div className="flex flex-col gap-0.5 min-w-0">
-                          <span className="text-sm font-medium truncate">
-                            {resolveSubject(mark.subjectId)}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {mark.isAbsent
-                              ? 'Absent'
-                              : `${mark.marksScored}/${mark.totalMarks}`
-                            }
+            <Accordion type="single" collapsible className="divide-y divide-border">
+              {Object.entries(marksByExam).map(([examId, examMarks]) => {
+                const totalScored = examMarks!.reduce(
+                  (s, m) => s + (m.isAbsent ? 0 : m.marksScored), 0
+                )
+                const totalMax = examMarks!.reduce((s, m) => s + m.totalMarks, 0)
+                const passCount = examMarks!.filter(
+                  (m) => !['F', 'AB'].includes(m.grade)
+                ).length
+                const pct = totalMax > 0 ? Math.round((totalScored / totalMax) * 100) : 0
+
+                return (
+                  <AccordionItem
+                    key={examId}
+                    value={examId}
+                    className="border-none px-6"
+                  >
+                    <AccordionTrigger className="py-4 hover:no-underline">
+                      <div className="flex items-center justify-between w-full mr-3">
+                        {/* Left — exam name + type */}
+                        <div className="text-left">
+                          <p className="text-sm font-medium">
+                            {resolveExam(examId)}
+                          </p>
+                          <p className="text-xs text-muted-foreground capitalize">
+                            {resolveExam(examId).replace('_', ' ')}
+                          </p>
+                        </div>
+
+                        {/* Right — score summary + pass badge */}
+                        <div className="flex items-center gap-4">
+                          <div className="text-right hidden sm:block">
+                            <p className="text-sm font-medium">{totalScored}/{totalMax}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {passCount}/{examMarks!.length} passed
+                            </p>
+                          </div>
+                          <span className={`
+                    text-xs font-medium px-2.5 py-0.5 rounded-md
+                    ${pct >= 35 ? 'bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400'
+                              : 'bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400'}
+                  `}>
+                            {pct}%
                           </span>
                         </div>
-                        <span className={`
-                          text-xs font-medium px-2 py-0.5 rounded-md shrink-0 ml-2
-                          ${gradeColor(mark.grade)}
-                        `}>
-                          {mark.grade}
-                        </span>
                       </div>
-                    ))}
-                  </div>
+                    </AccordionTrigger>
 
-                  {/* Exam summary */}
-                  <div className="flex gap-4 mt-3 text-xs text-muted-foreground">
-                    <span>
-                      Total: {examMarks!.reduce((s, m) => s + m.marksScored, 0)}/
-                      {examMarks!.reduce((s, m) => s + m.totalMarks, 0)}
-                    </span>
-                    <span>
-                      Passed: {examMarks!.filter((m) => !['F', 'AB'].includes(m.grade)).length}/
-                      {examMarks!.length}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+                    <AccordionContent className="pb-4">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Subject</TableHead>
+                            <TableHead className="text-center">Marks</TableHead>
+                            <TableHead className="text-center">Total</TableHead>
+                            <TableHead className="text-center">Grade</TableHead>
+                            <TableHead className="text-center">Status</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {examMarks!
+                            .slice()
+                            .sort((a, b) => b.marksScored - a.marksScored)
+                            .map((mark) => (
+                              <TableRow key={mark.id}>
+                                <TableCell className="font-medium">
+                                  {resolveSubject(mark.subjectId)}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                  {mark.isAbsent ? '—' : mark.marksScored}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                  {mark.totalMarks}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                  <span className={`
+                            text-xs font-medium px-2.5 py-0.5 rounded-md
+                            ${gradeColor(mark.grade)}
+                          `}>
+                                    {mark.grade}
+                                  </span>
+                                </TableCell>
+                                <TableCell className="text-center">
+                                  {mark.isAbsent ? (
+                                    <span className="text-xs text-muted-foreground">Absent</span>
+                                  ) : ['F'].includes(mark.grade) ? (
+                                    <span className="text-xs text-red-600 dark:text-red-400">Fail</span>
+                                  ) : (
+                                    <span className="text-xs text-green-600 dark:text-green-400">Pass</span>
+                                  )}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                        </TableBody>
+                      </Table>
+
+                      {/* Percentage bar inside accordion */}
+                      {totalMax > 0 && (
+                        <div className="mt-4 px-1">
+                          <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
+                            <span>Overall score</span>
+                            <span>{totalScored}/{totalMax} — {pct}%</span>
+                          </div>
+                          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all ${pct >= 35 ? 'bg-green-500' : 'bg-red-500'
+                                }`}
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
+                )
+              })}
+            </Accordion>
           )}
         </CardContent>
       </Card>

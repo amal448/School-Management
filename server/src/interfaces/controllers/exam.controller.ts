@@ -215,9 +215,8 @@ export class ExamController {
     req: Request, res: Response, next: NextFunction
   ): Promise<void> => {
     try {
-      const marks = await this.marksRepo.findByStudentAndExam(
+      const marks = await this.marksRepo.findByStudentId(
         req.params.studentId,
-        req.params.examId ?? '',
       )
       res.status(200).json({
         success: true,

@@ -21,15 +21,15 @@ export class MongooseMarksRepository implements IMarksRepository {
     return (docs as IMarksDocument[]).map(MarksDocumentMapper.toDomain)
   }
 
-  async findByStudentAndExam(
-    studentId: string,
-    examId: string,
-  ): Promise<MarksEntity[]> {
-    const docs = await MarksModel
-      .find({ studentId, examId })
-      .lean<IMarksDocument[]>()
-    return (docs as IMarksDocument[]).map(MarksDocumentMapper.toDomain)
-  }
+  // async findByStudentAndExam(
+  //   studentId: string,
+  //   examId: string,
+  // ): Promise<MarksEntity[]> {
+  //   const docs = await MarksModel
+  //     .find({ studentId, examId })
+  //     .lean<IMarksDocument[]>()
+  //   return (docs as IMarksDocument[]).map(MarksDocumentMapper.toDomain)
+  // }
 
   async findByClassAndExam(
     classId: string,

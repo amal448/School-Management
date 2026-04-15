@@ -1,6 +1,6 @@
-import { useParams, useNavigate }    from 'react-router-dom'
-import { Button }                    from '@/components/ui/button'
-import { Badge }                     from '@/components/ui/badge'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   ArrowLeft, Mail, Phone, MapPin,
@@ -8,20 +8,35 @@ import {
   ShieldAlert, UserCheck,
 } from 'lucide-react'
 import { useStudent, useUpdateStudent, useDeactivateStudent } from '@/hooks/student/useStudents'
-import { useStudentResults }         from '@/hooks/exam/useExams'
-import { useSubjects }               from '@/hooks/subject/useSubjects'
-import { useExams }                  from '@/hooks/exam/useExams'
-import { useClass }                  from '@/hooks/class/useClasses'
-import { useAuthStore }              from '@/store/auth.store'
-import { Avatar }                    from '@/components/shared/Avatar'
-import { EditStudentDialog }         from '@/components/shared/student/EditStudentDialog'
+import { useStudentResults } from '@/hooks/exam/useExams'
+import { useSubjects } from '@/hooks/subject/useSubjects'
+import { useExams } from '@/hooks/exam/useExams'
+import { useClass } from '@/hooks/class/useClasses'
+import { useAuthStore } from '@/store/auth.store'
+import { Avatar } from '@/components/shared/Avatar'
+import { EditStudentDialog } from '@/components/shared/student/EditStudentDialog'
 import { ResetStudentPasswordDialog } from '@/components/shared/student/ResetStudentPasswordDialog'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
 
 const InfoRow = ({
   icon: Icon, label, value,
 }: {
-  icon:   React.ElementType
-  label:  string
+  icon: React.ElementType
+  label: string
   value?: string | null
 }) => (
   <div className="flex items-start gap-3 py-3">
@@ -63,23 +78,23 @@ const Skeleton = () => (
 )
 
 export default function StudentProfilePage() {
-  const { id }   = useParams<{ id: string }>()
+  const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { user } = useAuthStore()
 
-  const { data: student,  isLoading, isError } = useStudent(id ?? '')
-  const { data: marks }                        = useStudentResults(id ?? '')
-  const { data: subjects }                     = useSubjects({ limit: 100 })
-  const { data: exams }                        = useExams()
-  const { data: studentClass }                 = useClass(student?.classId ?? '')
+  const { data: student, isLoading, isError } = useStudent(id ?? '')
+  const { data: marks } = useStudentResults(id ?? '')
+  const { data: subjects } = useSubjects({ limit: 100 })
+  const { data: exams } = useExams()
+  const { data: studentClass } = useClass(student?.classId ?? '')
 
   // Mutations — defined in page, passed to dialogs
-  const updateMutation     = useUpdateStudent(id ?? '')
+  const updateMutation = useUpdateStudent(id ?? '')
   const deactivateMutation = useDeactivateStudent()
 
-  const isAdmin   = user?.role === 'ADMIN'
+  const isAdmin = user?.role === 'ADMIN'
   const isManager = user?.role === 'MANAGER'
-  const canEdit   = isAdmin || isManager
+  const canEdit = isAdmin || isManager
 
   const resolveSubject = (sid: string) =>
     subjects?.data.find((s) => s.id === sid)?.subjectName ?? '—'
@@ -194,8 +209,8 @@ export default function StudentProfilePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-6 pb-4 divide-y divide-border">
-            <InfoRow icon={Mail}   label="Email"   value={student.email} />
-            <InfoRow icon={Phone}  label="Phone"   value={student.guardianContact} />
+            <InfoRow icon={Mail} label="Email" value={student.email} />
+            <InfoRow icon={Phone} label="Phone" value={student.guardianContact} />
             <InfoRow icon={MapPin} label="Address" value={student.address} />
           </CardContent>
         </Card>
@@ -207,19 +222,19 @@ export default function StudentProfilePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-6 pb-4 divide-y divide-border">
-            <InfoRow icon={Users}        label="Name"       value={student.guardianName} />
-            <InfoRow icon={Phone}        label="Contact"    value={student.guardianContact} />
-            <InfoRow icon={Calendar}     label="Admission"  value={
+            <InfoRow icon={Users} label="Name" value={student.guardianName} />
+            <InfoRow icon={Phone} label="Contact" value={student.guardianContact} />
+            <InfoRow icon={Calendar} label="Admission" value={
               student.admissionDate
                 ? new Date(student.admissionDate).toLocaleDateString('en-US', {
-                    day: 'numeric', month: 'long', year: 'numeric',
-                  })
+                  day: 'numeric', month: 'long', year: 'numeric',
+                })
                 : undefined
             } />
           </CardContent>
         </Card>
 
-        <Card>
+        {/* <Card>
           <CardHeader className="pb-0 pt-5 px-6">
             <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               Account
@@ -248,7 +263,7 @@ export default function StudentProfilePage() {
               })}
             />
           </CardContent>
-        </Card>
+        </Card> */}
 
       </div>
 
@@ -270,7 +285,7 @@ export default function StudentProfilePage() {
               No exam results yet.
             </div>
           ) : (
-            <div className="divide-y divide-border">
+            <Accordion type="single" collapsible className="divide-y divide-border">
               {Object.entries(marksByExam).map(([examId, examMarks]) => {
                 const totalScored = examMarks!.reduce(
                   (s, m) => s + (m.isAbsent ? 0 : m.marksScored), 0
@@ -279,83 +294,114 @@ export default function StudentProfilePage() {
                 const passCount = examMarks!.filter(
                   (m) => !['F', 'AB'].includes(m.grade)
                 ).length
+                const pct = totalMax > 0 ? Math.round((totalScored / totalMax) * 100) : 0
 
                 return (
-                  <div key={examId} className="px-6 py-5">
-                    {/* Exam header */}
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <p className="text-sm font-medium">
-                          {resolveExamName(examId)}
-                        </p>
-                        <p className="text-xs text-muted-foreground capitalize">
-                          {resolveExamType(examId).replace('_', ' ')}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium">
-                          {totalScored}/{totalMax}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {passCount}/{examMarks!.length} passed
-                        </p>
-                      </div>
-                    </div>
+                  <AccordionItem
+                    key={examId}
+                    value={examId}
+                    className="border-none px-6"
+                  >
+                    <AccordionTrigger className="py-4 hover:no-underline">
+                      <div className="flex items-center justify-between w-full mr-3">
+                        {/* Left — exam name + type */}
+                        <div className="text-left">
+                          <p className="text-sm font-medium">
+                            {resolveExamName(examId)}
+                          </p>
+                          <p className="text-xs text-muted-foreground capitalize">
+                            {resolveExamType(examId).replace('_', ' ')}
+                          </p>
+                        </div>
 
-                    {/* Subject marks grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {examMarks!
-                        .slice()
-                        .sort((a, b) => b.marksScored - a.marksScored)
-                        .map((mark) => (
-                          <div
-                            key={mark.id}
-                            className="flex items-center justify-between p-2.5 rounded-lg bg-muted/40 border border-border"
-                          >
-                            <div className="flex flex-col gap-0.5 min-w-0">
-                              <span className="text-sm font-medium truncate">
-                                {resolveSubject(mark.subjectId)}
-                              </span>
-                              <span className="text-xs text-muted-foreground">
-                                {mark.isAbsent
-                                  ? 'Absent'
-                                  : `${mark.marksScored}/${mark.totalMarks}`
-                                }
-                              </span>
-                            </div>
-                            <span className={`
-                              text-xs font-medium px-2.5 py-0.5 rounded-md shrink-0 ml-3
-                              ${gradeColor(mark.grade)}
-                            `}>
-                              {mark.grade}
-                            </span>
+                        {/* Right — score summary + pass badge */}
+                        <div className="flex items-center gap-4">
+                          <div className="text-right hidden sm:block">
+                            <p className="text-sm font-medium">{totalScored}/{totalMax}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {passCount}/{examMarks!.length} passed
+                            </p>
                           </div>
-                        ))}
-                    </div>
-
-                    {/* Percentage bar */}
-                    {totalMax > 0 && (
-                      <div className="mt-3">
-                        <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                          <span>Overall</span>
-                          <span>{Math.round((totalScored / totalMax) * 100)}%</span>
-                        </div>
-                        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                          <div
-                            className={`h-full rounded-full transition-all ${
-                              totalScored / totalMax >= 0.35
-                                ? 'bg-green-500'
-                                : 'bg-red-500'
-                            }`}
-                            style={{ width: `${Math.round((totalScored / totalMax) * 100)}%` }}
-                          />
+                          <span className={`
+                    text-xs font-medium px-2.5 py-0.5 rounded-md
+                    ${pct >= 35 ? 'bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400'
+                              : 'bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400'}
+                  `}>
+                            {pct}%
+                          </span>
                         </div>
                       </div>
-                    )}
-                  </div>
+                    </AccordionTrigger>
+
+                    <AccordionContent className="pb-4">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Subject</TableHead>
+                            <TableHead className="text-center">Marks</TableHead>
+                            <TableHead className="text-center">Total</TableHead>
+                            <TableHead className="text-center">Grade</TableHead>
+                            <TableHead className="text-center">Status</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {examMarks!
+                            .slice()
+                            .sort((a, b) => b.marksScored - a.marksScored)
+                            .map((mark) => (
+                              <TableRow key={mark.id}>
+                                <TableCell className="font-medium">
+                                  {resolveSubject(mark.subjectId)}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                  {mark.isAbsent ? '—' : mark.marksScored}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                  {mark.totalMarks}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                  <span className={`
+                            text-xs font-medium px-2.5 py-0.5 rounded-md
+                            ${gradeColor(mark.grade)}
+                          `}>
+                                    {mark.grade}
+                                  </span>
+                                </TableCell>
+                                <TableCell className="text-center">
+                                  {mark.isAbsent ? (
+                                    <span className="text-xs text-muted-foreground">Absent</span>
+                                  ) : ['F'].includes(mark.grade) ? (
+                                    <span className="text-xs text-red-600 dark:text-red-400">Fail</span>
+                                  ) : (
+                                    <span className="text-xs text-green-600 dark:text-green-400">Pass</span>
+                                  )}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                        </TableBody>
+                      </Table>
+
+                      {/* Percentage bar inside accordion */}
+                      {totalMax > 0 && (
+                        <div className="mt-4 px-1">
+                          <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
+                            <span>Overall score</span>
+                            <span>{totalScored}/{totalMax} — {pct}%</span>
+                          </div>
+                          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all ${pct >= 35 ? 'bg-green-500' : 'bg-red-500'
+                                }`}
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
                 )
               })}
-            </div>
+            </Accordion>
           )}
         </CardContent>
       </Card>

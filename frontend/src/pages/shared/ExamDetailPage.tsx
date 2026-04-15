@@ -26,6 +26,12 @@ import {
 } from '@/constants/exam.constants'
 import { AddCommonSubjectDialog } from '@/components/exam/AddCommonSubjectDialog'
 import { Skeleton } from '@/components/ui/skeleton'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 // ── Confirm dialog (inline) ────────────────────────────
 const ConfirmDialog = ({
@@ -447,62 +453,120 @@ export default function ExamDetailPage() {
       )}
 
       {/* ── Schedule status (after publish) ── */}
-      {!isDraft && !!schedules?.length && (
-        <Card>
-          <CardHeader className="pb-0 pt-5 px-6">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium">
-                Marks entry status
-              </CardTitle>
-              <span className="text-xs text-muted-foreground">
-                {submittedSchedules}/{totalSchedules} submitted
-              </span>
-            </div>
-          </CardHeader>
-          <CardContent className="p-0 mt-3">
-            <div className="divide-y divide-border">
-              {Object.entries(schedulesByClass).map(([classId, classSchedules]) => (
-                <div key={classId} className="px-6 py-4">
-                  <p className="text-sm font-medium mb-3">
+{!isDraft && !!schedules?.length && (
+  <Card>
+    <CardHeader className="pb-0 pt-5 px-6">
+      <div className="flex items-center justify-between">
+        <CardTitle className="text-sm font-medium">
+          Marks entry status
+        </CardTitle>
+        <span className="text-xs text-muted-foreground">
+          {submittedSchedules}/{totalSchedules} submitted
+        </span>
+      </div>
+    </CardHeader>
+    <CardContent className="p-0 mt-3">
+      <Accordion type="single" collapsible className="divide-y divide-border">
+        {Object.entries(schedulesByClass).map(([classId, classSchedules]) => {
+          const total     = classSchedules!.length
+          const submitted = classSchedules!.filter(
+            (s) => s.marksStatus !== MarksStatus.PENDING
+          ).length
+          const allDone   = submitted === total
+          const nonePending = submitted === 0
+
+          return (
+            <AccordionItem
+              key={classId}
+              value={classId}
+              className="border-none px-6"
+            >
+              <AccordionTrigger className="py-4 hover:no-underline">
+                <div className="flex items-center justify-between w-full mr-3">
+                  {/* Left — class name */}
+                  <p className="text-sm font-medium">
                     {resolveClass(classId)}
                   </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {classSchedules!.map((schedule) => (
-                      <div
-                        key={schedule.id}
-                        className="flex items-center justify-between p-2.5 rounded-lg bg-muted/40 border border-border"
-                      >
-                        <div className="flex flex-col gap-0.5 min-w-0">
-                          <span className="text-sm font-medium truncate">
-                            {resolveSubject(schedule.subjectId)}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {resolveTeacher(schedule.teacherId)}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(schedule.examDate).toLocaleDateString('en-US', {
-                              day: 'numeric', month: 'short',
-                            })} · {schedule.startTime}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2 shrink-0 ml-2">
-                          <span className={`text-xs ${MARKS_STATUS_COLORS[schedule.marksStatus]}`}>
-                            {MARKS_STATUS_LABELS[schedule.marksStatus]}
-                          </span>
-                          {schedule.marksStatus !== MarksStatus.PENDING
-                            ? <CheckCircle2 className="size-4 text-green-600" />
-                            : <XCircle className="size-4 text-muted-foreground" />
-                          }
-                        </div>
-                      </div>
-                    ))}
+
+                  {/* Right — progress + status icon */}
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-muted-foreground">
+                      {submitted}/{total} submitted
+                    </span>
+                    {allDone ? (
+                      <CheckCircle2 className="size-4 text-green-600 shrink-0" />
+                    ) : nonePending ? (
+                      <XCircle className="size-4 text-muted-foreground shrink-0" />
+                    ) : (
+                      <AlertCircle className="size-4 text-amber-500 shrink-0" />
+                    )}
                   </div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+              </AccordionTrigger>
+
+              <AccordionContent className="pb-4">
+                <div className="border rounded-lg overflow-hidden">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-muted/50">
+                        {['Subject', 'Teacher', 'Date', 'Time', 'Status'].map((h, i) => (
+                          <th
+                            key={i}
+                            className={`
+                              text-xs font-medium text-muted-foreground
+                              uppercase tracking-wide px-4 py-2.5
+                              ${i === 4 ? 'text-right' : 'text-left'}
+                            `}
+                          >
+                            {h}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {classSchedules!.map((schedule) => (
+                        <tr key={schedule.id}>
+                          <td className="px-4 py-2.5 text-sm font-medium">
+                            {resolveSubject(schedule.subjectId)}
+                          </td>
+                          <td className="px-4 py-2.5 text-sm text-muted-foreground">
+                            {resolveTeacher(schedule.teacherId)}
+                          </td>
+                          <td className="px-4 py-2.5 text-sm text-muted-foreground">
+                            {new Date(schedule.examDate).toLocaleDateString('en-US', {
+                              day: 'numeric', month: 'short',
+                            })}
+                          </td>
+                          <td className="px-4 py-2.5 text-sm text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <Clock className="size-3.5" />
+                              {schedule.startTime}
+                            </span>
+                          </td>
+                          <td className="px-4 py-2.5 text-right">
+                            <div className="flex items-center justify-end gap-1.5">
+                              <span className={`text-xs ${MARKS_STATUS_COLORS[schedule.marksStatus]}`}>
+                                {MARKS_STATUS_LABELS[schedule.marksStatus]}
+                              </span>
+                              {schedule.marksStatus !== MarksStatus.PENDING
+                                ? <CheckCircle2 className="size-3.5 text-green-600" />
+                                : <XCircle className="size-3.5 text-muted-foreground" />
+                              }
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          )
+        })}
+      </Accordion>
+    </CardContent>
+  </Card>
+)}
 
     </div>
   )
