@@ -31,19 +31,24 @@ export const AddSectionLanguageDialog = ({ exam, gradeConfig }: Props) => {
 
   const mutation           = useAddSectionLanguage(exam.id)
   const { data: subjects } = useSubjects({ limit: 100 })
-  const { data: classes }  = useClasses()
+  const { data: classes }  = useClasses({ grade: gradeConfig.grade, limit: 100 })
 
-  const gradeSections    = (classes?.data ?? []).filter(
-    (c) => c.grade === gradeConfig.grade
-  )
+  const gradeSections    = classes?.data ?? []
+  
   const assignedClassIds = new Set(
     gradeConfig.sectionLanguages.map((l) => l.classId)
   )
   const commonSubjectIds = new Set(
     gradeConfig.commonSubjects.map((s) => s.subjectId)
   )
+
+  const gradeSubjectIds = new Set<string>()
+  gradeSections.forEach(cls => {
+    cls.subjectAllocations.forEach(a => gradeSubjectIds.add(a.subjectId))
+  })
+
   const languageSubjects = (subjects?.data ?? []).filter(
-    (s) => !commonSubjectIds.has(s.id)
+    (s) => gradeSubjectIds.has(s.id) && !commonSubjectIds.has(s.id)
   )
 
   // Date bounds

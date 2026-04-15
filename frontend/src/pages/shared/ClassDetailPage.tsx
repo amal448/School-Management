@@ -50,7 +50,7 @@ export default function ClassDetailPage() {
     </div>
   )
 
-  const classTeacher = resolveTeacher(cls.classTeacherId)
+  const classTeacher = cls.classTeacher || resolveTeacher(cls.classTeacherId)
 
   return (
     <div className="p-6 flex flex-col gap-6">
@@ -151,8 +151,10 @@ export default function ClassDetailPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {cls.subjectAllocations.map((allocation) => {
-                  const subject = resolveSubject(allocation.subjectId)
-                  const teacher = resolveTeacher(allocation.teacherId)
+                  const subject = allocation.subject
+                    || resolveSubject(allocation.subjectId)
+                  const teacher = allocation.teacher
+                  //  || resolveTeacher(allocation.teacherId)
 
                   return (
                     <tr key={allocation.subjectId}>

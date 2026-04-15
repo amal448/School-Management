@@ -6,6 +6,7 @@ import { Plus }                from 'lucide-react'
 import { CrudDialog }          from '@/components/shared/CrudDialog'
 import { useAddCommonSubject } from '@/hooks/exam/useExams'
 import { useSubjects }         from '@/hooks/subject/useSubjects'
+import { useClasses }          from '@/hooks/class/useClasses'
 import { AddCommonSubjectInput, ExamResponse } from '@/types/exam.types'
 import { GradeConfig }         from '@/types/exam.types'
 // Change Props interface
@@ -23,12 +24,19 @@ export const AddCommonSubjectDialog = ({ exam, gradeConfig }: Props) => {
 
   const mutation           = useAddCommonSubject(exam.id)
   const { data: subjects } = useSubjects({ limit: 100 })
+  const { data: classes }  = useClasses({ grade: gradeConfig.grade, limit: 100 })
 
   const usedSubjectIds = new Set(
     gradeConfig.commonSubjects.map((s) => s.subjectId)
   )
+
+  const gradeSubjectIds = new Set<string>()
+  classes?.data.forEach(cls => {
+    cls.subjectAllocations.forEach(a => gradeSubjectIds.add(a.subjectId))
+  })
+
   const availableSubjects = (subjects?.data ?? []).filter(
-    (s) => !usedSubjectIds.has(s.id)
+    (s) => gradeSubjectIds.has(s.id) && !usedSubjectIds.has(s.id)
   )
 
   // Date bounds from exam period

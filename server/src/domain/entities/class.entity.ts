@@ -1,6 +1,8 @@
 export interface SubjectAllocation {
   subjectId: string
+  subject?: any
   teacherId?: string
+  teacher?: any
 }
 
 export interface ClassProps {
@@ -9,6 +11,7 @@ export interface ClassProps {
   section: string
 
   classTeacherId?: string
+  classTeacher?: any
   subjectAllocations?: SubjectAllocation[]
   createdAt?: Date
   updatedAt?: Date
@@ -20,6 +23,7 @@ export class ClassEntity {
   private _section: string
 
   private _classTeacherId?: string
+  private _classTeacher?: any
   private _subjectAllocations: SubjectAllocation[]
   private readonly _createdAt: Date
   private _updatedAt: Date
@@ -30,6 +34,7 @@ export class ClassEntity {
     this._section = this.requireNonEmpty(props.section, 'section')
 
     this._classTeacherId = props.classTeacherId
+    this._classTeacher = props.classTeacher
     this._subjectAllocations = props.subjectAllocations ?? []
     this._createdAt = props.createdAt ?? new Date()
     this._updatedAt = props.updatedAt ?? new Date()
@@ -78,6 +83,7 @@ export class ClassEntity {
   get grade(): string { return this._grade }
   get section(): string { return this._section }
   get classTeacherId(): string | undefined { return this._classTeacherId }
+  get classTeacher(): any { return this._classTeacher }
   get subjectAllocations(): SubjectAllocation[] { return this._subjectAllocations }
   get createdAt(): Date { return this._createdAt }
   get updatedAt(): Date { return this._updatedAt }

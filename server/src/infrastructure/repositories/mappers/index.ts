@@ -24,6 +24,7 @@ import { IExamScheduleDocument } from 'src/infrastructure/database/schemas/exam-
 import { ExamScheduleEntity } from 'src/domain/entities/exam-schedule.entity';
 import { IMarksDocument } from 'src/infrastructure/database/schemas/marks.schema';
 import { MarksEntity } from 'src/domain/entities/marks.entity';
+import mongoose from 'mongoose';
 
 // ── Manager ────────────────────────────────────────────
 export class ManagerDocumentMapper {
@@ -237,10 +238,13 @@ export class ClassDocumentMapper {
       id: doc._id.toString(),
       grade: doc.grade,
       section: doc.section,
-      classTeacherId: doc.classTeacherId ?? undefined,
-      subjectAllocations: doc.subjectAllocations.map((a) => ({
-        subjectId: a.subjectId,
-        teacherId: a.teacherId ?? undefined,
+      classTeacherId: doc.classTeacherId ? doc.classTeacherId.toString() : undefined,
+      classTeacher: doc.classTeacher ? TeacherDocumentMapper.toDomain(doc.classTeacher) : undefined,
+      subjectAllocations: doc.subjectAllocations.map((a: any) => ({
+        subjectId: a.subjectId.toString(),
+        subject: a.subject ? SubjectDocumentMapper.toDomain(a.subject) : undefined,
+        teacherId: a.teacherId ? a.teacherId.toString() : undefined,
+        teacher: a.teacher ? TeacherDocumentMapper.toDomain(a.teacher) : undefined,
       })),
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
@@ -248,11 +252,16 @@ export class ClassDocumentMapper {
   }
 
   static toPersistence(entity: ClassEntity): Partial<IClassDocument> {
+    const Types = mongoose.Types;
     return {
       grade: entity.grade,
       section: entity.section,
-      classTeacherId: entity.classTeacherId,
-      subjectAllocations: entity.subjectAllocations,
+      classTeacherId: entity.classTeacherId ? new Types.ObjectId(entity.classTeacherId) as any : undefined,
+      subjectAllocations: entity.subjectAllocations.map(a => ({
+        subjectId: new Types.ObjectId(a.subjectId) as any,
+        teacherId: a.teacherId ? new Types.ObjectId(a.teacherId) as any : undefined,
+        teacher: a.teacher
+      })),
     }
   }
 }

@@ -1,6 +1,8 @@
 export interface SubjectAllocation {
   subjectId: string
-  teacherId: string
+  subject?: any
+  teacherId?: string
+  teacher?: any
 }
 export interface AddClassForm {
   grade:    string
@@ -13,6 +15,7 @@ export interface ClassResponse {
   grade:          string
   section:            string
   classTeacherId?:    string
+  classTeacher?:      any
   subjectAllocations: SubjectAllocation[]
   createdAt:          string
   updatedAt:          string
@@ -32,6 +35,7 @@ export interface UpdateClassInput {
 }
 
 export interface ClassQueryParams {
+  grade?: string
   search?: string
   page?:   number
   limit?:  number

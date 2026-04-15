@@ -5,6 +5,7 @@ import { DepartmentQueryDto } from 'src/domain/dtos/department.dto'
 import { DepartmentModel, IDepartmentDocument } from 'src/infrastructure/database/schemas/department.schema'
 import { DEFAULT_PAGE, DEFAULT_LIMIT } from 'src/shared/constants/index'
 import { DepartmentDocumentMapper } from './mappers'
+import { PaginatedResult } from 'src/application/ports/repositories/base.repository.interface'
 
 export class MongooseDepartmentRepository implements IDepartmentRepository {
 

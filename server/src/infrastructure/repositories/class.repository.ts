@@ -1,4 +1,4 @@
-import { FilterQuery } from 'mongoose'
+import mongoose, { FilterQuery } from 'mongoose'
 import { IClassRepository } from 'src/application/ports/repositories/class.repository.interface'
 import { ClassEntity } from 'src/domain/entities/class.entity'
 import { ClassQueryDto } from 'src/domain/dtos/class.dto'
@@ -48,8 +48,63 @@ export class MongooseClassRepository implements IClassRepository {
   }
 
   async findById(id: string): Promise<ClassEntity | null> {
-    const doc = await ClassModel.findById(id).lean<IClassDocument>()
-    return doc ? ClassDocumentMapper.toDomain(doc as IClassDocument) : null
+    const docs = await ClassModel.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(id) } },
+      {
+        $lookup: {
+          from: 'teachers',
+          localField: 'classTeacherId',
+          foreignField: '_id',
+          as: 'classTeacherArr'
+        }
+      },
+      {
+        $addFields: {
+          classTeacher: { $arrayElemAt: ['$classTeacherArr', 0] }
+        }
+      },
+      { $unwind: { path: '$subjectAllocations', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'teachers',
+          localField: 'subjectAllocations.teacherId',
+          foreignField: '_id',
+          as: 'subjectAllocations.teacherArr'
+        }
+      },
+      {
+        $addFields: {
+          'subjectAllocations.teacher': { $arrayElemAt: ['$subjectAllocations.teacherArr', 0] }
+        }
+      },
+      {
+        $group: {
+          _id: '$_id',
+          grade: { $first: '$grade' },
+          section: { $first: '$section' },
+          classTeacherId: { $first: '$classTeacherId' },
+          classTeacher: { $first: '$classTeacher' },
+          createdAt: { $first: '$createdAt' },
+          updatedAt: { $first: '$updatedAt' },
+          subjectAllocations: {
+            $push: {
+              $cond: {
+                if: '$subjectAllocations.subjectId',
+                then: {
+                  subjectId: '$subjectAllocations.subjectId',
+                  teacherId: { $ifNull: ['$subjectAllocations.teacherId', null] },
+                  teacher: { $ifNull: ['$subjectAllocations.teacher', null] }
+                },
+                else: '$$REMOVE'
+              }
+            }
+          }
+        }
+      }
+    ]);
+
+    if (!docs || docs.length === 0) return null;
+    return ClassDocumentMapper.toDomain(docs[0] as unknown as IClassDocument)
   }
 
   async findAll(query: ClassQueryDto): Promise<PaginatedResult<ClassEntity>> {
@@ -58,6 +113,10 @@ export class MongooseClassRepository implements IClassRepository {
     const skip = (page - 1) * limit
 
     const filter: FilterQuery<IClassDocument> = {}
+
+    if (query.grade !== undefined) {
+      filter.grade = query.grade
+    }
 
     if (query.search) {
       const searchNumber = parseInt(query.search);
@@ -77,7 +136,7 @@ export class MongooseClassRepository implements IClassRepository {
 
     return {
       data: (docs as IClassDocument[]).map(ClassDocumentMapper.toDomain),
-      total, page, limit,
+      total, page, limit, totalPages: Math.ceil(total / limit)
     }
   }
 

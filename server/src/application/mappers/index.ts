@@ -165,10 +165,13 @@ export class ClassMapper {
       grade: entity.grade,
       section: entity.section,
       classTeacherId: entity.classTeacherId,
+      classTeacher: entity.classTeacher ? TeacherMapper.toDto(entity.classTeacher) : undefined,
       // Fix 1: teacherId is optional in entity — map to string | undefined
       subjectAllocations: entity.subjectAllocations.map((a) => ({
         subjectId: a.subjectId,
+        subject: a.subject ? SubjectMapper.toDto(a.subject) : undefined,
         teacherId: a.teacherId ?? undefined,
+        teacher: a.teacher ? TeacherMapper.toDto(a.teacher) : undefined,
       })),
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,

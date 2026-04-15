@@ -13,7 +13,6 @@ import ClassListPage from '@/pages/shared/ClassListPage'
 import ClassDetailPage from '@/pages/shared/ClassDetailPage'
 import ExamListPage from '@/pages/shared/ExamListPage'
 import ExamDetailPage from '@/pages/shared/ExamDetailPage'
-import TeacherStudentProfilePage from '@/pages/teacher/TeacherStudentProfilePage'
 import StudentProfilePage from '@/pages/shared/StudentProfilePage'
 
 const Placeholder = ({ title }: { title: string }) => (
@@ -31,7 +30,7 @@ export default function AdminRoutes() {
         <Route path="teacher" element={<AdminTeacherListPage />} />
         <Route path="teacher/:id" element={<TeacherProfilePage />} />
         {/* <Route path="students" element={<AdminStudentListPage />} /> */}
-     <Route path="students/:id" element={<StudentProfilePage />} />
+        <Route path="students/:id" element={<StudentProfilePage />} />
 
 
         <Route path="manager" element={<AdminManagerListPage />} />

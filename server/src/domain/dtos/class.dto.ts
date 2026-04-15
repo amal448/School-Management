@@ -1,6 +1,8 @@
 export interface SubjectAllocationDto {
   subjectId: string
+  subject?: any
   teacherId?: string
+  teacher?: any
 }
 
 export interface CreateClassDto {
@@ -27,13 +29,14 @@ export interface ClassResponseDto {
   grade: string
   section: string
   classTeacherId?: string
+  classTeacher?: any
   subjectAllocations: SubjectAllocationDto[]
   createdAt: Date
   updatedAt: Date
 }
 
 export interface ClassQueryDto {
-
+  grade?: string
   search?: string
   page?: number
   limit?: number
