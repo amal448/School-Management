@@ -21,6 +21,30 @@ import {
   ExamScheduleResponseDto,
   MarksResponseDto,
 } from 'src/domain/dtos/exam.dto'
+import { AnnouncementEntity } from 'src/domain/entities/announcement.entity'
+import { AnnouncementResponseDto } from 'src/domain/dtos/announcement.dto'
+
+export class AnnouncementMapper {
+  static toDto(entity: AnnouncementEntity): AnnouncementResponseDto {
+    return {
+      id:          entity.id!,
+      title:       entity.title,
+      content:     entity.content,
+      category:    entity.category,
+      eventDate:   entity.eventDate?.toISOString(),
+      isPublished: entity.isPublished,
+      isPinned:    entity.isPinned,
+      createdBy:   entity.createdBy,
+      createdAt:   entity.createdAt.toISOString(),
+      updatedAt:   entity.updatedAt.toISOString(),
+    }
+  }
+
+  static toDtoList(entities: AnnouncementEntity[]): AnnouncementResponseDto[] {
+    return entities.map(this.toDto)
+  }
+}
+
 
 // ── Manager ───────────────────────────────────────────
 export class ManagerMapper {

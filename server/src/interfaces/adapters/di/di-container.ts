@@ -8,7 +8,9 @@ import { buildStudentModule }    from './student'
 import { buildAuthModule }       from './auth'
 import { buildAcademicModule }   from './academic'
 import { buildExamModule }       from './exam'
+
 import { Router, RequestHandler, ErrorRequestHandler } from 'express'
+import { buildAnnouncementModule } from './announcement'
 
 export interface AppDependencies {
   authRouter:       Router
@@ -20,6 +22,7 @@ export interface AppDependencies {
   subjectRouter:    Router
   classRouter:      Router
   examRouter:       Router
+  announcementRouter: Router
   errorHandler:     ErrorRequestHandler   // ← correct type
   logger:           WinstonLogger
 }
@@ -46,7 +49,7 @@ export function buildDependencies(): AppDependencies {
     logger,
     authMW,
   )
-
+const announcement = buildAnnouncementModule(logger, authMW)
   return {
     authRouter:       auth.router,
     adminRouter:      admin.router,
@@ -56,6 +59,7 @@ export function buildDependencies(): AppDependencies {
     departmentRouter: academic.departmentRouter,
     subjectRouter:    academic.subjectRouter,
     classRouter:      academic.classRouter,
+    announcementRouter: announcement.router,
     examRouter:       exam.router,
     errorHandler,     // ← pass directly, no factory call
     logger,

@@ -13,6 +13,7 @@ import ClassDetailPage from '@/pages/shared/ClassDetailPage'
 import ExamListPage from '@/pages/shared/ExamListPage'
 import ExamDetailPage from '@/pages/shared/ExamDetailPage'
 import StudentProfilePage from '@/pages/shared/StudentProfilePage'
+import AnnouncementsPage from '@/pages/shared/AnnouncementsPage'
 
 const Placeholder = ({ title }: { title: string }) => (
   <div className="flex items-center justify-center h-64 text-muted-foreground">
@@ -43,6 +44,7 @@ export default function AdminRoutes() {
         <Route path="analytics" element={<Placeholder title="Analytics" />} />
         <Route path="settings" element={<Placeholder title="Settings" />} />
         <Route path="*" element={<Navigate to="dashboard" replace />} />
+        <Route path="announcements" element={<AnnouncementsPage />} />
       </Route>
     </Routes>
   )

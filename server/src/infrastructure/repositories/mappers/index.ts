@@ -25,10 +25,45 @@ import { ExamScheduleEntity } from 'src/domain/entities/exam-schedule.entity';
 import { IMarksDocument } from 'src/infrastructure/database/schemas/marks.schema';
 import { MarksEntity } from 'src/domain/entities/marks.entity';
 import mongoose from 'mongoose';
+import { IAnnouncementDocument } from 'src/infrastructure/database/schemas/announcement.schema';
+import { AnnouncementEntity } from 'src/domain/entities/announcement.entity';
+
+export class AnnouncementDocumentMapper {
+  static toDomain(doc: IAnnouncementDocument): AnnouncementEntity {
+    return AnnouncementEntity.create({
+      id:          doc._id.toString(),
+      title:       doc.title,
+      content:     doc.content,
+      category:    doc.category as any,
+      eventDate:   doc.eventDate ?? undefined,
+      isPublished: doc.isPublished,
+      isPinned:    doc.isPinned,
+      createdBy:   doc.createdBy,
+      createdAt:   doc.createdAt,
+      updatedAt:   doc.updatedAt,
+    })
+  }
+
+  static toPersistence(
+    entity: AnnouncementEntity,
+  ): Partial<IAnnouncementDocument> {
+    return {
+      title:       entity.title,
+      content:     entity.content,
+      category:    entity.category,
+      eventDate:   entity.eventDate,
+      isPublished: entity.isPublished,
+      isPinned:    entity.isPinned,
+      createdBy:   entity.createdBy,
+    }
+  }
+}
+
+
+
 
 // ── Manager ────────────────────────────────────────────
 export class ManagerDocumentMapper {
-
   static toDomain(doc: IManagerDocument): ManagerEntity {
     return ManagerEntity.create({
       id: doc._id.toString(),

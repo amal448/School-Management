@@ -2,10 +2,10 @@ import { AdminMapper } from "src/application/mappers"
 import { Role } from "src/domain/enums"
 import { Response } from 'express'
 
-export interface LoginInput {
-  email:    string
-  password: string
-}
+// export interface LoginInput {
+//   email:    string
+//   password: string
+// }
 
 
 export interface VerifyOtpInput {

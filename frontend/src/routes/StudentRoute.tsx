@@ -1,4 +1,5 @@
-import { ROUTES } from '@/config/routes.config'
+import { ROLES, ROUTES } from '@/config/routes.config'
+import DashboardLayout from '@/layouts/DashboardLayout'
 import { Routes, Route, Navigate } from 'react-router-dom'
 
 const Placeholder = ({ title }: { title: string }) => (
@@ -10,13 +11,16 @@ const Placeholder = ({ title }: { title: string }) => (
 export default function StudentRoutes() {
   return (
     <Routes>
-      <Route index element={<Navigate to={ROUTES.STUDENT.DASHBOARD} replace />} />
-      <Route path="dashboard" element={<Placeholder title="Student Dashboard" />}/>
-      <Route path="performance" element={<Placeholder title="My Performance" />} />
-      <Route path="attendance" element={<Placeholder title="My Attendance" />}/>
-      <Route path="results" element={<Placeholder title="Exam Results" />}/>
-      <Route path="assignments" element={<Placeholder title="My Assignments" />}/>
-      <Route path="*" element={<Navigate to={ROUTES.STUDENT.DASHBOARD} replace />}/>
+      <Route element={<DashboardLayout role={ROLES.STUDENT} />}>
+        <Route index element={<Navigate to={ROUTES.STUDENT.DASHBOARD} replace />} />
+        <Route path="dashboard" element={<Placeholder title="Student Dashboard" />} />
+        <Route path="performance" element={<Placeholder title="My Performance" />} />
+        <Route path="attendance" element={<Placeholder title="My Attendance" />} />
+        <Route path="results" element={<Placeholder title="Exam Results" />} />
+        <Route path="assignments" element={<Placeholder title="My Assignments" />} />
+        <Route path="*" element={<Navigate to={ROUTES.STUDENT.DASHBOARD} replace />} />
+      </Route>
+
     </Routes>
   )
 }

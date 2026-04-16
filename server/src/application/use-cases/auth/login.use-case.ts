@@ -12,67 +12,90 @@ import { LoginInput, LoginResult } from '../interfaces/inputs'
 
 export class LoginUseCase {
   constructor(
-    private readonly managerRepo:    IManagerRepository,
-    private readonly teacherRepo:    ITeacherRepository,
-    private readonly studentRepo:    IStudentRepository,
+    private readonly managerRepo: IManagerRepository,
+    private readonly teacherRepo: ITeacherRepository,
+    private readonly studentRepo: IStudentRepository,
     private readonly passwordHasher: IPasswordHasher,
-    private readonly tokenService:   JwtTokenService,
-    private readonly otpService:     OtpService,
+    private readonly tokenService: JwtTokenService,
+    private readonly otpService: OtpService,
     private readonly emailService: IEmailService,
-    private readonly logger:         ILogger,
-  ) {}
+    private readonly logger: ILogger,
+  ) { }
 
 
-async execute(input: LoginInput): Promise<LoginResult> {
-  const { entity, role } = await this.resolveUser(input.email, input.role)
+  async execute(input: LoginInput): Promise<LoginResult> {
+    const { entity, role } = await this.resolveUser(input.email, input.role)
 
-  if (!entity || !entity.isActive) {
-    throw AppError.unauthorized('Invalid credentials')
+    if (!entity || !entity.isActive) {
+      throw AppError.unauthorized('Invalid credentials')
+    }
+
+    if (role === Role.MANAGER && (entity as any).isBlocked) {
+      throw AppError.forbidden('Your account has been blocked. Contact the administrator.')
+    }
+
+    if (!entity.passwordHash) {
+      throw AppError.badRequest('Password not set. Please use your first-time setup link.')
+    }
+
+    const valid = await this.passwordHasher.compare(input.password, entity.passwordHash)
+    if (!valid) throw AppError.unauthorized('Invalid credentials')
+
+    // ── Students skip OTP — direct session ────────────
+    if (role === Role.STUDENT) {
+      entity.recordLogin()
+      await this.studentRepo.update(entity.id!, entity as any)
+
+      const { sessionId, csrfToken } = await this.tokenService.generateSessionTokens(
+        {
+          userId: entity.id!,
+          email: entity.email,
+          role: Role.STUDENT,
+        },
+        input.res,
+      )
+
+      this.logger.info('LoginUseCase: student session created', {
+        id: entity.id,
+      })
+
+      return {
+        message: 'Login successful',
+        otpSent: false,
+        sessionId,
+        csrfToken,
+      }
+    }
+
+    // ── Manager + Teacher — OTP flow ──────────────────
+    const otp = await this.otpService.generateOtp(role, input.email)
+
+    try {
+      await this.emailService.sendOtp({
+        to: input.email,
+        firstName: entity.firstName,
+        otp,
+        role: role.toLowerCase(),
+        expiresIn: 10,
+      })
+    } catch (emailErr) {
+      this.logger.error('LoginUseCase: failed to send OTP email', {
+        email: input.email,
+        role,
+        error: (emailErr as Error).message,
+      })
+      throw AppError.internal('Failed to send OTP email. Please try again later.')
+    }
+
+    this.logger.info('LoginUseCase: OTP sent', { role, email: input.email })
+
+    return {
+      message: 'OTP sent to your email. Valid for 10 minutes.',
+      otpSent: true,
+    }
   }
-
-  if (role === Role.MANAGER && (entity as any).isBlocked) {
-    throw AppError.forbidden('Your account has been blocked. Contact the administrator.')
-  }
-
-  if (!entity.passwordHash) {
-    throw AppError.badRequest('Password not set. Please use your first-time setup link.')
-  }
-
-  const valid = await this.passwordHasher.compare(input.password, entity.passwordHash)
-  if (!valid) throw AppError.unauthorized('Invalid credentials')
-
-
-
-  // Generate OTP for MANAGER, TEACHER, STUDENT
-  const otp = await this.otpService.generateOtp(role, input.email)
-
-  try {
-    await this.emailService.sendOtp({
-      to:        input.email,
-      firstName: entity.firstName,
-      otp,
-      role:      role.toLowerCase(),
-      expiresIn: 10,
-    })
-  } catch (emailErr) {
-    this.logger.error('LoginUseCase: failed to send OTP email', {
-      email: input.email,
-      role,
-      error: (emailErr as Error).message,
-    })
-    // ADD THIS LINE:
-    throw AppError.internal('Failed to send OTP email. Please try again later.')
-  }
-
-  this.logger.info('LoginUseCase: OTP sent', { role, email: input.email })
-
-  return {
-    message: 'OTP sent to your email. Valid for 10 minutes.',
-    otpSent: true,
-  }
-}
-
   private async resolveUser(email: string, role: Role) {
+
     switch (role) {
       case Role.ADMIN:
         throw AppError.badRequest('Admin accounts use Google Sign-In. Use /api/auth/google')

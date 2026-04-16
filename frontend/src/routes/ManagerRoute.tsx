@@ -1,6 +1,7 @@
 import { ROLES, ROUTES } from '@/config/routes.config'
 import DashboardLayout from '@/layouts/DashboardLayout'
 import AdminTeacherListPage from '@/pages/admin/AdminTeacherListPage'
+import AnnouncementsPage from '@/pages/shared/AnnouncementsPage'
 import ClassDetailPage from '@/pages/shared/ClassDetailPage'
 import ClassListPage from '@/pages/shared/ClassListPage'
 import DepartmentListPage from '@/pages/shared/DepartmentListPage'
@@ -37,6 +38,8 @@ export default function ManagerRoutes() {
         <Route path="leaderboard" element={<Placeholder title="Student Leaderboard" />} />
         <Route path="tasks" element={<Placeholder title="Task Scheduler" />} />
         <Route path="*" element={<Navigate to={ROUTES.MANAGER.DASHBOARD} replace />} />
+        <Route path="announcements" element={<AnnouncementsPage />} />
+        
       </Route>
 
     </Routes>

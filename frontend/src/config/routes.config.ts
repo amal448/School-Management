@@ -5,6 +5,7 @@ import {
   Trophy, Calendar,
   type LucideIcon,
   User,
+  Megaphone,
 } from 'lucide-react'
 
 export const ROLES = {
@@ -20,7 +21,7 @@ export const ROUTES = {
   AUTH: {
     ADMIN_MANAGER_LOGIN: '/admin/login',
     ADMIN_GOOGLE_CALLBACK: '/auth/callback',
-    TEACHER_STUDENT_LOGIN: '/login',
+    STUDENT_LOGIN: '/login',
     VERIFY_OTP: '/auth/verify-otp',
     FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
@@ -59,16 +60,13 @@ export const ROUTES = {
     MARKS: '/teacher/marks',
     ASSIGNMENTS: '/teacher/assignments',
     STUDENTS: '/teacher/students',
-    PROFILE:   '/teacher/profile',
+    PROFILE: '/teacher/profile',
 
   },
   STUDENT: {
     ROOT: '/student',
     DASHBOARD: '/student/dashboard',
-    PERFORMANCE: '/student/performance',
-    ATTENDANCE: '/student/attendance',
     RESULTS: '/student/results',
-    ASSIGNMENTS: '/student/assignments',
   },
 } as const
 
@@ -87,6 +85,7 @@ export const ADMIN_NAV: NavItem[] = [
   { label: 'Departments', path: ROUTES.ADMIN.DEPARTMENTS, icon: Building2 },
   { label: 'Subjects', path: ROUTES.ADMIN.SUBJECTS, icon: BookOpen },
   { label: 'Exams', path: ROUTES.ADMIN.EXAMS, icon: ClipboardList },
+  { label: 'Announcements', path: '/admin/announcements', icon: Megaphone }
   // { label: 'Exams', path: '/ad/exams', icon: Calendar },
 ]
 
@@ -98,17 +97,14 @@ export const MANAGER_NAV: NavItem[] = [
   { label: 'Subjects', path: ROUTES.MANAGER.SUBJECTS, icon: BookOpen },
   { label: 'Departments', path: ROUTES.MANAGER.DEPARTMENTS, icon: Building2 },
   { label: 'Exams', path: ROUTES.MANAGER.EXAMS, icon: ClipboardList },
-  // { label: 'Analytics',   path: ROUTES.MANAGER.ANALYTICS,   icon: BarChart3       },
-  // { label: 'Leaderboard', path: ROUTES.MANAGER.LEADERBOARD, icon: Trophy          },
-  // { label: 'Tasks',       path: ROUTES.MANAGER.TASKS,       icon: Calendar        },
-]
+  { label: 'Announcements', path: '/manager/announcements', icon: Megaphone }
+
+ ]
 
 export const TEACHER_NAV: NavItem[] = [
   { label: 'Dashboard', path: ROUTES.TEACHER.DASHBOARD, icon: LayoutDashboard },
   { label: 'My Classes', path: ROUTES.TEACHER.CLASSES, icon: School },
-  // { label: 'Attendance', path: ROUTES.TEACHER.ATTENDANCE, icon: CheckSquare },
   // { label: 'Marks', path: ROUTES.TEACHER.MARKS, icon: FileText },
-  // { label: 'Assignments', path: ROUTES.TEACHER.ASSIGNMENTS, icon: ClipboardList },
   { label: 'Profile', path: ROUTES.TEACHER.PROFILE, icon: User },
   // { label: 'Students', path: ROUTES.TEACHER.STUDENTS, icon: Users },
 
@@ -116,10 +112,7 @@ export const TEACHER_NAV: NavItem[] = [
 
 export const STUDENT_NAV: NavItem[] = [
   { label: 'Dashboard', path: ROUTES.STUDENT.DASHBOARD, icon: LayoutDashboard },
-  { label: 'Performance', path: ROUTES.STUDENT.PERFORMANCE, icon: TrendingUp },
-  { label: 'Attendance', path: ROUTES.STUDENT.ATTENDANCE, icon: CheckSquare },
   { label: 'Results', path: ROUTES.STUDENT.RESULTS, icon: FileText },
-  { label: 'Assignments', path: ROUTES.STUDENT.ASSIGNMENTS, icon: ClipboardList },
 ]
 
 export const NAV_BY_ROLE: Record<Role, NavItem[]> = {

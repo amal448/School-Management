@@ -23,6 +23,8 @@ export interface LoginResponse {
   success: boolean
   message: string
   otpSent: boolean
+  sessionId?: string
+  csrfToken?: string
 }
 
 export interface VerifyOtpInput {

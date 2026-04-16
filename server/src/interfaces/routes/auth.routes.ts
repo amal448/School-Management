@@ -13,7 +13,7 @@ import {
 } from 'src/interfaces/validators'
 import passport from 'passport'
 import { Role } from 'src/domain/enums'
-import { GoogleAuthResult } from 'src/application/use-cases/auth/google-auth.use-case'
+import { GoogleAuthResult } from 'src/application/use-cases/interfaces/inputs'
 
 type AuthMW = ReturnType<typeof createAuthMiddleware>
 

@@ -78,7 +78,7 @@ export function createExpressApp(deps: AppDependencies): Application {
   app.use('/api/subjects', deps.subjectRouter)
   app.use('/api/classes', deps.classRouter)
   app.use('/api/exams', deps.examRouter)
-  
+  app.use('/api/announcements', deps.announcementRouter)
   // ── 9. 404 handler ─────────────────────────────────
   app.use((_req: Request, res: Response) => {
     res.status(404).json({

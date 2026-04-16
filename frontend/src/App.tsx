@@ -14,6 +14,8 @@ import VerifyOtpPage from './pages/auth/VerifyOtpPage'
 import ManagerRoutes from './routes/ManagerRoute'
 import { TeacherRoute } from './routes/TeacherRoute'
 import PublicRoutes from './routes/PublicRoute'
+import StudentRoutes from './routes/StudentRoute'
+import StudentLoginPage from './pages/auth/StudentLogin'
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -25,6 +27,7 @@ const App = () => (
 
         {/* Public auth */}
         <Route path={ROUTES.AUTH.ADMIN_MANAGER_LOGIN} element={<AdminManagerLogin />} />
+        <Route path={ROUTES.AUTH.STUDENT_LOGIN} element={<StudentLoginPage />} />
         <Route path={ROUTES.AUTH.VERIFY_OTP} element={<VerifyOtpPage />} />
         <Route path={ROUTES.AUTH.ADMIN_GOOGLE_CALLBACK} element={<AuthCallbackPage />} />
 
@@ -49,6 +52,14 @@ const App = () => (
           element={
             <ProtectedRoute allowedRoles={[ROLES.TEACHER]}>
               <TeacherRoute />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/*"
+          element={
+            <ProtectedRoute allowedRoles={[ROLES.STUDENT]}>
+              <StudentRoutes />
             </ProtectedRoute>
           }
         />

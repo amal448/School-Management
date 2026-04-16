@@ -41,7 +41,7 @@ const AdminManagerLoginPage = () => {
           </div>
           <div>
             <h1 className="text-xl font-semibold tracking-tight">SchoolMS</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Staff Portal</p>
+            <p className="text-sm text-white mt-0.5">Staff Portal</p>
           </div>
         </div>
         <Card className="shadow-sm">
@@ -178,13 +178,13 @@ const AdminManagerLoginPage = () => {
             </p>
           </CardFooter>
         </Card>
-        <p className="text-center text-xs text-muted-foreground">
-          Teacher or Student?{' '}
+        <p className="text-center text-xs text-white">
+           {/* Student?{' '} */}
           <Link
-            to={ROUTES.AUTH.TEACHER_STUDENT_LOGIN}
+            to={ROUTES.AUTH.STUDENT_LOGIN}
             className="underline underline-offset-4 hover:text-foreground transition-colors"
           >
-            Staff login
+            Student login
           </Link>
         </p>
 
