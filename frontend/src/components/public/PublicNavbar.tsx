@@ -30,10 +30,10 @@ export default function PublicNavbar() {
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'About', path: '/about' },
     { name: 'Academics', path: '/academics' },
-    { name: 'Admissions', path: '/admissions' },
     { name: 'Events', path: '/events' },
+    { name: 'Admissions', path: '/admissions' },
+    { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' },
   ];
 

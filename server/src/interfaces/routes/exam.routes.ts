@@ -42,7 +42,8 @@ export const createExamRouter = (
   router.post('/', adminManager, validate(CreateExamSchema), ctrl.create,
   )
 
-  router.get('/', allStaff, ctrl.list,
+  router.get('/', [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER,Role.STUDENT)]
+, ctrl.list,
   )
 
   // Teacher's schedules for a specific class (pending + submitted)
@@ -60,11 +61,6 @@ export const createExamRouter = (
   )
 
   // Student results (already in your code — just fix ordering)
-  router.get(
-    '/student/:studentId/results',
-    allStaff,
-    ctrl.getStudentResults,
-  )
 
 
 
@@ -92,7 +88,8 @@ export const createExamRouter = (
 
   // ── Results ────────────────────────────────────────────
   router.get('/:id/results/:classId', allStaff, ctrl.getClassResults)
-  router.get('/student/:studentId/results', allStaff, ctrl.getStudentResults,
+  router.get('/student/:studentId/results', [authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER,Role.STUDENT)]
+, ctrl.getStudentResults,
   )
 
   return router

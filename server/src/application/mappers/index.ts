@@ -23,20 +23,43 @@ import {
 } from 'src/domain/dtos/exam.dto'
 import { AnnouncementEntity } from 'src/domain/entities/announcement.entity'
 import { AnnouncementResponseDto } from 'src/domain/dtos/announcement.dto'
+import { TopperEntity } from 'src/domain/entities/topper.entity'
+import { TopperResponseDto } from 'src/domain/dtos/topper.dto'
+
+export class TopperMapper {
+  static toDto(entity: TopperEntity): TopperResponseDto {
+    return {
+      id: entity.id!,
+      name: entity.name,
+      grade: entity.grade,
+      department: entity.department,
+      marks: entity.marks,        // ← was percentage
+      totalMarks: entity.totalMarks,   // ← add
+      rank: entity.rank,   // ← add
+      photoUrl: entity.photoUrl,
+      academicYear: entity.academicYear,
+      isPublished: entity.isPublished,
+      createdBy: entity.createdBy,
+      createdAt: entity.createdAt.toISOString(),
+      updatedAt: entity.updatedAt.toISOString(),
+    }
+  }
+}
+
 
 export class AnnouncementMapper {
   static toDto(entity: AnnouncementEntity): AnnouncementResponseDto {
     return {
-      id:          entity.id!,
-      title:       entity.title,
-      content:     entity.content,
-      category:    entity.category,
-      eventDate:   entity.eventDate?.toISOString(),
+      id: entity.id!,
+      title: entity.title,
+      content: entity.content,
+      category: entity.category,
+      eventDate: entity.eventDate?.toISOString(),
       isPublished: entity.isPublished,
-      isPinned:    entity.isPinned,
-      createdBy:   entity.createdBy,
-      createdAt:   entity.createdAt.toISOString(),
-      updatedAt:   entity.updatedAt.toISOString(),
+      isPinned: entity.isPinned,
+      createdBy: entity.createdBy,
+      createdAt: entity.createdAt.toISOString(),
+      updatedAt: entity.updatedAt.toISOString(),
     }
   }
 
@@ -78,27 +101,27 @@ export class ManagerMapper {
 export class TeacherMapper {
   static toDto(e: TeacherEntity): TeacherResponseDto {
     return {
-       id:            e.id!,
-      email:         e.email,
-      role:          'TEACHER',
-      firstName:     e.firstName,
-      lastName:      e.lastName,
-      fullName:      e.fullName,
-      dob:           e.dob,
-      gender:        e.gender,
-      phone:         e.phone,
-      address:       e.address,
-      hireDate:      e.hireDate,
+      id: e.id!,
+      email: e.email,
+      role: 'TEACHER',
+      firstName: e.firstName,
+      lastName: e.lastName,
+      fullName: e.fullName,
+      dob: e.dob,
+      gender: e.gender,
+      phone: e.phone,
+      address: e.address,
+      hireDate: e.hireDate,
       qualification: e.qualification,
-      designation:   e.designation,
-      level:         e.level,         // ← add
-      deptId:        e.deptId,
-      subjectIds:    e.subjectIds,    // ← add
-      isActive:      e.isActive,
-      isVerified:    e.isVerified,
-      isFirstTime:   e.isFirstTime,
-      lastLogin:     e.lastLogin,
-      createdAt:     e.createdAt,
+      designation: e.designation,
+      level: e.level,         // ← add
+      deptId: e.deptId,
+      subjectIds: e.subjectIds,    // ← add
+      isActive: e.isActive,
+      isVerified: e.isVerified,
+      isFirstTime: e.isFirstTime,
+      lastLogin: e.lastLogin,
+      createdAt: e.createdAt,
     }
   }
 

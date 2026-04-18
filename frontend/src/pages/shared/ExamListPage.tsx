@@ -1,4 +1,5 @@
 import { useNavigate }       from 'react-router-dom'
+import { PageRoot, PageHeader } from '@/components/ui/page'
 import { Badge }             from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Calendar, ChevronRight, GraduationCap } from 'lucide-react'
@@ -94,16 +95,12 @@ export default function ExamListPage() {
   const { data, isLoading } = useExams()
 
   return (
-    <div className="p-6 flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-medium">Exams</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {data?.total ?? 0} total exams
-          </p>
-        </div>
-        <CreateExamDialog />
-      </div>
+    <PageRoot>
+      <PageHeader
+        title="Exams"
+        description={`${data?.total ?? 0} total exams`}
+        actions={<CreateExamDialog />}
+      />
 
       {isLoading ? (
         <Skeleton />
@@ -119,6 +116,6 @@ export default function ExamListPage() {
           ))}
         </div>
       )}
-    </div>
+    </PageRoot>
   )
 }

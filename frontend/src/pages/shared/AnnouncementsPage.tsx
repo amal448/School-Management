@@ -1,4 +1,5 @@
 import { useState }        from 'react'
+import { PageRoot, PageHeader } from '@/components/ui/page'
 import { useForm }         from 'react-hook-form'
 import { Button }          from '@/components/ui/button'
 import { Input }           from '@/components/ui/input'
@@ -385,26 +386,22 @@ export default function AnnouncementsPage() {
   )
 
   return (
-    <div className="p-6 flex flex-col gap-6">
-
-      {/* ── Header ── */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-lg font-medium">Announcements</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Manage notices, events, and results for the public notice board
-          </p>
-        </div>
-        <AnnouncementFormDialog
-          trigger={
-            <Button className="gap-2">
-              <Plus className="size-4" />
-              New announcement
-            </Button>
-          }
-          onSave={(data) => createMutation.mutate(data)}
-        />
-      </div>
+    <PageRoot>
+      <PageHeader
+        title="Announcements"
+        description="Manage notices, events, and results for the public notice board"
+        actions={
+          <AnnouncementFormDialog
+            trigger={
+              <Button className="gap-2">
+                <Plus className="size-4" />
+                New announcement
+              </Button>
+            }
+            onSave={(data) => createMutation.mutate(data)}
+          />
+        }
+      />
 
       {/* ── Stats ── */}
       {!isLoading && allAnnouncements.length > 0 && (
@@ -494,7 +491,6 @@ export default function AnnouncementsPage() {
           </Card>
         </TabsContent>
       </Tabs>
-
-    </div>
+    </PageRoot>
   )
 }

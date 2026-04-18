@@ -16,7 +16,6 @@ import { useLogout } from "@/hooks/auth/useAdminAuth"
 import { GraduationCap, LogOut } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 
-
 interface AppSidebarProps {
   role: Role
 }
@@ -25,38 +24,40 @@ export function AppSidebar({ role }: AppSidebarProps) {
   const location = useLocation()
   const navItems = NAV_BY_ROLE[role]
   const { isMobile, setOpenMobile } = useSidebar()
-    const logoutMutation = useLogout()
+  const logoutMutation = useLogout()
 
   const handleNavClick = () => {
     if (isMobile) setOpenMobile(false)
   }
-   const handleLogout = () => {
-    logoutMutation.mutate()                   // ← add this
+
+  const handleLogout = () => {
+    logoutMutation.mutate()
   }
+
   return (
-    <Sidebar className="border-r">
+    <Sidebar className="border-r w-64">
 
       {/* ── Brand ── */}
-      <SidebarHeader className="px-5 py-5 border-b">
+      <SidebarHeader className="px-6 py-6 border-b">
         <div className="flex items-center gap-3">
-          <div className="size-9 rounded-lg bg-primary flex items-center justify-center shrink-0">
+          <div className="size-10 rounded-xl bg-primary flex items-center justify-center shrink-0 shadow-sm">
             <GraduationCap className="size-5 text-primary-foreground" />
           </div>
           <div className="flex flex-col">
-            <span className="font-semibold text-base leading-tight">SchoolMS</span>
-            <span className="text-xs text-muted-foreground capitalize">{role} panel</span>
+            <span className="font-bold text-base leading-tight tracking-tight">SchoolMS</span>
+            <span className="text-xs text-muted-foreground capitalize mt-0.5">{role} panel</span>
           </div>
         </div>
       </SidebarHeader>
 
       {/* ── Nav ── */}
-      <SidebarContent className="px-3 py-4">
-        <SidebarGroup className="gap-1 p-0">
-          <SidebarGroupLabel className="px-2 mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+      <SidebarContent className="px-4 py-6">
+        <SidebarGroup className="p-0">
+          <SidebarGroupLabel className="px-3 mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/50">
             Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="gap-0.5">
+            <SidebarMenu className="gap-1">
               {navItems.map((item) => {
                 const isActive = location.pathname === item.path
                 return (
@@ -64,21 +65,29 @@ export function AppSidebar({ role }: AppSidebarProps) {
                     <SidebarMenuButton
                       asChild
                       isActive={isActive}
-                      className="h-11 px-3 rounded-lg text-sm font-medium gap-3 transition-all duration-150
+                      className="h-12 px-3 rounded-xl text-sm gap-3 transition-all duration-150
                         hover:bg-accent hover:text-accent-foreground
                         data-[active=true]:bg-primary data-[active=true]:text-primary-foreground
-                        data-[active=true]:shadow-sm data-[active=true]:font-semibold"
+                        data-[active=true]:shadow-md data-[active=true]:font-semibold"
                     >
                       <Link to={item.path} onClick={handleNavClick}>
-                        <div className={`size-8 rounded-md flex items-center justify-center shrink-0 transition-colors
+                        {/* Icon box */}
+                        <div className={`size-8 rounded-lg flex items-center justify-center shrink-0 transition-colors
                           ${isActive
-                            ? 'bg-primary-foreground/15'
-                            : 'bg-muted group-hover:bg-accent-foreground/10'
+                            ? 'bg-white/15'
+                            : 'bg-muted'
                           }`}
                         >
                           <item.icon className="size-4" />
                         </div>
-                        <span className="truncate">{item.label}</span>
+
+                        {/* Label */}
+                        <span className="truncate font-medium">{item.label}</span>
+
+                        {/* Active indicator dot */}
+                        {isActive && (
+                          <span className="ml-auto size-1.5 rounded-full bg-primary-foreground/70 shrink-0" />
+                        )}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -90,27 +99,27 @@ export function AppSidebar({ role }: AppSidebarProps) {
       </SidebarContent>
 
       {/* ── Footer ── */}
- <SidebarFooter className="border-t px-3 py-3">
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <SidebarMenuButton
-          onClick={handleLogout}                         // ← add onClick
-          disabled={logoutMutation.isPending}            // ← disable while logging out
-          className="h-11 px-3 rounded-lg text-sm font-medium gap-3 w-full
-            text-muted-foreground hover:text-destructive hover:bg-destructive/8
-            transition-all duration-150 cursor-pointer"
-        >
-          <div className="size-8 rounded-md bg-muted flex items-center justify-center shrink-0">
-            {logoutMutation.isPending
-              ? <div className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-              : <LogOut className="size-4" />
-            }
-          </div>
-          <span>{logoutMutation.isPending ? 'Logging out...' : 'Logout'}</span>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    </SidebarMenu>
-  </SidebarFooter>
+      <SidebarFooter className="border-t px-4 py-4">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={handleLogout}
+              disabled={logoutMutation.isPending}
+              className="h-12 px-3 rounded-xl text-sm font-medium gap-3 w-full
+                text-muted-foreground hover:text-destructive hover:bg-destructive/8
+                transition-all duration-150 cursor-pointer"
+            >
+              <div className="size-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                {logoutMutation.isPending
+                  ? <div className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  : <LogOut className="size-4" />
+                }
+              </div>
+              <span>{logoutMutation.isPending ? 'Logging out...' : 'Logout'}</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
 
     </Sidebar>
   )

@@ -85,7 +85,8 @@ export const ADMIN_NAV: NavItem[] = [
   { label: 'Departments', path: ROUTES.ADMIN.DEPARTMENTS, icon: Building2 },
   { label: 'Subjects', path: ROUTES.ADMIN.SUBJECTS, icon: BookOpen },
   { label: 'Exams', path: ROUTES.ADMIN.EXAMS, icon: ClipboardList },
-  { label: 'Announcements', path: '/admin/announcements', icon: Megaphone }
+  { label: 'Announcements', path: '/admin/announcements', icon: Megaphone },
+  { label: 'Achievements', path: '/admin/topper', icon: Users }
   // { label: 'Exams', path: '/ad/exams', icon: Calendar },
 ]
 

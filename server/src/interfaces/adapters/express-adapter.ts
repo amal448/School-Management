@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import { AppConfig } from 'src/config/app.config'
 import { AppDependencies } from './di/di-container'
+import path from 'path'
 
 export function createExpressApp(deps: AppDependencies): Application {
   const app = express()
@@ -79,6 +80,10 @@ export function createExpressApp(deps: AppDependencies): Application {
   app.use('/api/classes', deps.classRouter)
   app.use('/api/exams', deps.examRouter)
   app.use('/api/announcements', deps.announcementRouter)
+  app.use('/api/toppers', deps.topperRouter)
+  app.use('/api/stats', deps.statsRouter)
+  app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')))
+app.use('/api/upload', deps.uploadRouter)
   // ── 9. 404 handler ─────────────────────────────────
   app.use((_req: Request, res: Response) => {
     res.status(404).json({

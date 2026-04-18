@@ -27,20 +27,58 @@ import { MarksEntity } from 'src/domain/entities/marks.entity';
 import mongoose from 'mongoose';
 import { IAnnouncementDocument } from 'src/infrastructure/database/schemas/announcement.schema';
 import { AnnouncementEntity } from 'src/domain/entities/announcement.entity';
+import { TopperEntity } from 'src/domain/entities/topper.entity'
+import { ITopperDocument } from 'src/infrastructure/database/schemas/topper.schema'
 
+export class TopperDocumentMapper {
+  static toDomain(doc: ITopperDocument): TopperEntity {
+    return TopperEntity.create({
+      id: doc._id.toString(),
+      name: doc.name,
+      grade: doc.grade,
+      department: doc.department ?? undefined,
+      marks: doc.marks,
+      totalMarks: doc.totalMarks,
+      rank: doc.rank,
+      photoUrl: doc.photoUrl ?? undefined,
+      academicYear: doc.academicYear,
+      isPublished: doc.isPublished,
+      createdBy: doc.createdBy,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+    })
+  }
+
+  static toPersistence(
+    entity: TopperEntity,
+  ): Partial<ITopperDocument> {
+    return {
+      name: entity.name,
+      grade: entity.grade,
+      department: entity.department,
+      marks: entity.marks,
+      totalMarks: entity.totalMarks,
+      photoUrl: entity.photoUrl,
+      academicYear: entity.academicYear,
+      rank: entity.rank,
+      isPublished: entity.isPublished,
+      createdBy: entity.createdBy,
+    }
+  }
+}
 export class AnnouncementDocumentMapper {
   static toDomain(doc: IAnnouncementDocument): AnnouncementEntity {
     return AnnouncementEntity.create({
-      id:          doc._id.toString(),
-      title:       doc.title,
-      content:     doc.content,
-      category:    doc.category as any,
-      eventDate:   doc.eventDate ?? undefined,
+      id: doc._id.toString(),
+      title: doc.title,
+      content: doc.content,
+      category: doc.category as any,
+      eventDate: doc.eventDate ?? undefined,
       isPublished: doc.isPublished,
-      isPinned:    doc.isPinned,
-      createdBy:   doc.createdBy,
-      createdAt:   doc.createdAt,
-      updatedAt:   doc.updatedAt,
+      isPinned: doc.isPinned,
+      createdBy: doc.createdBy,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
     })
   }
 
@@ -48,13 +86,13 @@ export class AnnouncementDocumentMapper {
     entity: AnnouncementEntity,
   ): Partial<IAnnouncementDocument> {
     return {
-      title:       entity.title,
-      content:     entity.content,
-      category:    entity.category,
-      eventDate:   entity.eventDate,
+      title: entity.title,
+      content: entity.content,
+      category: entity.category,
+      eventDate: entity.eventDate,
       isPublished: entity.isPublished,
-      isPinned:    entity.isPinned,
-      createdBy:   entity.createdBy,
+      isPinned: entity.isPinned,
+      createdBy: entity.createdBy,
     }
   }
 }

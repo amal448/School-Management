@@ -30,11 +30,11 @@ const events = published.filter(a => a.category === 'event')
 const sortedAnnouncements = [...announcements].sort((a, b) =>
   Number(b.isPinned) - Number(a.isPinned) ||
   new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime()
-)
+).slice(0,3)
 
 const sortedEvents = [...events].sort((a, b) =>
   new Date(a.eventDate ?? 0).getTime() - new Date(b.eventDate ?? 0).getTime()
-)
+).slice(0,3)
 
 
   return (
@@ -187,6 +187,7 @@ const sortedEvents = [...events].sort((a, b) =>
 
         </div>
       </div>
+      
     </section>
   )
 }

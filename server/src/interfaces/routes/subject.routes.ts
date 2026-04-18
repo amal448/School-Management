@@ -14,7 +14,7 @@ export const createSubjectRouter = (ctrl:   SubjectController,authMW: AuthMW): R
   const { authenticate, authorize } = authMW
 
   router.post  ('/',    [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(CreateSubjectSchema), ctrl.create)
-  router.get   ('/',    [authenticate, authorize(Role.ADMIN, Role.MANAGER,Role.TEACHER)], ctrl.list)
+  router.get   ('/',    [authenticate, authorize(Role.ADMIN, Role.MANAGER,Role.TEACHER,Role.STUDENT)], ctrl.list)
   router.get   ('/:id', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.getById)
   router.patch ('/:id', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], validate(UpdateSubjectSchema), ctrl.update)
   router.delete('/:id', [authenticate, authorize(Role.ADMIN, Role.MANAGER)], ctrl.delete)

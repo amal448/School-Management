@@ -40,7 +40,7 @@ export const createAuthRouter = (ctrl: AuthController, { authenticate, authorize
   router.post('/forgot-password', validate(ForgotPasswordSchema), ctrl.forgotPassword,)
   router.post('/reset-password', validate(ResetPasswordSchema), ctrl.resetPassword)
   router.post('/first-time-setup', validate(FirstTimeSetupSchema), ctrl.firstTimeSetup)
-  router.post('/students/:studentId/reset-password', authenticate, authorize(Role.MANAGER, Role.TEACHER), verifyCsrf, ctrl.studentResetPassword)
+  router.post('/students/:studentId/reset-password', authenticate, authorize(Role.MANAGER, Role.TEACHER,Role.ADMIN), verifyCsrf, ctrl.studentResetPassword)
   // router.post('/students/:id/reset-password', authenticate, authorize(Role.ADMIN, Role.MANAGER, Role.TEACHER), validate(ResetPasswordSchema), ctrl.resetStudentPassword,)
 
   return router

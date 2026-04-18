@@ -25,9 +25,11 @@ export class StudentResetPasswordUseCase
     const student = await this.studentRepo.findById(input.studentId)
     if (!student) throw AppError.notFound('Student not found')
     if (!student.isActive) throw AppError.badRequest('Student account is inactive')
-
+  
     // Generate a temporary password
     const tempPassword = Math.random().toString(36).slice(-8) + 'A1!'
+    console.log("tempPassword",tempPassword);
+    
     const tempHash     = await this.passwordHasher.hash(tempPassword)
 
     // Reset password and force first-time setup on next login

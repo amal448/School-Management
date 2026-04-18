@@ -130,7 +130,7 @@ export class AuthController {
       const result = await this.studentResetPasswordUseCase.execute({
         studentId:     req.params.studentId,
         requesterId:   req.user!.userId,
-        requesterRole: req.user!.role as Role.MANAGER | Role.TEACHER,
+        requesterRole: req.user!.role as Role.MANAGER | Role.TEACHER 
       })
       res.status(200).json({
         success: true,
