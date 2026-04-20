@@ -1,56 +1,81 @@
+// src/pages/auth/AdminManagerLoginPage.tsx
+
 import {
   GraduationCap, Eye, EyeOff, Mail, Lock,
   ChevronDown, AlertCircle, ShieldAlert,
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Button }    from '@/components/ui/button'
+import { Input }     from '@/components/ui/input'
+import { Label }     from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   DropdownMenu, DropdownMenuContent,
   DropdownMenuItem, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useAdminManagerLogin } from '@/hooks/auth/useAdminManagerLogin'
-import { Link } from 'react-router-dom'
-import { ROUTES } from '@/config/routes.config'
+import { useAdminManagerLogin }    from '@/hooks/auth/useAdminManagerLogin'
+import { Link }                    from 'react-router-dom'
+import { ROUTES }                  from '@/config/routes.config'
 import { ADMIN_ROLE_OPTIONS, ERROR_MESSAGES } from '@/constants/auth'
-import { GoogleIcon, Spinner } from '@/components/shared/Helpercomponents'
+import { GoogleIcon, Spinner }     from '@/components/shared/Helpercomponents'
 
-const AdminManagerLoginPage = () => {
-  const { email, password, showPassword, loading, googleLoading, error, selectedRole, currentRoleLabel, emailPlaceholder,
-    handleRoleChange, handleEmailChange, handlePasswordChange, toggleShowPassword, handleCredentialLogin, handleGoogleLogin,
+export default function AdminManagerLoginPage() {
+  const {
+    email, password, showPassword, loading, googleLoading,
+    error, selectedRole, currentRoleLabel, emailPlaceholder,
+    handleRoleChange, handleEmailChange, handlePasswordChange,
+    toggleShowPassword, handleCredentialLogin, handleGoogleLogin,
   } = useAdminManagerLogin()
 
   const isAdmin = selectedRole === 'ADMIN'
+
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Standard smooth & light background image (Modern Education/Architecture) */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2000&auto=format&fit=crop')" }}
-      />
-      {/* Light frosted glass overlay to ensure the form remains perfectly readable */}
-      <div className="absolute inset-0 bg-white/20 backdrop-blur-sm z-0" />
+    <div className="min-h-screen flex items-center justify-center px-4"
+      style={{ background: 'var(--color-background-tertiary)' }}
+    >
+      <div className="w-full max-w-[400px]">
 
-      <div className="w-full max-w-sm flex flex-col gap-6 relative z-10">
-        <div className="flex flex-col items-center gap-3 text-center">
-          <div className="size-12 rounded-xl bg-primary flex items-center justify-center">
-            <GraduationCap className="size-6 text-primary-foreground" />
-          </div>
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight">SchoolMS</h1>
-            <p className="text-sm text-white mt-0.5">Staff Portal</p>
-          </div>
-        </div>
-        <Card className="shadow-sm">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg">Sign in</CardTitle>
-            <CardDescription>Select your role and sign in to continue</CardDescription>
-          </CardHeader>
+        {/* ── Card ── */}
+        <div
+          className="w-full rounded-xl border overflow-hidden"
+          style={{
+            background:   'var(--color-background-primary)',
+            borderColor:  'var(--color-border-tertiary)',
+            borderWidth:  '0.5px',
+          }}
+        >
+          {/* Top accent line */}
+          <div className="h-0.5 w-full bg-foreground" />
 
-          <CardContent className="flex flex-col gap-4">
+          <div className="px-8 pt-8 pb-7 flex flex-col gap-6">
+
+            {/* ── Logo + school name ── */}
+            <div className="flex items-center gap-3">
+              <div
+                className="size-10 rounded-xl flex items-center justify-center shrink-0"
+                style={{ background: 'hsl(var(--foreground))' }}
+              >
+                <GraduationCap className="size-5 text-background" />
+              </div>
+              <div>
+                <p className="font-medium text-sm leading-tight">
+                  St. Xavier's Academy
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Staff portal
+                </p>
+              </div>
+            </div>
+
+            {/* ── Heading ── */}
+            <div>
+              <h1 className="text-lg font-medium">Sign in</h1>
+              <p className="text-xs text-muted-foreground mt-1">
+                Select your role to continue
+              </p>
+            </div>
+
+            {/* ── Error alert ── */}
             {error && (
               <Alert variant="destructive" className="py-3">
                 {error === 'ACCOUNT_BLOCKED'
@@ -62,13 +87,15 @@ const AdminManagerLoginPage = () => {
                 </AlertDescription>
               </Alert>
             )}
+
+            {/* ── Role selector ── */}
             <div className="flex flex-col gap-1.5">
-              <Label>Role</Label>
+              <Label className="text-xs text-muted-foreground">Role</Label>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className="w-full justify-between h-10 font-normal"
+                    className="w-full justify-between h-9 font-normal text-sm"
                   >
                     <span>{currentRoleLabel}</span>
                     <ChevronDown className="size-4 text-muted-foreground" />
@@ -86,24 +113,33 @@ const AdminManagerLoginPage = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
+
+            {/* ── Admin — Google only ── */}
             {isAdmin && (
-              <Button
-                variant="outline"
-                className="w-full gap-3 h-11"
-                onClick={handleGoogleLogin}
-                disabled={googleLoading}
-                type="button"
-              >
-                {googleLoading ? <Spinner /> : <GoogleIcon />}
-                Continue with Google
-              </Button>
+              <div className="flex flex-col gap-3">
+                <Button
+                  variant="outline"
+                  className="w-full gap-3 h-10"
+                  onClick={handleGoogleLogin}
+                  disabled={googleLoading}
+                  type="button"
+                >
+                  {googleLoading ? <Spinner /> : <GoogleIcon />}
+                  Continue with Google
+                </Button>
+                <p className="text-center text-xs text-muted-foreground">
+                  Admin accounts use Google Sign-In only.
+                </p>
+              </div>
             )}
+
+            {/* ── Manager / Teacher — email + password ── */}
             {!isAdmin && (
               <>
                 <div className="flex items-center gap-3">
                   <Separator className="flex-1" />
                   <span className="text-xs text-muted-foreground shrink-0">
-                    Sign in with email
+                    email &amp; password
                   </span>
                   <Separator className="flex-1" />
                 </div>
@@ -112,38 +148,45 @@ const AdminManagerLoginPage = () => {
                   onSubmit={handleCredentialLogin}
                   className="flex flex-col gap-4"
                 >
+                  {/* Email */}
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="am-email" className="text-xs text-muted-foreground">
+                      Email
+                    </Label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
                       <Input
-                        id="email"
+                        id="am-email"
                         type="email"
                         placeholder={emailPlaceholder}
-                        className="pl-9"
+                        className="pl-9 h-9 text-sm"
                         value={email}
                         onChange={handleEmailChange}
                         required
                       />
                     </div>
                   </div>
+
+                  {/* Password */}
                   <div className="flex flex-col gap-1.5">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="password">Password</Label>
+                      <Label htmlFor="am-password" className="text-xs text-muted-foreground">
+                        Password
+                      </Label>
                       <Link
                         to={ROUTES.AUTH.FORGOT_PASSWORD + '?role=MANAGER'}
-                        className="text-xs text-muted-foreground underline-offset-4 hover:underline hover:text-foreground transition-colors"
+                        className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
                       >
                         Forgot password?
                       </Link>
                     </div>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
                       <Input
-                        id="password"
+                        id="am-password"
                         type={showPassword ? 'text' : 'password'}
                         placeholder="••••••••"
-                        className="pl-9 pr-10"
+                        className="pl-9 pr-10 h-9 text-sm"
                         value={password}
                         onChange={handlePasswordChange}
                         required
@@ -154,8 +197,8 @@ const AdminManagerLoginPage = () => {
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                       >
                         {showPassword
-                          ? <EyeOff className="size-4" />
-                          : <Eye className="size-4" />
+                          ? <EyeOff className="size-3.5" />
+                          : <Eye    className="size-3.5" />
                         }
                       </button>
                     </div>
@@ -163,34 +206,34 @@ const AdminManagerLoginPage = () => {
 
                   <Button
                     type="submit"
-                    className="w-full h-11"
+                    className="w-full h-10 mt-1"
                     disabled={loading}
                   >
-                    {loading ? <Spinner /> : `Sign in as ${currentRoleLabel}`}
+                    {loading
+                      ? <Spinner />
+                      : `Sign in as ${currentRoleLabel}`
+                    }
                   </Button>
                 </form>
               </>
             )}
-          </CardContent>
-          <CardFooter className="pt-0">
-            <p className="text-xs text-center text-muted-foreground w-full">
-              Access restricted to authorised accounts only.
+
+            {/* ── Footer ── */}
+            <p className="text-center text-xs text-muted-foreground">
+              Restricted to authorised accounts only
+              <span className="mx-2 opacity-40">·</span>
+              <Link
+                to={ROUTES.AUTH.STUDENT_LOGIN ?? '/login'}
+                className="underline underline-offset-4 hover:text-foreground transition-colors"
+              >
+                Student login
+              </Link>
             </p>
-          </CardFooter>
-        </Card>
-        <p className="text-center text-xs text-white">
-           {/* Student?{' '} */}
-          <Link
-            to={ROUTES.AUTH.STUDENT_LOGIN}
-            className="underline underline-offset-4 hover:text-foreground transition-colors"
-          >
-            Student login
-          </Link>
-        </p>
+
+          </div>
+        </div>
 
       </div>
     </div>
   )
 }
-
-export default AdminManagerLoginPage
