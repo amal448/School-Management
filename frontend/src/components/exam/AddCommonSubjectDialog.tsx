@@ -7,17 +7,10 @@ import { CrudDialog }          from '@/components/shared/CrudDialog'
 import { useAddCommonSubject } from '@/hooks/exam/useExams'
 import { useSubjects }         from '@/hooks/subject/useSubjects'
 import { useClasses }          from '@/hooks/class/useClasses'
-import { AddCommonSubjectInput, ExamResponse } from '@/types/exam.types'
-import { GradeConfig }         from '@/types/exam.types'
+import { AddCommonSubjectInput, ExamProps } from '@/types/exam.types'
 
-// Change Props interface
-interface Props {
-  exam:        ExamResponse   // ← was just examId + gradeConfig
-  gradeConfig: GradeConfig
-}
-
-export const AddCommonSubjectDialog = ({ exam, gradeConfig }: Props) => {
-  const { register, handleSubmit, reset, watch,
+export const AddCommonSubjectDialog = ({ exam, gradeConfig }: ExamProps) => {
+  const { register, handleSubmit, reset,
     formState: { isDirty, errors } } =
     useForm<AddCommonSubjectInput>({
       defaultValues: { totalMarks: 100, passingMarks: 35 },

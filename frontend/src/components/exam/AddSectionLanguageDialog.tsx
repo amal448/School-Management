@@ -7,23 +7,10 @@ import { CrudDialog }            from '@/components/shared/CrudDialog'
 import { useAddSectionLanguage } from '@/hooks/exam/useExams'
 import { useSubjects }           from '@/hooks/subject/useSubjects'
 import { useClasses }            from '@/hooks/class/useClasses'
-import { AddSectionLanguageInput, ExamResponse, GradeConfig } from '@/types/exam.types'
+import { FormValues, SectionProps } from '@/types/exam.types'
 
-interface FormValues {
-  classId:      string
-  subjectId:    string
-  examDate:     string
-  startTime:    string
-  endTime:      string
-  totalMarks:   number
-  passingMarks: number
-}
-interface Props {
-  exam:        ExamResponse   // ← was just examId + gradeConfig
-  gradeConfig: GradeConfig
-}
 
-export const AddSectionLanguageDialog = ({ exam, gradeConfig }: Props) => {
+export const AddSectionLanguageDialog = ({ exam, gradeConfig }: SectionProps) => {
   const { register, handleSubmit, reset, formState: { isDirty, errors } } =
     useForm<FormValues>({
       defaultValues: { totalMarks: 100, passingMarks: 35 },

@@ -5,32 +5,24 @@ import { Label }                  from '@/components/ui/label'
 import { KeyRound }               from 'lucide-react'
 import { CrudDialog }             from '@/components/shared/CrudDialog'
 import { useResetStudentPassword } from '@/hooks/student/useStudents'
+import { ResetFormValues, StudentResetProps } from '@/types/student.types'
 
-interface Props {
-  studentId:   string
-  studentName: string
-}
-
-interface FormValues {
-  newPassword:     string
-  confirmPassword: string
-}
 
 export const ResetStudentPasswordDialog = ({
   studentId,
   studentName,
-}: Props) => {
+}: StudentResetProps) => {
   const {
     register,
     handleSubmit,
     reset,
     watch,
     formState: { isDirty, errors },
-  } = useForm<FormValues>()
+  } = useForm<ResetFormValues>()
 
   const mutation = useResetStudentPassword()
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = (data: ResetFormValues) => {
     mutation.mutate({ studentId, newPassword: data.newPassword })
   }
 

@@ -5,22 +5,15 @@ import { Badge }                   from '@/components/ui/badge'
 import { CrudDialog }              from '@/components/shared/CrudDialog'
 import { useAssignSubjectTeacher } from '@/hooks/class/useClasses'
 import { useTeachersBySubject }    from '@/hooks/teacher/useTeachers'
-import { useSubjects }             from '@/hooks/subject/useSubjects'
 import { Avatar }                  from '@/components/shared/Avatar'
-
-interface Props {
-  classId:          string
-  subjectId:        string
-  subjectName:      string
-  currentTeacherId?: string
-}
+import { AssignSubjectProps } from '@/types/class.types'
 
 export const AssignSubjectTeacherDialog = ({
   classId,
   subjectId,
   subjectName,
   currentTeacherId,
-}: Props) => {
+}: AssignSubjectProps) => {
   const [teacherId, setTeacherId] = useState(currentTeacherId ?? '')
 
   // Only teachers who teach this subject and are in its department

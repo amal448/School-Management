@@ -14,42 +14,24 @@ import {
   AlertCircle, Pencil, Phone, User,
   MapPin, Briefcase, GraduationCap, Check, X,
 } from 'lucide-react'
-import { UseMutationResult } from '@tanstack/react-query'
 import {
-  TeacherResponse,
-  UpdateTeacherInput,
   TEACHER_LEVEL_LABELS,
   TeacherLevel,
+  EditFormProps,
+  EditTeacherForm,
 } from '@/types/teacher.types'
 import { useDepartments }    from '@/hooks/department/useDepartments'
 import { useSubjects }       from '@/hooks/subject/useSubjects'
+import { Spinner } from '../Helpercomponents'
 
-interface EditForm {
-  firstName:     string
-  lastName:      string
-  phone:         string
-  address:       string
-  qualification: string
-  designation:   string
-  level:         TeacherLevel | ''
-}
 
-interface Props {
-  teacher:  TeacherResponse
-  mutation: UseMutationResult<TeacherResponse, Error, UpdateTeacherInput>
-}
-
-const Spinner = () => (
-  <div className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-)
-
-export function EditTeacherDialog({ teacher, mutation }: Props) {
+export function EditTeacherDialog({ teacher, mutation }: EditFormProps) {
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>(
     teacher.subjectIds ?? []
   )
 
   const { register, handleSubmit, reset, formState: { errors, isDirty } } =
-    useForm<EditForm>({
+    useForm<EditTeacherForm>({
       defaultValues: {
         firstName:     teacher.firstName,
         lastName:      teacher.lastName,
@@ -91,16 +73,16 @@ export function EditTeacherDialog({ teacher, mutation }: Props) {
     }
   }
 
-  const onSubmit = (data: EditForm) => {
+  const onSubmit = (data: EditTeacherForm) => {
     mutation.mutate({
-      firstName:     data.firstName,
-      lastName:      data.lastName,
-      phone:         data.phone?.trim()         || undefined,
-      address:       data.address?.trim()       || undefined,
-      qualification: data.qualification?.trim() || undefined,
-      designation:   data.designation?.trim()   || undefined,
-      level:         data.level                 || undefined,
-      subjectIds:    selectedSubjects,
+      firstName: data.firstName,
+    lastName: data.lastName,
+    phone: data.phone?.trim() || undefined,
+    address: data.address?.trim() || undefined,
+    qualification: data.qualification?.trim() || undefined,
+    designation: data.designation?.trim() || undefined,
+    level: data.level || undefined,
+    subjectIds: selectedSubjects,
     })
   }
 

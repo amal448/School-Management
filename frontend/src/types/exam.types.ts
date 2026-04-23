@@ -118,3 +118,30 @@ export interface PaginatedExams {
   limit:      number
   totalPages: number
 }
+
+export interface ExamProps {
+  exam:        ExamResponse   
+  gradeConfig: GradeConfig
+}
+
+export interface FormValues {
+  classId:      string
+  subjectId:    string
+  examDate:     string
+  startTime:    string
+  endTime:      string
+  totalMarks:   number
+  passingMarks: number
+}
+export interface SectionProps {
+  exam:        ExamResponse   // ← was just examId + gradeConfig
+  gradeConfig: GradeConfig
+}
+
+export interface CreateFormValues {
+  examName:     string
+  examType:     ExamType
+  academicYear: string
+  startDate:    string
+  endDate:      string
+}

@@ -1,13 +1,7 @@
-import { LucideIcon } from 'lucide-react'
+import { StatProps } from "@/types/class.types";
 
-interface Props {
-  label: string
-  value: string | number
-  icon:  LucideIcon
-  onClick?:()=> void
-}
 
-export const StatCard = ({ label, value, icon: Icon }: Props) => (
+export const StatCard = ({ label, value, icon: Icon }: StatProps) => (
   <div className="bg-secondary rounded-lg p-4 flex flex-col gap-3">
     <div className="size-8 rounded-md bg-background flex items-center justify-center">
       <Icon className="size-4 text-muted-foreground" />

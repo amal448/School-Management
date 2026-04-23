@@ -17,8 +17,8 @@ const HeroSection = () => {
 
       {/* Dark overlay layers */}
       <div className="absolute inset-0 z-10 bg-[#060606]/20" />
-      <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#060606]/90 via-[#060606]/60 to-[#060606]/30" />
-      <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#060606]/80 via-transparent to-transparent" />
+      <div className="absolute inset-0 z-10 bg-linear-to-r from-[#060606]/90 via-[#060606]/60 to-[#060606]/30" />
+      <div className="absolute inset-0 z-10 bg-linear-to-t from-[#060606]/80 via-transparent to-transparent" />
 
       {/* Content */}
       <div className="relative z-20 container mx-auto px-4 max-w-7xl py-32 md:py-40">
@@ -43,7 +43,7 @@ const HeroSection = () => {
             className="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6 leading-tight"
           >
             Empowering the{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-primary">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-300 to-primary">
               Leaders
             </span>{' '}
             of Tomorrow

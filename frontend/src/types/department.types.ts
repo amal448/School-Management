@@ -1,3 +1,5 @@
+import { UseMutationResult } from "@tanstack/react-query"
+
 export interface DepartmentResponse {
   id:           string
   deptName:     string
@@ -31,4 +33,8 @@ export interface PaginatedDepartments {
   page:       number
   limit:      number
   totalPages: number
+}
+export interface EditDepProps {
+  department: DepartmentResponse
+  mutation:   UseMutationResult<DepartmentResponse, Error, UpdateDepartmentInput>
 }

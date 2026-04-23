@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {  CAMPUS_LIFE,  } from '@/constants/mockdata';
+import { CAMPUS_LIFE } from '@/constants/mockdata';
 
 const CampusLifeSection = () => {
   return (
@@ -31,7 +31,7 @@ const CampusLifeSection = () => {
                 className="group relative rounded-3xl overflow-hidden cursor-pointer shadow-lg h-80"
               >
                 <img src={item.image} alt={item.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent flex flex-col justify-end p-8">
+                <div className="absolute inset-0 bg-linear-to-t from-slate-900/90 via-slate-900/20 to-transparent flex flex-col justify-end p-8">
                   <h3 className="text-2xl font-bold text-white mb-2 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">{item.title}</h3>
                   <p className="text-slate-300 opacity-0 group-hover:opacity-100 transition-all duration-300 h-0 group-hover:h-[48px] overflow-hidden">{item.desc}</p>
                 </div>

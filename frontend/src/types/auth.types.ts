@@ -43,3 +43,10 @@ export interface VerifyOtpResponse {
 export interface MeData {
   user: AuthUser
 }
+
+export interface DashboardNavbarProps {
+  role: Role
+  userName?: string
+  userEmail?: string
+  avatarUrl?: string
+}

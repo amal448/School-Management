@@ -105,9 +105,6 @@ export const MANAGER_NAV: NavItem[] = [
 export const TEACHER_NAV: NavItem[] = [
   { label: 'Dashboard', path: ROUTES.TEACHER.DASHBOARD, icon: LayoutDashboard },
   { label: 'My Classes', path: ROUTES.TEACHER.CLASSES, icon: School },
-  // { label: 'Marks', path: ROUTES.TEACHER.MARKS, icon: FileText },
-  { label: 'Profile', path: ROUTES.TEACHER.PROFILE, icon: User },
-  // { label: 'Students', path: ROUTES.TEACHER.STUDENTS, icon: Users },
 
 ]
 

@@ -38,3 +38,4 @@ export interface SubjectProps {
   showTeacherHint?: boolean            // for edit dialog
   allocations?:     { subjectId: string; teacherId?: string }[]
 }
+

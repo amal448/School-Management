@@ -5,14 +5,10 @@ import { Label }           from '@/components/ui/label'
 import { Plus, Mail, User, Lock, Phone, Users } from 'lucide-react'
 import { CrudDialog }      from '@/components/shared/CrudDialog'
 import { useCreateStudent } from '@/hooks/student/useStudents'
-import { CreateStudentInput } from '@/types/student.types'
-
-interface Props {
-  classId?: string    // optional — pre-assigns to a class if provided
-}
+import { AddStudentProps, CreateStudentInput } from '@/types/student.types'
 
 
-export function AddStudentDialog({ classId }: Props) {
+export function AddStudentDialog({ classId }: AddStudentProps) {
   const { register, handleSubmit, reset, formState: { isDirty, errors } } =
     useForm<CreateStudentInput>({
       defaultValues: { classId },
@@ -124,7 +120,7 @@ export function AddStudentDialog({ classId }: Props) {
       </div>
 
       {/* Guardian + Phone in a row */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="flex flex-col gap-1.5">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="st-guardian">
             Guardian

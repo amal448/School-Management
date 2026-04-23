@@ -7,10 +7,7 @@ import {
 } from '@/components/ui/dialog'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle, CheckCircle } from 'lucide-react'
-
-const Spinner = () => (
-  <div className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-)
+import { Spinner } from './Helpercomponents'
 
 interface Props {
   trigger:       ReactNode

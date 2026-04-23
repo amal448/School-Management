@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { GraduationCap, BookOpen, ChevronRight, AlertCircle } from 'lucide-react'
+import { GraduationCap, BookOpen, ChevronRight, AlertCircle, User } from 'lucide-react'
 import { useMyProfile, useMyClasses } from '@/hooks/teacher/useTeachers'
 import { useMyPendingMarks } from '@/hooks/exam/useExams'
 import { Avatar } from '@/components/shared/Avatar'
@@ -44,28 +44,43 @@ export default function TeacherDashboard() {
     <div className="p-6 flex flex-col gap-6">
 
       {/* ── Welcome ── */}
-      <div className="flex items-center justify-between gap-4 p-5 rounded-xl bg-primary/5 border border-primary/10">
-        <div className="flex items-center gap-4">
-          {profile && <Avatar name={profile.fullName} size="lg" />}
-          <div>
-            <p className="text-xs text-muted-foreground">{getGreeting()}</p>
-            <h1 className="text-lg font-medium">{profile?.fullName}</h1>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {profile?.designation ?? 'Teacher'}
-            </p>
-          </div>
-        </div>
-        {(pending?.length ?? 0) > 0 && (
-          <Button
-            size="sm"
-            className="gap-2 shrink-0"
-            onClick={() => navigate('/teacher/marks')}
-          >
-            <AlertCircle className="size-4" />
-            {pending!.length} pending
-          </Button>
-        )}
-      </div>
+<div className="flex items-center justify-between gap-4 p-5 rounded-xl bg-primary/5 border border-primary/10">
+  <div className="flex items-center gap-4">
+    {profile && <Avatar name={profile.fullName} size="lg" />}
+    <div>
+      <p className="text-xs text-muted-foreground">{getGreeting()}</p>
+      <h1 className="text-lg font-medium">{profile?.fullName}</h1>
+      <p className="text-xs text-muted-foreground mt-0.5">
+        {profile?.designation ?? 'Teacher'}
+      </p>
+    </div>
+  </div>
+
+  <div className="flex items-center gap-2 shrink-0">
+    {/* Profile link — always visible */}
+    <Button
+      variant="outline"
+      size="sm"
+      className="gap-2"
+      onClick={() => navigate('/teacher/profile')}
+    >
+      <User className="size-4" />
+      My profile
+    </Button>
+
+    {/* Pending marks alert */}
+    {(pending?.length ?? 0) > 0 && (
+      <Button
+        size="sm"
+        className="gap-2"
+        onClick={() => navigate('/teacher/marks')}
+      >
+        <AlertCircle className="size-4" />
+        {pending!.length} pending
+      </Button>
+    )}
+  </div>
+</div>
 
       {/* ── Stats ── */}
       <div className="grid grid-cols-3 gap-3">

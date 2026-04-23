@@ -17,15 +17,9 @@ import {
   LogOut,
   ChevronDown,
 } from 'lucide-react'
-import { Role } from '@/config/routes.config'
+import { DashboardNavbarProps } from '@/types/auth.types'
 
 
-interface DashboardNavbarProps {
-  role: Role
-  userName?: string
-  userEmail?: string
-  avatarUrl?: string
-}
 
 // ── Component ──────────────────────────────────────────
 export function DashboardNavbar({
@@ -92,9 +86,9 @@ export function DashboardNavbar({
               </div>
             </DropdownMenuLabel>
 
-            <DropdownMenuSeparator />
+            {/* <DropdownMenuSeparator /> */}
 
-            <DropdownMenuGroup>
+            {/* <DropdownMenuGroup>
               <DropdownMenuItem>
                 <User className="size-4 mr-2" />
                 Profile
@@ -103,14 +97,14 @@ export function DashboardNavbar({
                 <Settings className="size-4 mr-2" />
                 Settings
               </DropdownMenuItem>
-            </DropdownMenuGroup>
+            </DropdownMenuGroup> */}
 
-            <DropdownMenuSeparator />
+            {/* <DropdownMenuSeparator /> */}
 
-            <DropdownMenuItem className="text-destructive focus:text-destructive">
+            {/* <DropdownMenuItem className="text-destructive focus:text-destructive">
               <LogOut className="size-4 mr-2" />
               Logout
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
 

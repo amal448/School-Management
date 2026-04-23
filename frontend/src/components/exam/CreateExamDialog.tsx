@@ -4,11 +4,11 @@ import { Button }          from '@/components/ui/button'
 import { Input }           from '@/components/ui/input'
 import { Label }           from '@/components/ui/label'
 import { Badge }           from '@/components/ui/badge'
-import { Plus, X, Check } from 'lucide-react'
+import { Plus, X } from 'lucide-react'
 import { CrudDialog }      from '@/components/shared/CrudDialog'
 import { useCreateExam }   from '@/hooks/exam/useExams'
 import { useClasses }      from '@/hooks/class/useClasses'
-import { CreateExamInput } from '@/types/exam.types'
+import {  CreateFormValues } from '@/types/exam.types'
 import { ExamType }        from '@/types/enums'
 import {
   EXAM_TYPE_LABELS,
@@ -16,20 +16,13 @@ import {
   CURRENT_ACADEMIC_YEAR,
 } from '@/constants/exam.constants'
 
-interface FormValues {
-  examName:     string
-  examType:     ExamType
-  academicYear: string
-  startDate:    string
-  endDate:      string
-}
 
 export const CreateExamDialog = () => {
   const [selectedGrades, setSelectedGrades] = useState<string[]>([])
   const [gradeError,     setGradeError]     = useState(false)
 
   const { register, handleSubmit, reset, formState: { errors, isDirty } } =
-    useForm<FormValues>({
+    useForm<CreateFormValues>({
       defaultValues: {
         examType:     ExamType.MIDTERM,
         academicYear: CURRENT_ACADEMIC_YEAR,
@@ -58,7 +51,7 @@ export const CreateExamDialog = () => {
     })
   }
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = (data: CreateFormValues) => {
     if (!selectedGrades.length) { setGradeError(true); return }
     mutation.mutate({ ...data, grades: selectedGrades })
   }

@@ -8,15 +8,7 @@ import { useUpdateClass }     from '@/hooks/class/useClasses'
 import { useTeachersByLevel } from '@/hooks/teacher/useTeachers'
 import { ClassResponse }      from '@/types/class.types'
 import { Avatar }             from '@/components/shared/Avatar'
-
-// Grade → level mapping
-const getLevel = (grade: string): string => {
-  const g = Number(grade)
-  if (g <= 5)  return 'primary'
-  if (g <= 8)  return 'middle'
-  if (g <= 10) return 'secondary'
-  return 'higher_secondary'
-}
+import { getTeacherLevel } from '@/constants/class.constants'
 
 interface Props {
   cls: ClassResponse
@@ -25,7 +17,7 @@ interface Props {
 export const AssignClassTeacherDialog = ({ cls }: Props) => {
   const [teacherId, setTeacherId] = useState(cls.classTeacherId ?? '')
 
-  const level              = getLevel(cls.grade)
+  const level              = getTeacherLevel(cls.grade)
   const { data: teachers, isLoading } = useTeachersByLevel(level)
   const mutation           = useUpdateClass(cls.id)
 

@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {  ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {  SPORTS, } from '@/constants/mockdata';
 import { useState } from 'react';
+import { SPORTS } from '@/constants/mockdata';
 
 const SportsSection = () => {
   const [activeSport, setActiveSport] = useState(SPORTS[0]);

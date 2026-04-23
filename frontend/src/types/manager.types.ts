@@ -1,3 +1,5 @@
+import { UseMutationResult } from "@tanstack/react-query"
+
 export interface CreateManagerCustomInput {
   firstName: string
   lastName: string
@@ -38,4 +40,17 @@ export interface UpdateManagerInput {
   firstName?: string
   lastName?: string
   phone?: string
+}
+
+
+export interface EditManagerForm {
+  firstName: string
+  lastName: string
+  phone: string
+}
+
+export interface EditProps {
+  manager: ManagerResponse
+  mutation: UseMutationResult<ManagerResponse, Error, UpdateManagerInput>
+  onClose?: () => void
 }

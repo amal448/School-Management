@@ -1,3 +1,5 @@
+import { UseMutationResult } from "@tanstack/react-query"
+
 export interface StudentResponse {
   id:               string
   email:            string
@@ -57,4 +59,22 @@ export interface PaginatedStudents {
   page:       number
   limit:      number
   totalPages: number
+}
+
+export interface AddStudentProps {
+  classId?: string    // optional — pre-assigns to a class if provided
+}
+export interface StudentEdItProps {
+  student:  StudentResponse
+  mutation: UseMutationResult<StudentResponse, Error, UpdateStudentInput>
+}
+
+export interface StudentResetProps {
+  studentId:   string
+  studentName: string
+}
+
+export interface ResetFormValues {
+  newPassword:     string
+  confirmPassword: string
 }

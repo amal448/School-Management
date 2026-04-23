@@ -85,7 +85,7 @@ export default function PublicNavbar() {
             </ul>
             <div className="flex items-center gap-3 ml-2 border-l pl-5 border-slate-300/30">
               <Button asChild variant={isDarkBg ? 'secondary' : 'outline'} className={isDarkBg ? 'bg-white/10 hover:bg-white/20 text-white border-transparent backdrop-blur-sm' : ''}>
-                <Link to={ROUTES.AUTH.ADMIN_MANAGER_LOGIN}>Current User Login</Link>
+                <Link to={ROUTES.AUTH.ADMIN_MANAGER_LOGIN}> User Login</Link>
               </Button>
             </div>
           </nav>
@@ -139,7 +139,7 @@ export default function PublicNavbar() {
               <div className="h-px bg-slate-100 my-2" />
               <div className="flex flex-col gap-2 px-4">
                 <Button asChild className="w-full justify-center">
-                  <Link to={ROUTES.AUTH.ADMIN_MANAGER_LOGIN}>Current User Login</Link>
+                  <Link to={ROUTES.AUTH.ADMIN_MANAGER_LOGIN}> User Login</Link>
                 </Button>
               </div>
             </div>

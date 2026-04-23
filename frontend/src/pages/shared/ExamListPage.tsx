@@ -7,18 +7,13 @@ import { useExams }          from '@/hooks/exam/useExams'
 import { useAuthStore }      from '@/store/auth.store'
 import { CreateExamDialog }  from '@/components/exam/CreateExamDialog'
 import { ExamResponse }      from '@/types/exam.types'
-import { ExamStatus }        from '@/types/enums'
 import {
   EXAM_TYPE_LABELS,
-  EXAM_STATUS_LABELS,
-  EXAM_STATUS_COLORS,
 } from '@/constants/exam.constants'
+import { ExamStatusBadge } from '@/components/exam/ExamStatusBadge'
+import { Skeleton } from '@/components/shared/Skeleton'
 
-const ExamStatusBadge = ({ status }: { status: ExamStatus }) => (
-  <span className={`text-xs font-medium px-2 py-0.5 rounded-md ${EXAM_STATUS_COLORS[status]}`}>
-    {EXAM_STATUS_LABELS[status]}
-  </span>
-)
+
 
 const ExamCard = ({ exam }: { exam: ExamResponse }) => {
   const navigate  = useNavigate()
@@ -83,13 +78,6 @@ const ExamCard = ({ exam }: { exam: ExamResponse }) => {
   )
 }
 
-const Skeleton = () => (
-  <div className="flex flex-col gap-3 animate-pulse">
-    {[...Array(3)].map((_, i) => (
-      <div key={i} className="h-28 bg-muted rounded-xl" />
-    ))}
-  </div>
-)
 
 export default function ExamListPage() {
   const { data, isLoading } = useExams()

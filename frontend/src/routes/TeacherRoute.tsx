@@ -11,6 +11,7 @@ import TeacherDashboard from '@/pages/teacher/TeacherDashBoard'
 import { ROLES } from '@/config/routes.config'
 import TeacherClassesPage from '@/pages/teacher/TeacherClassesPage'
 import ClassMarksPage from '@/pages/teacher/ClassMarksPage'
+import TeacherOwnProfilePage from '@/pages/teacher/TeacherOwnProfilePage'
 
 export const TeacherRoute = () => (
   // <Route element={<DashboardLayout role={ROLES.ADMIN} />}>
@@ -27,7 +28,7 @@ export const TeacherRoute = () => (
       <Route path="classes/:classId/marks" element={<ClassMarksPage />} />
       <Route path="marks/:scheduleId" element={<MarksEntryPage />} />
       <Route path="marks/:scheduleId/view" element={<TeacherMarksViewPage />} />
-      <Route path="profile" element={<TeacherProfilePage />} />
+      <Route path="profile" element={<TeacherOwnProfilePage />} />
     </Route>
 
   </Routes>

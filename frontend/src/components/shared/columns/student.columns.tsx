@@ -85,15 +85,7 @@ export const studentColumns: ColumnDef<StudentResponse>[] = [
       </span>
     ),
   },
-  // {
-  //   accessorKey: 'phone',
-  //   header: 'Phone',
-  //   cell: ({ row }) => (
-  //     <span className="text-sm text-muted-foreground">
-  //       {row.original.phone ?? '—'}
-  //     </span>
-  //   ),
-  // },
+  
   {
     accessorKey: 'isActive',
     header: 'Status',

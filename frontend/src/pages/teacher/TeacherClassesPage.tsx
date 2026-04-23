@@ -1,14 +1,12 @@
 import { useNavigate }       from 'react-router-dom'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge }             from '@/components/ui/badge'
-import { Button }            from '@/components/ui/button'
 import {
   ChevronRight, Star, BookOpen,
   GraduationCap, Users,
 } from 'lucide-react'
 import { useMyClasses, useMyProfile } from '@/hooks/teacher/useTeachers'
 import { useSubjects }                from '@/hooks/subject/useSubjects'
-import { useStudentsByClass }         from '@/hooks/student/useStudents'
 import { ClassResponse }              from '@/types/class.types'
 
 // ── Class card ─────────────────────────────────────────

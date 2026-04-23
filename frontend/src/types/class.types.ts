@@ -1,3 +1,5 @@
+import { LucideIcon } from 'lucide-react'
+
 export interface SubjectAllocation {
   subjectId: string
   subject?: any
@@ -55,6 +57,8 @@ export interface AssignSubjectProps {
   classId:     string
   subjectId:   string
   subjectName: string
+  currentTeacherId?: string
+
 }
 export interface ClassSectionProps {
  selectedClass:   string | undefined   
@@ -63,4 +67,11 @@ export interface ClassSectionProps {
   onSectionChange: (sec: string) => void
   classError?:     boolean
   sectionError?:   boolean
+}
+
+export interface StatProps {
+  label: string
+  value: string | number
+  icon:  LucideIcon
+  onClick?:()=> void
 }

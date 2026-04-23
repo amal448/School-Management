@@ -4,15 +4,10 @@ import { Input }          from '@/components/ui/input'
 import { Label }          from '@/components/ui/label'
 import { Pencil, User, Phone, MapPin, Users } from 'lucide-react'
 import { CrudDialog }     from '@/components/shared/CrudDialog'
-import { UseMutationResult } from '@tanstack/react-query'
-import { StudentResponse, UpdateStudentInput } from '@/types/student.types'
+import {  StudentEdItProps, UpdateStudentInput } from '@/types/student.types'
 
-interface Props {
-  student:  StudentResponse
-  mutation: UseMutationResult<StudentResponse, Error, UpdateStudentInput>
-}
 
-export function EditStudentDialog({ student, mutation }: Props) {
+export function EditStudentDialog({ student, mutation }: StudentEdItProps) {
   const { register, handleSubmit, reset, formState: { isDirty, errors } } =
     useForm<UpdateStudentInput>({
       defaultValues: {

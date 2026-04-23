@@ -9,26 +9,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle, Pencil, Phone, User } from 'lucide-react'
-import { UseMutationResult } from '@tanstack/react-query'
-import { ManagerResponse, UpdateManagerInput } from '@/types/manager.types'
+import { EditManagerForm, EditProps } from '@/types/manager.types'
+import { Spinner } from '../shared/Helpercomponents'
 
-export interface EditManagerForm {
-  firstName: string
-  lastName: string
-  phone: string
-}
 
-interface Props {
-  manager: ManagerResponse
-  mutation: UseMutationResult<ManagerResponse, Error, UpdateManagerInput>
-  onClose?: () => void
-}
-
-const Spinner = () => (
-  <div className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-)
-
-export function EditManagerDialog({ manager, mutation, onClose }: Props) {
+export function EditManagerDialog({ manager, mutation, onClose }: EditProps) {
   const {
     register,
     handleSubmit,

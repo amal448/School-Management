@@ -4,15 +4,11 @@ import { Input }               from '@/components/ui/input'
 import { Label }               from '@/components/ui/label'
 import { Pencil }              from 'lucide-react'
 import { CrudDialog }          from '@/components/shared/CrudDialog'
-import { UseMutationResult }   from '@tanstack/react-query'
-import { DepartmentResponse, UpdateDepartmentInput } from '@/types/department.types'
+import { EditDepProps, UpdateDepartmentInput } from '@/types/department.types'
 
-interface Props {
-  department: DepartmentResponse
-  mutation:   UseMutationResult<DepartmentResponse, Error, UpdateDepartmentInput>
-}
 
-export function EditDepartmentDialog({ department, mutation }: Props) {
+
+export function EditDepartmentDialog({ department, mutation }: EditDepProps) {
   const { register, handleSubmit, reset, formState: { isDirty } } =
     useForm<UpdateDepartmentInput>({
       defaultValues: {

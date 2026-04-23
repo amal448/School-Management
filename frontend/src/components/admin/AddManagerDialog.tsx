@@ -19,12 +19,9 @@ import {
   CreateManagerCustomInput,
   WhitelistManagerInput,
 } from '@/types/manager.types'
+import { Spinner } from '../shared/Helpercomponents'
 
 
-// ── Spinner ────────────────────────────────────────────
-const Spinner = () => (
-  <div className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-)
 
 // ── Main component ─────────────────────────────────────
 export function AddManagerDialog() {

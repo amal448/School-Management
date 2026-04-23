@@ -2,7 +2,6 @@ import { DataTable }     from '@/components/ui/data-table'
 import {  TeacherTableProps } from '@/types/teacher.types'
 import { teacherColumns } from '../columns/teacher.columns'
 
-// ── Reusable table ─────────────────────────────────────
 
 
 export function TeacherTable({ data, isLoading }: TeacherTableProps) {

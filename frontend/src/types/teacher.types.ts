@@ -1,3 +1,5 @@
+import { UseMutationResult } from "@tanstack/react-query"
+
 export type TeacherLevel =
   | 'primary'
   | 'middle'
@@ -58,7 +60,7 @@ export interface CreateTeacherInput {
 export interface UpdateTeacherInput {
   firstName?: string
   lastName?: string
-  phone: string
+  phone?: string
   address?: string
   qualification?: string
   designation?: string
@@ -81,15 +83,31 @@ export interface PaginatedTeachers {
   limit: number
   totalPages: number
 }
-export interface EditTeacherForm {
-  firstName?: string
-  lastName?: string
-  phone?: string
-  address?: string
-  qualification?: string
-  designation?: string
-}
+// export interface EditTeacherForm {
+//   firstName?: string
+//   lastName?: string
+//   phone?: string
+//   address?: string
+//   qualification?: string
+//   designation?: string
+// }
 export interface TeacherTableProps {
   data: TeacherResponse[]
   isLoading: boolean
+}
+
+
+export interface EditTeacherForm {
+  firstName:     string
+  lastName:      string
+  phone?:         string
+  address:       string
+  qualification: string
+  designation:   string
+  level?:         TeacherLevel | ''
+}
+
+export interface EditFormProps {
+  teacher:  TeacherResponse
+  mutation: UseMutationResult<TeacherResponse, Error, UpdateTeacherInput>
 }

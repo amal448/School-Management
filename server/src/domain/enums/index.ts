@@ -60,11 +60,13 @@ export enum ExamType {
 export enum ExamStatus {
   DRAFT='draft',
   SCHEDULED='scheduled',
+
   ONGOING='ongoing',
   MARKS_PENDING ='marks_pending',
+  
   DECLARED='declared'
 }
-
+//schedule status
 export enum MarksStatus {
   PENDING='pending',
   SUBMITTED='submitted',

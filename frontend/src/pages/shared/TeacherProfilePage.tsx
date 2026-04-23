@@ -18,42 +18,8 @@ import {
 } from '@/hooks/teacher/useTeachers'
 import ProfileSkeleton from '@/components/shared/ProfileSkeleton'
 import { TeacherStatusBadge } from '@/components/shared/StatusBadge'
-
-// ── Avatar ─────────────────────────────────────────────
-const Avatar = ({ name }: { name: string }) => {
-  const initials = name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase()
-
-  return (
-    <div className="size-20 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-      <span className="text-2xl font-semibold text-primary">{initials}</span>
-    </div>
-  )
-}
-
-
-// ── Info row ───────────────────────────────────────────
-const InfoRow = ({
-  icon: Icon, label, value,
-}: {
-  icon: React.ElementType
-  label: string
-  value?: string | null
-}) => (
-  <div className="flex items-start gap-3 py-3">
-    <div className="size-8 rounded-md bg-muted flex items-center justify-center shrink-0 mt-0.5">
-      <Icon className="size-4 text-muted-foreground" />
-    </div>
-    <div className="flex flex-col gap-0.5 min-w-0">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="text-sm font-medium truncate">{value ?? '—'}</p>
-    </div>
-  </div>
-)
+import { InfoRow } from '@/components/shared/InfoRow'
+import { Avatar } from '@/components/shared/Avatar'
 
 
 

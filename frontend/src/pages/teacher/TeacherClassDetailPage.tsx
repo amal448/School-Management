@@ -247,32 +247,7 @@ export default function TeacherClassDetailPage() {
         />
       </div>
 
-      {/* <div className="flex gap-2 flex-wrap">
-        <Button
-          variant="outline"
-          className="gap-2"
-          onClick={() =>
-            navigate(`/teacher/classes/${cls.id}/marks`, {
-              state: { grade: cls.grade, section: cls.section },
-            })
-          }
-        >
-          <BookOpen className="size-4" />
-          Mark management
-          {myPendingHere.length > 0 && (
-            <Badge
-              variant="secondary"
-              className="text-xs px-1.5 py-0 bg-amber-100 text-amber-700"
-            >
-              {myPendingHere.length}
-            </Badge>
-          )}
-        </Button>
-
-        {isClassTeacher && (
-          <AddStudentDialog classId={cls.id} />
-        )}
-      </div> */}
+    
 
       {/* ── Students ── */}
       <Card>

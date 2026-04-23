@@ -9,7 +9,6 @@ export interface IStudentDocument extends Document {
   lastName:         string
   dob?:             string
   gender?:          Gender
-  phone?:           string
   address?:         string
   admissionDate?:   string
   guardianName?:    string
@@ -34,7 +33,6 @@ const StudentSchema = new Schema<IStudentDocument>(
     lastName:         { type: String, required: true, trim: true },
     dob:              { type: String, default: null },
     gender:           { type: String, enum: Object.values(Gender), default: null },
-    phone:            { type: String, default: null },
     address:          { type: String, default: null },
     admissionDate:    { type: String, default: null },
     guardianName:     { type: String, default: null },

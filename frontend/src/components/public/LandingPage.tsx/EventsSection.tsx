@@ -4,7 +4,6 @@ import { ArrowRight, Calendar, Bell, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ANNOUNCEMENTS, UPCOMING_EVENTS } from '@/constants/mockdata';
 import {  usePublicAnnouncements } from '@/hooks/announcement/useAnnouncements';
 
 const formatDate = (dateStr: string) => {
@@ -18,7 +17,7 @@ const formatDate = (dateStr: string) => {
 }
 
 const EventsSection = () => {
- const { data, isLoading } = usePublicAnnouncements()
+ const { data } = usePublicAnnouncements()
 
 const allAnnouncements = Array.isArray(data) ? data : []
 
@@ -72,7 +71,7 @@ const sortedEvents = [...events].sort((a, b) =>
                     <Card className="hover:shadow-lg transition-shadow duration-300 border-none bg-slate-50 relative overflow-hidden group">
 
                       {/* Left Border Animation */}
-                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-blue-600 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top"></div>
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-linear-to-b from-primary to-blue-600 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top"></div>
 
                       <CardHeader className="pb-3 flex flex-row items-start justify-between gap-4">
                         <div>
@@ -123,7 +122,7 @@ const sortedEvents = [...events].sort((a, b) =>
           <div className="lg:col-span-4 rounded-3xl bg-slate-950 p-8 shadow-2xl relative overflow-hidden flex flex-col">
             <div className="absolute top-0 right-0 w-40 h-40 bg-primary/20 blur-[50px] rounded-full"></div>
 
-            <div className="relative z-10 flex-grow">
+            <div className="relative z-10 grow">
               <h3 className="text-2xl font-bold text-white mb-8">Upcoming Events</h3>
               <div className="space-y-6">
                 {sortedEvents.map((evt, i) => {

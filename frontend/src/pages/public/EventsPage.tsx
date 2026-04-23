@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAnnouncements, usePublicAnnouncements } from '@/hooks/announcement/useAnnouncements'
 
-// 🔥 You can keep this or move to constants
 const ITEMS_PER_PAGE = 5
 
 // 🔥 Normalize backend category → UI
