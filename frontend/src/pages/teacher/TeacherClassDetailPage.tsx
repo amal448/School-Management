@@ -17,7 +17,7 @@ import { studentColumns } from '@/components/shared/columns/student.columns'
 import { StatCard } from '@/components/shared/class/StatCard'
 import { AddStudentDialog } from '@/components/shared/student/AddStudentDialog'
 import { MarksStatus } from '@/types/enums'
-import { Skeleton } from '@/components/ui/skeleton'
+import { DetailPageSkeleton, TableSkeleton } from '@/components/shared/Skeletons'
 
 // ── Subject row ────────────────────────────────────────
 const SubjectRow = ({
@@ -135,9 +135,8 @@ export default function TeacherClassDetailPage() {
     useStudentsByClass(id ?? '')
   const { data: subjects } = useSubjects({ limit: 100 })
   const { data: pendingMarks } = useMyPendingMarks()
-  const { data: exams } = useExams()
 
-  if (isLoading) return <Skeleton />
+  if (isLoading) return <DetailPageSkeleton />
 
   if (isError || !cls) return (
     <div className="p-6 flex flex-col items-center justify-center h-64 gap-3">
@@ -156,9 +155,6 @@ export default function TeacherClassDetailPage() {
     (a) => a.teacherId === teacherId
   )
   const mySubjectIds = new Set(myAllocations.map((a) => a.subjectId))
-
-  const resolveSubjectName = (sid: string) =>
-    subjects?.data.find((s) => s.id === sid)?.subjectName ?? '—'
 
   // Pending marks for this class and this teacher's subjects
   const myPendingHere = (pendingMarks ?? []).filter(
@@ -263,9 +259,7 @@ export default function TeacherClassDetailPage() {
         </CardHeader>
         <CardContent className="p-0 mt-3">
           {studentsLoading ? (
-            <div className="px-6 py-8 text-center text-sm text-muted-foreground">
-              Loading students...
-            </div>
+            <div className="p-6"><TableSkeleton rows={5} columns={4} /></div>
           ) : !students?.length ? (
             <div className="px-6 py-8 text-center text-sm text-muted-foreground">
               No students enrolled yet.

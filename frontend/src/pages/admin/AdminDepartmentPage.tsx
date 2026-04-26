@@ -1,6 +1,8 @@
 import { DataTable }     from '@/components/ui/data-table'
 import { PageRoot, PageHeader } from '@/components/ui/page'
 import { AddManagerDialog }     from '@/components/admin/AddManagerDialog'
+import { departmentColumns } from '@/components/shared/columns/department.columns'
+import { TableSkeleton } from '@/components/shared/Skeletons'
 import { managerColumns }       from '@/components/admin/columns/manager.columns'
 import { useManagers }          from '@/hooks/admin/useManagers'
 
@@ -16,9 +18,7 @@ export default function AdminDepartmentPage() {
       />
 
       {isLoading ? (
-        <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">
-          Loading managers...
-        </div>
+        <TableSkeleton rows={5} columns={4} />
       ) : (
         <DataTable
           columns={managerColumns}

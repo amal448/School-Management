@@ -30,7 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Skeleton } from '@/components/shared/Skeleton'
+import { ProfileSkeleton } from '@/components/shared/Skeletons'
 import { InfoRow } from '@/components/shared/InfoRow'
 import { gradeColor } from '@/constants/grade.color'
 
@@ -64,7 +64,7 @@ export default function StudentProfilePage() {
   const resolveExamType = (eid: string) =>
     exams?.data.find((e) => e.id === eid)?.examType ?? ''
 
-  if (isLoading) return <Skeleton />
+  if (isLoading) return <ProfileSkeleton />
 
   if (isError || !student) return (
     <div className="p-6 flex flex-col items-center justify-center h-64 gap-3">

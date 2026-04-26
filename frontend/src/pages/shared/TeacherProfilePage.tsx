@@ -16,7 +16,7 @@ import {
   useDeactivateTeacher,
   useReactivateTeacher,
 } from '@/hooks/teacher/useTeachers'
-import ProfileSkeleton from '@/components/shared/ProfileSkeleton'
+import { ProfileSkeleton } from '@/components/shared/Skeletons'
 import { TeacherStatusBadge } from '@/components/shared/StatusBadge'
 import { InfoRow } from '@/components/shared/InfoRow'
 import { Avatar } from '@/components/shared/Avatar'

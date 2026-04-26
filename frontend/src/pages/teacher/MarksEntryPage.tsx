@@ -4,6 +4,7 @@ import { Button }                 from '@/components/ui/button'
 import { Input }                  from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowLeft, AlertCircle } from 'lucide-react'
+import { SectionLoader }          from '@/components/shared/Loaders'
 import { useStudentsByClass }     from '@/hooks/student/useStudents'
 import { useEnterMarks }          from '@/hooks/exam/useExams'
 import { StudentMarkEntry }       from '@/types/exam.types'
@@ -155,9 +156,7 @@ export default function MarksEntryPage() {
         </CardHeader>
         <CardContent className="p-0 mt-3">
           {studentsLoading ? (
-            <div className="px-6 py-8 text-center text-sm text-muted-foreground">
-              Loading students...
-            </div>
+            <div className="p-6"><SectionLoader text="Loading students..." /></div>
           ) : !students?.length ? (
             <div className="px-6 py-8 text-center text-sm text-muted-foreground">
               No students in this class.

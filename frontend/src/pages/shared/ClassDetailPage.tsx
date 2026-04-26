@@ -17,7 +17,7 @@ import { DataTable } from '@/components/ui/data-table'
 import { studentColumns } from '@/components/shared/columns/student.columns'
 import { useStudentsByClass } from '@/hooks/student/useStudents'
 import { AddStudentDialog } from '@/components/shared/student/AddStudentDialog'
-import { Skeleton } from '@/components/ui/skeleton'
+import { DetailPageSkeleton } from '@/components/shared/Skeletons'
 
 // ── Page ──────────────────────────────────────────────
 export default function ClassDetailPage() {
@@ -38,7 +38,7 @@ export default function ClassDetailPage() {
   const resolveSubject = (subjectId: string) =>
     subjects?.data.find((s) => s.id === subjectId)
 
-  if (isLoading) return <Skeleton />
+  if (isLoading) return <DetailPageSkeleton />
 
   if (isError || !cls) return (
     <div className="p-6 flex flex-col items-center justify-center h-64 gap-3">

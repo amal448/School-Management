@@ -155,14 +155,7 @@ const EmptyState = ({
   </div>
 )
 
-// ── Skeleton ───────────────────────────────────────────
-const Skeleton = () => (
-  <div className="flex flex-col gap-3 animate-pulse">
-    {[...Array(3)].map((_, i) => (
-      <div key={i} className="h-24 bg-muted rounded-xl" />
-    ))}
-  </div>
-)
+import { ListSkeleton } from '@/components/shared/Skeletons'
 
 // ── Page ──────────────────────────────────────────────
 export default function ClassMarksPage() {
@@ -262,7 +255,7 @@ export default function ClassMarksPage() {
         {/* ── Pending tab ── */}
         <TabsContent value="pending" className="mt-4">
           {pendingLoading ? (
-            <Skeleton />
+            <ListSkeleton count={3} />
           ) : !pending.length ? (
             <EmptyState
               icon={CheckCircle2}
@@ -294,7 +287,7 @@ export default function ClassMarksPage() {
         {/* ── Submitted tab ── */}
         <TabsContent value="submitted" className="mt-4">
           {pendingLoading ? (
-            <Skeleton />
+            <ListSkeleton count={3} />
           ) : !submitted.length ? (
             <EmptyState
               icon={BookOpen}

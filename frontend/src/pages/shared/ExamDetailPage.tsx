@@ -25,7 +25,7 @@ import {
   MARKS_STATUS_COLORS,
 } from '@/constants/exam.constants'
 import { AddCommonSubjectDialog } from '@/components/exam/AddCommonSubjectDialog'
-import { Skeleton } from '@/components/ui/skeleton'
+import { DetailPageSkeleton } from '@/components/shared/Skeletons'
 import {
   Accordion,
   AccordionContent,
@@ -304,7 +304,7 @@ export default function ExamDetailPage() {
     return c ? `${c.grade}-${c.section}` : '—'
   }
 
-  if (isLoading) return <Skeleton />
+  if (isLoading) return <DetailPageSkeleton />
 
   if (!exam) return (
     <div className="p-6 flex flex-col items-center justify-center h-64 gap-3">

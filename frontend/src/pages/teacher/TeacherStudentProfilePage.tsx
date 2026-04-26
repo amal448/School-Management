@@ -61,18 +61,7 @@ const gradeColor = (grade: string) => {
   return 'bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400'
 }
 
-const Skeleton = () => (
-  <div className="flex flex-col gap-6 animate-pulse p-6">
-    <div className="h-8 w-32 bg-muted rounded" />
-    <div className="h-36 bg-muted rounded-xl" />
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      {[...Array(2)].map((_, i) => (
-        <div key={i} className="h-40 bg-muted rounded-xl" />
-      ))}
-    </div>
-    <div className="h-48 bg-muted rounded-xl" />
-  </div>
-)
+import { ProfileSkeleton } from '@/components/shared/Skeletons'
 
 export default function TeacherStudentProfilePage() {
   const { id }    = useParams<{ id: string }>()
@@ -90,7 +79,7 @@ export default function TeacherStudentProfilePage() {
   const { data: studentClass } = useClass(student?.classId ?? '')
   const isClassTeacher = studentClass?.classTeacherId === teacherId
 
-  if (isLoading) return <Skeleton />
+  if (isLoading) return <ProfileSkeleton />
 
   if (isError || !student) return (
     <div className="p-6 flex flex-col items-center justify-center h-64 gap-3">

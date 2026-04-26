@@ -3,6 +3,7 @@ import { PageRoot, PageHeader } from '@/components/ui/page'
 import { AddManagerDialog }     from '@/components/admin/AddManagerDialog'
 import { useManagers }          from '@/hooks/admin/useManagers'
 import { classColumns } from '@/components/shared/columns/class.columns'
+import { TableSkeleton } from '@/components/shared/Skeletons'
 
 export default function AdminClassListPage() {
   const { data, isLoading } = useManagers()
@@ -16,9 +17,7 @@ export default function AdminClassListPage() {
       />
 
       {isLoading ? (
-        <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">
-          Loading class list...
-        </div>
+        <TableSkeleton rows={5} columns={4} />
       ) : (
         <DataTable
           columns={classColumns}

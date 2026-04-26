@@ -10,7 +10,7 @@ import {
   useUnblockManager,
   useDeleteManager,
 } from '@/hooks/admin/useManagers'
-import ProfileSkeleton from '@/components/shared/ProfileSkeleton'
+import { ProfileSkeleton } from '@/components/shared/Skeletons'
 import { Avatar } from '@/components/shared/Avatar'
 import { FlagRow } from '@/components/shared/FlagRow'
 import { StatusBadge } from '@/components/shared/StatusBadge'

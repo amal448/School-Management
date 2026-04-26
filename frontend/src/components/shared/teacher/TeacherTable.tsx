@@ -1,17 +1,12 @@
 import { DataTable }     from '@/components/ui/data-table'
 import {  TeacherTableProps } from '@/types/teacher.types'
 import { teacherColumns } from '../columns/teacher.columns'
+import { TableSkeleton }  from '@/components/shared/Skeletons'
 
 
 
 export function TeacherTable({ data, isLoading }: TeacherTableProps) {
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">
-        Loading teachers...
-      </div>
-    )
-  }
+  if (isLoading) return <TableSkeleton rows={5} columns={4} />
 
   return (
     <DataTable

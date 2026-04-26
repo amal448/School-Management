@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowLeft }           from 'lucide-react'
 import { useMarksBySchedule }  from '@/hooks/exam/useExams'
 import { useStudentsByClass }  from '@/hooks/student/useStudents'
+import { TableSkeleton }       from '@/components/shared/Skeletons'
 
 interface PageState {
   examName:    string
@@ -95,9 +96,7 @@ export default function TeacherMarksViewPage() {
         </CardHeader>
         <CardContent className="p-0 mt-3">
           {isLoading ? (
-            <div className="px-6 py-8 text-center text-sm text-muted-foreground">
-              Loading...
-            </div>
+            <div className="p-6"><TableSkeleton rows={5} columns={4} /></div>
           ) : !marks?.length ? (
             <div className="px-6 py-8 text-center text-sm text-muted-foreground">
               No marks found for this schedule.

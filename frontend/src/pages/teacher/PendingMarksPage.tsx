@@ -11,7 +11,7 @@ import { useExams }          from '@/hooks/exam/useExams'
 import { useSubjects }       from '@/hooks/subject/useSubjects'
 import { useMyClasses }      from '@/hooks/teacher/useTeachers'
 import { ExamScheduleResponse } from '@/types/exam.types'
-import { Skeleton } from '@/components/shared/Skeleton'
+import { ListSkeleton } from '@/components/shared/Skeletons'
 
 const ScheduleRow = ({
   schedule,
@@ -158,7 +158,7 @@ export default function PendingMarksPage() {
         {/* ── Pending ── */}
         <TabsContent value="pending" className="mt-4">
           {pendingLoading ? (
-            <Skeleton />
+            <ListSkeleton count={3} />
           ) : !pending?.length ? (
             <div className="flex flex-col items-center justify-center py-12 gap-3 text-muted-foreground">
               <CheckCircle2 className="size-8 text-green-600" />
@@ -199,7 +199,7 @@ export default function PendingMarksPage() {
         {/* ── Submitted ── */}
         <TabsContent value="submitted" className="mt-4">
           {submittedLoading ? (
-            <Skeleton />
+            <ListSkeleton count={3} />
           ) : !submitted?.length ? (
             <div className="flex flex-col items-center justify-center py-12 gap-3 text-muted-foreground">
               <BookOpen className="size-8" />

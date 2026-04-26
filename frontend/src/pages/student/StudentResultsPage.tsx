@@ -14,7 +14,8 @@ import {
 } from '@/components/ui/table'
 import { GraduationCap }      from 'lucide-react'
 import { ExamStatus }         from '@/types/enums'
-import { gradeColor } from '@/constants/grade.color'
+import { gradeColor }       from '@/constants/grade.color'
+import { ListSkeleton }     from '@/components/shared/Skeletons'
 
 const EXAM_TYPE_LABELS: Record<string, string> = {
   unit_test:  'Unit Test',
@@ -120,11 +121,7 @@ export default function StudentResultsPage() {
         </CardHeader>
         <CardContent className="p-0 mt-3">
           {isLoading ? (
-            <div className="flex flex-col gap-2 p-6 animate-pulse">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-14 bg-muted rounded-lg" />
-              ))}
-            </div>
+            <ListSkeleton count={3} />
           ) : !examEntries.length ? (
             <div className="px-6 py-12 text-center flex flex-col items-center gap-3">
               <GraduationCap className="size-8 text-muted-foreground" />

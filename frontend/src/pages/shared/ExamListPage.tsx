@@ -11,7 +11,7 @@ import {
   EXAM_TYPE_LABELS,
 } from '@/constants/exam.constants'
 import { ExamStatusBadge } from '@/components/exam/ExamStatusBadge'
-import { Skeleton } from '@/components/shared/Skeleton'
+import { ListSkeleton } from '@/components/shared/Skeletons'
 
 
 
@@ -91,7 +91,7 @@ export default function ExamListPage() {
       />
 
       {isLoading ? (
-        <Skeleton />
+        <ListSkeleton count={3} />
       ) : !data?.data.length ? (
         <div className="flex flex-col items-center justify-center h-48 gap-2 text-muted-foreground">
           <p className="text-sm">No exams yet.</p>

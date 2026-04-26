@@ -84,17 +84,7 @@ const ClassCard = ({
   )
 }
 
-// ── Skeleton ───────────────────────────────────────────
-const Skeleton = () => (
-  <div className="flex flex-col gap-6 animate-pulse p-6">
-    <div className="h-8 w-48 bg-muted rounded" />
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      {[...Array(4)].map((_, i) => (
-        <div key={i} className="h-24 bg-muted rounded-xl" />
-      ))}
-    </div>
-  </div>
-)
+import { DetailPageSkeleton } from '@/components/shared/Skeletons'
 
 // ── Page ──────────────────────────────────────────────
 export default function TeacherClassesPage() {
@@ -113,7 +103,7 @@ export default function TeacherClassesPage() {
       c.subjectAllocations.some((a) => a.teacherId === teacherId)
   )
 
-  if (isLoading) return <Skeleton />
+  if (isLoading) return <DetailPageSkeleton />
 
   return (
     <div className="p-6 flex flex-col gap-8">
