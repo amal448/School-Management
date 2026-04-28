@@ -1,5 +1,6 @@
 import apiClient from './client'
 import { ApiResponse } from '@/types/api.types'
+import { ENDPOINTS } from '@/constants/endpoints'
 import {
   TopperResponse,
   CreateTopperInput,
@@ -14,14 +15,14 @@ export const topperApi = {
     grade?: string; academicYear?: string; isPublished?: boolean
   }): Promise<PaginatedToppers> => {
     const res = await apiClient.get<ApiResponse<PaginatedToppers>>(
-      '/api/toppers', { params }
+      ENDPOINTS.TOPPERS.BASE, { params }
     )
     return res.data.data!
   },
 
   getPublic: async (): Promise<ToppersByGrade> => {
     const res = await apiClient.get<ApiResponse<ToppersByGrade>>(
-      '/api/toppers/public'
+      ENDPOINTS.TOPPERS.PUBLIC
     )
     return res.data.data!
   },
@@ -30,41 +31,41 @@ export const topperApi = {
 
   create: async (data: CreateTopperInput): Promise<TopperResponse> => {
     const res = await apiClient.post<ApiResponse<TopperResponse>>(
-      '/api/toppers', data
+      ENDPOINTS.TOPPERS.BASE, data
     )
     return res.data.data!
   },
 
   update: async (id: string, data: UpdateTopperInput): Promise<TopperResponse> => {
     const res = await apiClient.patch<ApiResponse<TopperResponse>>(
-      `/api/toppers/${id}`, data
+      ENDPOINTS.TOPPERS.BY_ID(id), data
     )
     return res.data.data!
   },
 
   publish: async (id: string): Promise<TopperResponse> => {
     const res = await apiClient.patch<ApiResponse<TopperResponse>>(
-      `/api/toppers/${id}/publish`
+      ENDPOINTS.TOPPERS.PUBLISH(id)
     )
     return res.data.data!
   },
 
   unpublish: async (id: string): Promise<TopperResponse> => {
     const res = await apiClient.patch<ApiResponse<TopperResponse>>(
-      `/api/toppers/${id}/unpublish`
+      ENDPOINTS.TOPPERS.UNPUBLISH(id)
     )
     return res.data.data!
   },
 
   delete: async (id: string): Promise<void> => {
-    await apiClient.delete(`/api/toppers/${id}`)
+    await apiClient.delete(ENDPOINTS.TOPPERS.BY_ID(id))
   },
 
   uploadImage: async (file: File): Promise<string> => {
     const form = new FormData()
     form.append('image', file)
     const res = await apiClient.post<ApiResponse<{ url: string }>>(
-      '/api/upload/image', form,
+      ENDPOINTS.TOPPERS.UPLOAD_IMAGE, form,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     )
     return res.data.data!.url

@@ -73,6 +73,15 @@ export class MongooseExamScheduleRepository
       .map(ExamScheduleDocumentMapper.toDomain)
   }
 
+  async findByTeacherIdAndStatus(teacherId: string, status: MarksStatus): Promise<ExamScheduleEntity[]> {
+    const docs = await ExamScheduleModel
+      .find({ teacherId, marksStatus: status })
+      .sort({ examDate: -1 })
+      .lean<IExamScheduleDocument[]>()
+    return (docs as IExamScheduleDocument[])
+      .map(ExamScheduleDocumentMapper.toDomain)
+  }
+
   async findByTeacherIdAndStatuses(teacherId: string,
     statuses: MarksStatus[],
   ): Promise<ExamScheduleEntity[]> {

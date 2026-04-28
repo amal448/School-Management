@@ -1,28 +1,40 @@
 import { Request, Response, NextFunction } from 'express'
-import { AnnouncementMapper }  from 'src/application/mappers'
-import { AppError }            from 'src/shared/types/app-error'
-import { HttpStatus }          from 'src/shared/enums/http-status.enum'
-import { IAnnouncementRepository } from 'src/application/ports/repositories/announcement.repository.interface'
-import { AnnouncementEntity } from 'src/domain/entities/announcement.entity'
+import { AnnouncementMapper } from 'src/application/mappers'
+import { HttpStatus } from 'src/shared/enums/http-status.enum'
+import { ListAnnouncementsUseCase } from 'src/application/use-cases/announcement/list-announcements.use-case'
+import { ListPublicAnnouncementsUseCase } from 'src/application/use-cases/announcement/list-public-announcements.use-case'
+import { CreateAnnouncementUseCase } from 'src/application/use-cases/announcement/create-announcement.use-case'
+import { UpdateAnnouncementUseCase } from 'src/application/use-cases/announcement/update-announcement.use-case'
+import { PublishAnnouncementUseCase } from 'src/application/use-cases/announcement/publish-announcement.use-case'
+import { UnpublishAnnouncementUseCase } from 'src/application/use-cases/announcement/unpublish-announcement.use-case'
+import { TogglePinAnnouncementUseCase } from 'src/application/use-cases/announcement/toggle-pin-announcement.use-case'
+import { DeleteAnnouncementUseCase } from 'src/application/use-cases/announcement/delete-announcement.use-case'
 
 export class AnnouncementController {
   constructor(
-    private readonly repo: IAnnouncementRepository,
-  ) {}
+    private readonly listUseCase: ListAnnouncementsUseCase,
+    private readonly listPublicUseCase: ListPublicAnnouncementsUseCase,
+    private readonly createUseCase: CreateAnnouncementUseCase,
+    private readonly updateUseCase: UpdateAnnouncementUseCase,
+    private readonly publishUseCase: PublishAnnouncementUseCase,
+    private readonly unpublishUseCase: UnpublishAnnouncementUseCase,
+    private readonly togglePinUseCase: TogglePinAnnouncementUseCase,
+    private readonly deleteUseCase: DeleteAnnouncementUseCase,
+  ) { }
 
   // GET /api/announcements — admin/manager (all)
   list = async (
     req: Request, res: Response, next: NextFunction
   ): Promise<void> => {
     try {
-      const result = await this.repo.findAll(req.query as any)
+      const result = await this.listUseCase.execute(req.query as any)
       res.status(HttpStatus.OK).json({
         success: true,
         data: {
-          data:       result.data.map(AnnouncementMapper.toDto),
-          total:      result.total,
-          page:       result.page,
-          limit:      result.limit,
+          data: result.data.map(AnnouncementMapper.toDto),
+          total: result.total,
+          page: result.page,
+          limit: result.limit,
           totalPages: result.totalPages,
         },
       })
@@ -34,10 +46,10 @@ export class AnnouncementController {
     req: Request, res: Response, next: NextFunction
   ): Promise<void> => {
     try {
-      const announcements = await this.repo.findPublished()
+      const announcements = await this.listPublicUseCase.execute()
       res.status(HttpStatus.OK).json({
         success: true,
-        data:    announcements.map(AnnouncementMapper.toDto),
+        data: announcements.map(AnnouncementMapper.toDto),
       })
     } catch (err) { next(err) }
   }
@@ -47,22 +59,10 @@ export class AnnouncementController {
     req: Request, res: Response, next: NextFunction
   ): Promise<void> => {
     try {
-      const entity = AnnouncementEntity.create({
-        title:       req.body.title,
-        content:     req.body.content,
-        category:    req.body.category,
-        eventDate:   req.body.eventDate
-          ? new Date(req.body.eventDate)
-          : undefined,
-        isPublished: req.body.isPublished ?? false,
-        isPinned:    req.body.isPinned    ?? false,
-        createdBy:   req.user!.userId,
-      })
-
-      const saved = await this.repo.save(entity)
+      const saved = await this.createUseCase.execute(req.body, req.user!.userId)
       res.status(HttpStatus.CREATED).json({
         success: true,
-        data:    AnnouncementMapper.toDto(saved),
+        data: AnnouncementMapper.toDto(saved),
       })
     } catch (err) { next(err) }
   }
@@ -72,22 +72,10 @@ export class AnnouncementController {
     req: Request, res: Response, next: NextFunction
   ): Promise<void> => {
     try {
-      const entity = await this.repo.findById(req.params.id)
-      if (!entity) throw AppError.notFound('Announcement not found')
-
-      entity.update({
-        title:     req.body.title,
-        content:   req.body.content,
-        category:  req.body.category,
-        eventDate: req.body.eventDate
-          ? new Date(req.body.eventDate)
-          : undefined,
-      })
-
-      const updated = await this.repo.update(req.params.id, entity)
+      const updated = await this.updateUseCase.execute(req.params.id, req.body)
       res.status(HttpStatus.OK).json({
         success: true,
-        data:    AnnouncementMapper.toDto(updated!),
+        data: AnnouncementMapper.toDto(updated!),
       })
     } catch (err) { next(err) }
   }
@@ -97,14 +85,10 @@ export class AnnouncementController {
     req: Request, res: Response, next: NextFunction
   ): Promise<void> => {
     try {
-      const entity = await this.repo.findById(req.params.id)
-      if (!entity) throw AppError.notFound('Announcement not found')
-
-      entity.publish()
-      const updated = await this.repo.update(req.params.id, entity)
+      const updated = await this.publishUseCase.execute(req.params.id)
       res.status(HttpStatus.OK).json({
         success: true,
-        data:    AnnouncementMapper.toDto(updated!),
+        data: AnnouncementMapper.toDto(updated!),
       })
     } catch (err) { next(err) }
   }
@@ -114,14 +98,10 @@ export class AnnouncementController {
     req: Request, res: Response, next: NextFunction
   ): Promise<void> => {
     try {
-      const entity = await this.repo.findById(req.params.id)
-      if (!entity) throw AppError.notFound('Announcement not found')
-
-      entity.unpublish()
-      const updated = await this.repo.update(req.params.id, entity)
+      const updated = await this.unpublishUseCase.execute(req.params.id)
       res.status(HttpStatus.OK).json({
         success: true,
-        data:    AnnouncementMapper.toDto(updated!),
+        data: AnnouncementMapper.toDto(updated!),
       })
     } catch (err) { next(err) }
   }
@@ -131,14 +111,10 @@ export class AnnouncementController {
     req: Request, res: Response, next: NextFunction
   ): Promise<void> => {
     try {
-      const entity = await this.repo.findById(req.params.id)
-      if (!entity) throw AppError.notFound('Announcement not found')
-
-      entity.togglePin()
-      const updated = await this.repo.update(req.params.id, entity)
+      const updated = await this.togglePinUseCase.execute(req.params.id)
       res.status(HttpStatus.OK).json({
         success: true,
-        data:    AnnouncementMapper.toDto(updated!),
+        data: AnnouncementMapper.toDto(updated!),
       })
     } catch (err) { next(err) }
   }
@@ -148,10 +124,7 @@ export class AnnouncementController {
     req: Request, res: Response, next: NextFunction
   ): Promise<void> => {
     try {
-      const exists = await this.repo.existsById(req.params.id)
-      if (!exists) throw AppError.notFound('Announcement not found')
-
-      await this.repo.delete(req.params.id)
+      await this.deleteUseCase.execute(req.params.id)
       res.status(HttpStatus.OK).json({
         success: true,
         message: 'Announcement deleted',

@@ -1,5 +1,10 @@
 import { LucideIcon } from 'lucide-react'
 
+export interface AllocateSubjectInput {
+  subjectId: string
+  teacherId?: string
+}
+
 export interface SubjectAllocation {
   subjectId: string
   subject?: any

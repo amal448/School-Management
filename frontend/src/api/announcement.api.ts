@@ -4,6 +4,7 @@ import { AnnouncementResponse,CreateAnnouncementInput,
   UpdateAnnouncementInput,
   AnnouncementQueryParams,
   PaginatedAnnouncements, } from '@/types/announcement.types'
+import { ENDPOINTS } from '@/constants/endpoints'
 
 export const announcementApi = {
 
@@ -11,14 +12,14 @@ export const announcementApi = {
     params?: AnnouncementQueryParams,
   ): Promise<PaginatedAnnouncements> => {
     const res = await apiClient.get<ApiResponse<PaginatedAnnouncements>>(
-      '/api/announcements', { params }
+      ENDPOINTS.ANNOUNCEMENTS.BASE, { params }
     )
     return res.data.data!
   },
 
   getPublic: async (): Promise<AnnouncementResponse[]> => {
     const res = await apiClient.get<ApiResponse<AnnouncementResponse[]>>(
-      '/api/announcements/public'
+      ENDPOINTS.ANNOUNCEMENTS.PUBLIC
     )
     return res.data.data!
   },
@@ -27,7 +28,7 @@ export const announcementApi = {
     data: CreateAnnouncementInput,
   ): Promise<AnnouncementResponse> => {
     const res = await apiClient.post<ApiResponse<AnnouncementResponse>>(
-      '/api/announcements', data
+      ENDPOINTS.ANNOUNCEMENTS.BASE, data
     )
     return res.data.data!
   },
@@ -37,33 +38,33 @@ export const announcementApi = {
     data: UpdateAnnouncementInput,
   ): Promise<AnnouncementResponse> => {
     const res = await apiClient.patch<ApiResponse<AnnouncementResponse>>(
-      `/api/announcements/${id}`, data
+      ENDPOINTS.ANNOUNCEMENTS.BY_ID(id), data
     )
     return res.data.data!
   },
 
   publish: async (id: string): Promise<AnnouncementResponse> => {
     const res = await apiClient.patch<ApiResponse<AnnouncementResponse>>(
-      `/api/announcements/${id}/publish`
+      ENDPOINTS.ANNOUNCEMENTS.PUBLISH(id)
     )
     return res.data.data!
   },
 
   unpublish: async (id: string): Promise<AnnouncementResponse> => {
     const res = await apiClient.patch<ApiResponse<AnnouncementResponse>>(
-      `/api/announcements/${id}/unpublish`
+      ENDPOINTS.ANNOUNCEMENTS.UNPUBLISH(id)
     )
     return res.data.data!
   },
 
   togglePin: async (id: string): Promise<AnnouncementResponse> => {
     const res = await apiClient.patch<ApiResponse<AnnouncementResponse>>(
-      `/api/announcements/${id}/pin`
+      ENDPOINTS.ANNOUNCEMENTS.PIN(id)
     )
     return res.data.data!
   },
 
   delete: async (id: string): Promise<void> => {
-    await apiClient.delete(`/api/announcements/${id}`)
+    await apiClient.delete(ENDPOINTS.ANNOUNCEMENTS.BY_ID(id))
   },
 }

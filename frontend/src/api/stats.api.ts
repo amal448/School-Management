@@ -1,5 +1,6 @@
 import apiClient from './client'
 import { ApiResponse } from '@/types/api.types'
+import { ENDPOINTS } from '@/constants/endpoints'
 
 export interface OverviewStats {
     totalTeachers: number
@@ -27,7 +28,7 @@ export interface StudentStats {
 export const statsApi = {
     getOverview: async (): Promise<OverviewStats> => {
         const res = await apiClient.get<ApiResponse<OverviewStats>>(
-            '/api/stats/overview'
+            ENDPOINTS.STATS.OVERVIEW
         )
         return res.data.data!
     },
@@ -37,14 +38,14 @@ export const statsApi = {
         examType?: string
     }): Promise<GradePerformance> => {
         const res = await apiClient.get<ApiResponse<GradePerformance>>(
-            '/api/stats/grade-performance', { params }
+            ENDPOINTS.STATS.GRADE_PERFORMANCE, { params }
         )
         return res.data.data!
     },
 
     getStudentStats: async (studentId: string): Promise<StudentStats> => {
         const res = await apiClient.get<ApiResponse<StudentStats>>(
-            `/api/stats/student/${studentId}`
+            ENDPOINTS.STATS.STUDENT(studentId)
         )
         return res.data.data!
     },

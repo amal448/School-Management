@@ -8,12 +8,13 @@ import {
 } from '@/types/teacher.types'
 import { ApiResponse } from '@/types/api.types'
 import { ClassResponse } from '@/types/class.types'
+import { ENDPOINTS } from '@/constants/endpoints'
 
 export const teacherApi = {
 
   getAll: async (params?: TeacherQueryParams): Promise<PaginatedTeachers> => {
     const res = await apiClient.get<ApiResponse<PaginatedTeachers>>(
-      '/api/teachers',
+      ENDPOINTS.TEACHERS.BASE,
       { params },
     )
     return res.data.data!
@@ -21,14 +22,14 @@ export const teacherApi = {
 
   getById: async (id: string): Promise<TeacherResponse> => {
     const res = await apiClient.get<ApiResponse<TeacherResponse>>(
-      `/api/teachers/${id}`
+      ENDPOINTS.TEACHERS.BY_ID(id)
     )
     return res.data.data!
   },
 
   create: async (data: CreateTeacherInput): Promise<TeacherResponse> => {
     const res = await apiClient.post<ApiResponse<{ user: TeacherResponse }>>(
-      '/api/teachers',
+      ENDPOINTS.TEACHERS.BASE,
       data,
     )
     return res.data.data!.user
@@ -36,32 +37,32 @@ export const teacherApi = {
 
   getMe: async (): Promise<TeacherResponse> => {
     const res = await apiClient.get<ApiResponse<TeacherResponse>>(
-      '/api/teachers/me'
+      ENDPOINTS.TEACHERS.ME
     )
     return res.data.data!
   },
 
   getMyClasses: async (): Promise<ClassResponse[]> => {
     const res = await apiClient.get<ApiResponse<ClassResponse[]>>(
-      '/api/teachers/me/classes'
+      ENDPOINTS.TEACHERS.MY_CLASSES
     )
     return res.data.data!
   },
 
   update: async (id: string, data: UpdateTeacherInput): Promise<TeacherResponse> => {
     const res = await apiClient.patch<ApiResponse<TeacherResponse>>(
-      `/api/teachers/${id}`,
+      ENDPOINTS.TEACHERS.BY_ID(id),
       data,
     )
     return res.data.data!
   },
 
   deactivate: async (id: string): Promise<void> => {
-    await apiClient.delete(`/api/teachers/${id}`)
+    await apiClient.delete(ENDPOINTS.TEACHERS.BY_ID(id))
   },
   // Reactivate a deactivated teacher
   reactivate: async (id: string): Promise<void> => {
-    await apiClient.patch(`/api/teachers/${id}/reactivate`)
+    await apiClient.patch(ENDPOINTS.TEACHERS.REACTIVATE(id))
   },
 
   assignDepartment: async (
@@ -69,7 +70,7 @@ export const teacherApi = {
     deptId: string,
   ): Promise<TeacherResponse> => {
     const res = await apiClient.patch<ApiResponse<TeacherResponse>>(
-      `/api/teachers/${id}/department`,
+      ENDPOINTS.TEACHERS.DEPARTMENT(id),
       { deptId },
     )
     return res.data.data!
@@ -77,21 +78,21 @@ export const teacherApi = {
 
   resetStudentPassword: async (studentId: string): Promise<{ firstTimeToken: string }> => {
     const res = await apiClient.post<ApiResponse<{ firstTimeToken: string }>>(
-      `/api/auth/students/${studentId}/reset-password`
+      ENDPOINTS.STUDENTS.RESET_PASSWORD(studentId)
     )
     return res.data.data!
   },
 
   getBySubject: async (subjectId: string): Promise<TeacherResponse[]> => {
     const res = await apiClient.get<ApiResponse<TeacherResponse[]>>(
-      `/api/teachers/by-subject/${subjectId}`
+      ENDPOINTS.TEACHERS.BY_SUBJECT(subjectId)
     )
     return res.data.data!
   },
 
   getByLevel: async (level: string): Promise<TeacherResponse[]> => {
     const res = await apiClient.get<ApiResponse<TeacherResponse[]>>(
-      `/api/teachers/by-level/${level}`
+      ENDPOINTS.TEACHERS.BY_LEVEL(level)
     )
     return res.data.data!
   },

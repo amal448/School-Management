@@ -8,39 +8,40 @@ import {
   PaginatedClasses,
 } from '@/types/class.types'
 import { ApiResponse } from '@/types/api.types'
+import { ENDPOINTS } from '@/constants/endpoints'
 
 export const classApi = {
 
   getAll: async (params?: ClassQueryParams): Promise<PaginatedClasses> => {
     const res = await apiClient.get<ApiResponse<PaginatedClasses>>(
-      '/api/classes', { params }
+      ENDPOINTS.CLASSES.BASE, { params }
     )
     return res.data.data!
   },
 
   getById: async (id: string): Promise<ClassResponse> => {
     const res = await apiClient.get<ApiResponse<ClassResponse>>(
-      `/api/classes/${id}`
+      ENDPOINTS.CLASSES.BY_ID(id)
     )
     return res.data.data!
   },
 
   create: async (data: CreateClassInput): Promise<ClassResponse> => {
     const res = await apiClient.post<ApiResponse<ClassResponse>>(
-      '/api/classes', data
+      ENDPOINTS.CLASSES.BASE, data
     )
     return res.data.data!
   },
 
   update: async (id: string, data: UpdateClassInput): Promise<ClassResponse> => {
     const res = await apiClient.patch<ApiResponse<ClassResponse>>(
-      `/api/classes/${id}`, data
+      ENDPOINTS.CLASSES.BY_ID(id), data
     )
     return res.data.data!
   },
 
   delete: async (id: string): Promise<void> => {
-    await apiClient.delete(`/api/classes/${id}`)
+    await apiClient.delete(ENDPOINTS.CLASSES.BY_ID(id))
   },
 
   allocateSubject: async (
@@ -48,7 +49,7 @@ export const classApi = {
     data:    AllocateSubjectInput,
   ): Promise<ClassResponse> => {
     const res = await apiClient.post<ApiResponse<ClassResponse>>(
-      `/api/classes/${classId}/subjects`, data
+      ENDPOINTS.CLASSES.SUBJECTS(classId), data
     )
     return res.data.data!
   },
@@ -58,7 +59,7 @@ export const classApi = {
     subjectId: string,
   ): Promise<ClassResponse> => {
     const res = await apiClient.delete<ApiResponse<ClassResponse>>(
-      `/api/classes/${classId}/subjects/${subjectId}`
+      ENDPOINTS.CLASSES.SUBJECT_BY_ID(classId, subjectId)
     )
     return res.data.data!
   },
@@ -68,7 +69,7 @@ export const classApi = {
     teacherId:string
   ):Promise<ClassResponse>=>{
     const res=await apiClient.patch<ApiResponse<ClassResponse>>(
-      `/api/classes/${classId}/subjects/${subjectId}/teacher`, {teacherId}
+      ENDPOINTS.CLASSES.ASSIGN_SUBJECT_TEACHER(classId, subjectId), {teacherId}
     )
     return res.data.data!
   }

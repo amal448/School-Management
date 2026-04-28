@@ -15,6 +15,17 @@ import { RemoveCommonSubjectUseCase } from 'src/application/use-cases/exam/remov
 import { AddSectionLanguageUseCase } from 'src/application/use-cases/exam/add-sectionlanguage.use-case'
 import { RemoveSectionLanguageUseCase } from 'src/application/use-cases/exam/remove-sectionlanguage'
 
+import { ListExamsUseCase } from 'src/application/use-cases/exam/list-exams.use-case'
+import { GetExamByIdUseCase } from 'src/application/use-cases/exam/get-exam-by-id.use-case'
+import { UpdateExamUseCase } from 'src/application/use-cases/exam/update-exam.use-case'
+import { GetExamSchedulesUseCase } from 'src/application/use-cases/exam/get-exam-schedules.use-case'
+import { GetMarksByScheduleUseCase } from 'src/application/use-cases/exam/get-marks-by-schedule.use-case'
+import { GetMyPendingMarksUseCase } from 'src/application/use-cases/exam/get-my-pending-marks.use-case'
+import { GetClassResultsUseCase } from 'src/application/use-cases/exam/get-class-results.use-case'
+import { GetMySchedulesForClassUseCase } from 'src/application/use-cases/exam/get-my-schedules-for-class.use-case'
+import { GetMySubmittedMarksUseCase } from 'src/application/use-cases/exam/get-my-submitted-marks.use-case'
+import { GetStudentResultsUseCase } from 'src/application/use-cases/exam/get-student-results.use-case'
+
 export class ExamController {
   constructor(
     private readonly createUseCase: CreateExamUseCase,
@@ -26,9 +37,16 @@ export class ExamController {
     private readonly publishUseCase: PublishExamUseCase,
     private readonly enterMarksUseCase: EnterMarksUseCase,
     private readonly declareUseCase: DeclareExamUseCase,
-    private readonly examRepo: IExamRepository,
-    private readonly scheduleRepo: IExamScheduleRepository,
-    private readonly marksRepo: IMarksRepository,
+    private readonly listExamsUseCase: ListExamsUseCase,
+    private readonly getExamByIdUseCase: GetExamByIdUseCase,
+    private readonly updateExamUseCase: UpdateExamUseCase,
+    private readonly getExamSchedulesUseCase: GetExamSchedulesUseCase,
+    private readonly getMarksByScheduleUseCase: GetMarksByScheduleUseCase,
+    private readonly getMyPendingMarksUseCase: GetMyPendingMarksUseCase,
+    private readonly getClassResultsUseCase: GetClassResultsUseCase,
+    private readonly getMySchedulesForClassUseCase: GetMySchedulesForClassUseCase,
+    private readonly getMySubmittedMarksUseCase: GetMySubmittedMarksUseCase,
+    private readonly getStudentResultsUseCase: GetStudentResultsUseCase,
   ) { }
 
   create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -43,7 +61,7 @@ export class ExamController {
 
   list = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const result = await this.examRepo.findAll(req.query as any)
+      const result = await this.listExamsUseCase.execute(req.query as any)
       res.status(200).json({
         success: true,
         data: {
@@ -59,7 +77,7 @@ export class ExamController {
 
   getById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const exam = await this.examRepo.findById(req.params.id)
+      const exam = await this.getExamByIdUseCase.execute(req.params.id)
       if (!exam) { res.status(404).json({ success: false, message: 'Exam not found' }); return }
       res.status(200).json({ success: true, data: ExamMapper.toDto(exam) })
     } catch (err) { next(err) }
@@ -67,11 +85,8 @@ export class ExamController {
 
   update = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const exam = await this.examRepo.findById(req.params.id)
-      if (!exam) { res.status(404).json({ success: false, message: 'Exam not found' }); return }
-      exam.updateDetails(req.body)
-      const updated = await this.examRepo.update(req.params.id, exam)
-      res.status(200).json({ success: true, data: ExamMapper.toDto(updated!) })
+      const updated = await this.updateExamUseCase.execute(req.params.id, req.body)
+      res.status(200).json({ success: true, data: ExamMapper.toDto(updated) })
     } catch (err) { next(err) }
   }
 
@@ -135,7 +150,7 @@ export class ExamController {
 
   getSchedules = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const schedules = await this.scheduleRepo.findByExamId(req.params.id)
+      const schedules = await this.getExamSchedulesUseCase.execute(req.params.id)
       res.status(200).json({ success: true, data: schedules.map(ExamMapper.scheduleToDto) })
     } catch (err) { next(err) }
   }
@@ -152,28 +167,21 @@ export class ExamController {
 
   getMarksBySchedule = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const marks = await this.marksRepo.findByScheduleId(req.params.scheduleId)
+      const marks = await this.getMarksByScheduleUseCase.execute(req.params.scheduleId)
       res.status(200).json({ success: true, data: marks.map(ExamMapper.marksToDto) })
     } catch (err) { next(err) }
   }
 
   myPendingMarks = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const schedules = await this.scheduleRepo.findByTeacherIdAndStatuses(
-        req.user!.userId, [MarksStatus.PENDING],
-      )
+      const schedules = await this.getMyPendingMarksUseCase.execute(req.user!.userId)
       res.status(200).json({ success: true, data: schedules.map(ExamMapper.scheduleToDto) })
     } catch (err) { next(err) }
   }
 
   getClassResults = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const exam = await this.examRepo.findById(req.params.id)
-      if (!exam) { res.status(404).json({ success: false, message: 'Exam not found' }); return }
-      if (exam.status !== 'declared') {
-        res.status(403).json({ success: false, message: 'Results not yet declared' }); return
-      }
-      const marks = await this.marksRepo.findByClassAndExam(req.params.classId, req.params.id)
+      const marks = await this.getClassResultsUseCase.execute(req.params.classId, req.params.id)
       res.status(200).json({ success: true, data: marks.map(ExamMapper.marksToDto) })
     } catch (err) { next(err) }
   }
@@ -185,7 +193,7 @@ export class ExamController {
     req: Request, res: Response, next: NextFunction
   ): Promise<void> => {
     try {
-      const schedules = await this.scheduleRepo.findByTeacherAndClass(
+      const schedules = await this.getMySchedulesForClassUseCase.execute(
         req.user!.userId,
         req.params.classId,
       )
@@ -200,10 +208,7 @@ export class ExamController {
     req: Request, res: Response, next: NextFunction
   ): Promise<void> => {
     try {
-      const schedules = await this.scheduleRepo.findByTeacherIdAndStatuses(
-        req.user!.userId,
-        [MarksStatus.SUBMITTED, MarksStatus.LOCKED],
-      )
+      const schedules = await this.getMySubmittedMarksUseCase.execute(req.user!.userId)
       res.status(200).json({
         success: true,
         data: schedules.map(ExamMapper.scheduleToDto),
@@ -215,9 +220,7 @@ export class ExamController {
     req: Request, res: Response, next: NextFunction
   ): Promise<void> => {
     try {
-      const marks = await this.marksRepo.findByStudentId(
-        req.params.studentId,
-      )
+      const marks = await this.getStudentResultsUseCase.execute(req.params.studentId)
       res.status(200).json({
         success: true,
         data: marks.map(ExamMapper.marksToDto),

@@ -20,6 +20,17 @@ import { RemoveCommonSubjectUseCase } from 'src/application/use-cases/exam/remov
 import { AddSectionLanguageUseCase } from 'src/application/use-cases/exam/add-sectionlanguage.use-case'
 import { RemoveSectionLanguageUseCase } from 'src/application/use-cases/exam/remove-sectionlanguage'
 
+import { ListExamsUseCase } from 'src/application/use-cases/exam/list-exams.use-case'
+import { GetExamByIdUseCase } from 'src/application/use-cases/exam/get-exam-by-id.use-case'
+import { UpdateExamUseCase } from 'src/application/use-cases/exam/update-exam.use-case'
+import { GetExamSchedulesUseCase } from 'src/application/use-cases/exam/get-exam-schedules.use-case'
+import { GetMarksByScheduleUseCase } from 'src/application/use-cases/exam/get-marks-by-schedule.use-case'
+import { GetMyPendingMarksUseCase } from 'src/application/use-cases/exam/get-my-pending-marks.use-case'
+import { GetClassResultsUseCase } from 'src/application/use-cases/exam/get-class-results.use-case'
+import { GetMySchedulesForClassUseCase } from 'src/application/use-cases/exam/get-my-schedules-for-class.use-case'
+import { GetMySubmittedMarksUseCase } from 'src/application/use-cases/exam/get-my-submitted-marks.use-case'
+import { GetStudentResultsUseCase } from 'src/application/use-cases/exam/get-student-results.use-case'
+
 export function buildExamModule(
   logger:  WinstonLogger,
   authMW:  any,
@@ -41,9 +52,16 @@ export function buildExamModule(
     new PublishExamUseCase(examRepo, scheduleRepo, classRepo, logger),
     new EnterMarksUseCase(scheduleRepo, examRepo, studentRepo, marksRepo, logger),
     new DeclareExamUseCase(examRepo, scheduleRepo, logger),
-    examRepo,
-    scheduleRepo,
-    marksRepo,
+    new ListExamsUseCase(examRepo),
+    new GetExamByIdUseCase(examRepo),
+    new UpdateExamUseCase(examRepo),
+    new GetExamSchedulesUseCase(scheduleRepo),
+    new GetMarksByScheduleUseCase(marksRepo),
+    new GetMyPendingMarksUseCase(scheduleRepo),
+    new GetClassResultsUseCase(examRepo, marksRepo),
+    new GetMySchedulesForClassUseCase(scheduleRepo),
+    new GetMySubmittedMarksUseCase(scheduleRepo),
+    new GetStudentResultsUseCase(marksRepo),
   )
 
   return { router: createExamRouter(controller, authMW) }

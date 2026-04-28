@@ -1,10 +1,8 @@
-import { motion }           from 'framer-motion'
-import {  FileCheck } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { FileCheck } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { DEPARTMENTS, EXAM_STRUCTURE } from '@/constants/mockdata'
 import { AchieversSection } from '@/components/academics/AchieversSection'
-
-
+import { DEPARTMENTS, EXAM_STRUCTURE } from '@/constants/mockdata'
 
 
 // ── Page ──────────────────────────────────────────────
@@ -57,7 +55,7 @@ export default function AcademicsPage() {
       </section>
 
       {/* ── Subjects Offered ── */}
-      
+
 
       {/* ── Examination Structure ── */}
       <section className="py-24 bg-white border-t border-slate-100">

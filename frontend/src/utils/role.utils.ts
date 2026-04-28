@@ -17,7 +17,7 @@ export const getLoginPath = (role: Role): string => {
   if (role === ROLES.ADMIN || role === ROLES.MANAGER) {
     return ROUTES.AUTH.ADMIN_MANAGER_LOGIN
   }
-  return ROUTES.AUTH.TEACHER_STUDENT_LOGIN
+  return ROUTES.AUTH.STUDENT_LOGIN
 }
 
 export const getNavItems = (role: Role): NavItem[] => {
